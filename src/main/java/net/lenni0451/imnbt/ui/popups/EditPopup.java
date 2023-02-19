@@ -13,12 +13,20 @@ public class EditPopup extends Popup {
     private final INbtTag tag;
     private final TagRenderer tagRenderer;
 
-    public EditPopup(final String name, final INbtTag tag, final PopupCallback callback) {
-        super("Edit", callback);
+    public EditPopup(final String title, final String name, final INbtTag tag, final PopupCallback callback) {
+        super(title, callback);
 
         this.name.set(name);
         this.tag = tag;
         this.tagRenderer = ImGuiImpl.getInstance().getMainWindow().getTagRenderer(tag.getNbtType());
+    }
+
+    public String getName() {
+        return this.name.get();
+    }
+
+    public INbtTag getTag() {
+        return this.tag;
     }
 
     @Override

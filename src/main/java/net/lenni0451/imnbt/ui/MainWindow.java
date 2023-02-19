@@ -5,6 +5,7 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.nbt.*;
+import net.lenni0451.imnbt.ui.popups.EditPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.OpenPopup;
 import net.lenni0451.imnbt.ui.popups.SavePopup;
@@ -12,6 +13,7 @@ import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
 import net.lenni0451.imnbt.utils.IOUtils;
+import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.UnlimitedReadTracker;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -56,6 +58,14 @@ public class MainWindow {
         return this.tagRenderer.get(type);
     }
 
+    public void openPopup(final Popup popup) {
+        this.popup = popup;
+    }
+
+    public void closePopup() {
+        this.popup = null;
+    }
+
     public void render() {
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
@@ -65,8 +75,23 @@ public class MainWindow {
                 if (ImGui.menuItem("Save")) {
                     this.save();
                 }
-                if (ImGui.menuItem("New")) {
+                if (ImGui.beginMenu("New Root Tag")) {
+                    for (NbtType value : NbtType.values()) {
+                        if (NbtType.END.equals(value)) continue;
+                        if (ImGui.menuItem(StringUtils.format(value))) {
+                            this.popup = new EditPopup("New " + StringUtils.format(value) + " Tag", "", value.newInstance(), success -> {
+                                if (success) {
+                                    EditPopup editPopup = (EditPopup) this.popup;
+                                    this.tagSettings.rootName = editPopup.getName();
+                                    this.tag = editPopup.getTag();
+                                }
+                                this.popup = null;
+                            });
+                            break;
+                        }
+                    }
 
+                    ImGui.endMenu();
                 }
                 ImGui.separator();
                 if (ImGui.menuItem("Exit")) {
