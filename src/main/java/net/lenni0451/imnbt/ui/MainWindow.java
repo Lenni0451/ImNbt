@@ -17,6 +17,7 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
+import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.EnumMap;
 import java.util.Map;
@@ -49,6 +50,10 @@ public class MainWindow {
         this.tagRenderer.put(NbtType.COMPOUND, new CompoundTagRenderer());
         this.tagRenderer.put(NbtType.INT_ARRAY, new IntArrayTagRenderer());
         this.tagRenderer.put(NbtType.LONG_ARRAY, new LongArrayTagRenderer());
+    }
+
+    public TagRenderer getTagRenderer(@Nonnull final NbtType type) {
+        return this.tagRenderer.get(type);
     }
 
     public void render() {

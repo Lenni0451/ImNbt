@@ -1,5 +1,6 @@
 package net.lenni0451.imnbt.ui.nbt;
 
+import imgui.ImGui;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.ShortTag;
@@ -15,6 +16,13 @@ public class ShortTagRenderer implements TagRenderer {
     public void render(String name, @Nonnull INbtTag tag) {
         ShortTag shortTag = (ShortTag) tag;
         this.renderLeaf(name + ": " + this.format.format(shortTag.getValue()), tag.hashCode());
+    }
+
+    @Override
+    public void renderValueEditor(INbtTag tag) {
+        ShortTag shortTag = (ShortTag) tag;
+        int[] value = new int[]{shortTag.getValue()};
+        if (ImGui.sliderInt("Value", value, Short.MIN_VALUE, Short.MAX_VALUE)) shortTag.setValue((short) value[0]);
     }
 
 }

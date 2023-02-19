@@ -19,4 +19,8 @@ public class LongArrayTagRenderer implements TagRenderer {
         });
     }
 
+    @Override
+    public void renderValueEditor(INbtTag tag) {
+    }
+
 }

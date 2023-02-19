@@ -19,7 +19,7 @@ public class ImGuiImpl extends Application {
     private final ImFont[] fonts = new ImFont[5];
     private int usedFont = 3;
 
-    public final MainWindow mainWindow = new MainWindow();
+    private final MainWindow mainWindow = new MainWindow();
 
     public ImGuiImpl() {
         instance = this;
@@ -35,6 +35,10 @@ public class ImGuiImpl extends Application {
 
     public void setUsedFont(final int usedFont) {
         this.usedFont = usedFont;
+    }
+
+    public MainWindow getMainWindow() {
+        return this.mainWindow;
     }
 
     @Override

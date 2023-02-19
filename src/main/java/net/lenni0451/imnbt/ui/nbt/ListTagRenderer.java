@@ -15,9 +15,13 @@ public class ListTagRenderer implements TagRenderer {
         this.renderBranch(name + " (" + listTag.getValue().size() + ")", tag.hashCode(), () -> {
             for (int i = 0; i < listTag.getValue().size(); i++) {
                 INbtTag listEntry = listTag.getValue().get(i);
-                ImGuiImpl.getInstance().mainWindow.renderNbt(String.valueOf(i), listEntry);
+                ImGuiImpl.getInstance().getMainWindow().renderNbt(String.valueOf(i), listEntry);
             }
         });
+    }
+
+    @Override
+    public void renderValueEditor(INbtTag tag) {
     }
 
 }

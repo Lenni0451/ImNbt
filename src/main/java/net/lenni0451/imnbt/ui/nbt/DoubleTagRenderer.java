@@ -1,5 +1,7 @@
 package net.lenni0451.imnbt.ui.nbt;
 
+import imgui.ImGui;
+import imgui.type.ImDouble;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.DoubleTag;
@@ -15,6 +17,13 @@ public class DoubleTagRenderer implements TagRenderer {
     public void render(String name, @Nonnull INbtTag tag) {
         DoubleTag doubleTag = (DoubleTag) tag;
         this.renderLeaf(name + ": " + this.format.format(doubleTag.getValue()), tag.hashCode());
+    }
+
+    @Override
+    public void renderValueEditor(INbtTag tag) {
+        DoubleTag doubleTag = (DoubleTag) tag;
+        ImDouble value = new ImDouble(doubleTag.getValue());
+        if (ImGui.inputDouble("Value", value)) doubleTag.setValue(value.get());
     }
 
 }

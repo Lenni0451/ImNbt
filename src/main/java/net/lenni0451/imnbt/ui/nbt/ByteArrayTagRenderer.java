@@ -19,4 +19,8 @@ public class ByteArrayTagRenderer implements TagRenderer {
         });
     }
 
+    @Override
+    public void renderValueEditor(INbtTag tag) {
+    }
+
 }

@@ -10,6 +10,8 @@ public interface TagRenderer {
 
     void render(final String name, @Nonnull final INbtTag tag);
 
+    void renderValueEditor(final INbtTag tag);
+
     default void renderBranch(final String text, final int hashCode, final Runnable renderChildren) {
         if (ImGui.treeNodeEx(text + "##" + hashCode, ImGuiTreeNodeFlags.SpanAvailWidth)) {
             renderChildren.run();

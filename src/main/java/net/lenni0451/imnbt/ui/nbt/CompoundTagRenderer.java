@@ -14,8 +14,12 @@ public class CompoundTagRenderer implements TagRenderer {
     public void render(String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name + " (" + compoundTag.size() + ")", compoundTag.hashCode(), () -> {
-            for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) ImGuiImpl.getInstance().mainWindow.renderNbt(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) ImGuiImpl.getInstance().getMainWindow().renderNbt(entry.getKey(), entry.getValue());
         });
+    }
+
+    @Override
+    public void renderValueEditor(INbtTag tag) {
     }
 
 }
