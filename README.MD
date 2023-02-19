@@ -1,2 +1,2 @@
-# Gradle Template
-A template project for my gradle based repos
+# ImNbt
+A Nbt viewer and editor using ImGui
