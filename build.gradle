@@ -2,7 +2,7 @@ plugins {
     id "java"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
 
 archivesBaseName = project.maven_name
@@ -21,10 +21,16 @@ repositories {
 }
 
 dependencies {
-    implementation "com.google.code.findbugs:jsr305:3.0.2"
-    implementation "net.lenni0451.mcstructs:nbt:2.2.0"
-    implementation("net.lenni0451.mcstructs-bedrock:nbt:1.0.0") {
+    include "com.google.code.findbugs:jsr305:3.0.2"
+    include "net.lenni0451.mcstructs:nbt:2.2.0"
+    include("net.lenni0451.mcstructs-bedrock:nbt:1.0.0") {
         exclude group: "net.lenni0451.mcstructs", module: "nbt"
+    }
+
+    include "io.github.spair:imgui-java-app:1.86.7"
+    include "org.lwjgl:lwjgl-tinyfd:3.3.1"
+    ["natives-linux", "natives-windows", "natives-macos"].each {
+        include "org.lwjgl:lwjgl-tinyfd:3.3.1:$it"
     }
 }
 
