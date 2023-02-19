@@ -2,26 +2,23 @@ package net.lenni0451.imnbt.ui.popups;
 
 import imgui.ImGui;
 import imgui.type.ImInt;
-import imgui.type.ImString;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
 
-public class NewPopup extends Popup {
+public class OpenPopup extends Popup {
 
     private final TagSettings tagSettings;
-    private final ImString rootName;
     private final ImInt selectedFormat;
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
 
-    public NewPopup(final TagSettings tagSettings, final PopupCallback callback) {
-        super("Create new Nbt Tag", callback);
+    public OpenPopup(final TagSettings tagSettings, final PopupCallback callback) {
+        super("Open Nbt Tag", callback);
 
         this.tagSettings = tagSettings;
-        this.rootName = new ImString(this.tagSettings.rootName, 256);
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
         this.selectedEndian = new ImInt(this.tagSettings.endianType.ordinal());
         this.selectedCompression = new ImInt(this.tagSettings.compressionType.ordinal());
@@ -29,9 +26,6 @@ public class NewPopup extends Popup {
 
     @Override
     protected void renderContent() {
-        if (ImGui.inputText("Root name", this.rootName)) {
-            this.tagSettings.rootName = this.rootName.get();
-        }
         if (ImGui.combo("##Format", this.selectedFormat, FormatType.NAMES)) {
             this.tagSettings.formatType = FormatType.values()[this.selectedFormat.get()];
         }
@@ -43,7 +37,7 @@ public class NewPopup extends Popup {
         }
 
         ImGui.separator();
-        if (ImGui.button("Create")) {
+        if (ImGui.button("Open")) {
             this.getCallback().onClose(true);
             this.close();
         }
