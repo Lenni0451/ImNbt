@@ -3,7 +3,11 @@ package net.lenni0451.imnbt.ui;
 import imgui.ImFont;
 import imgui.ImGui;
 import net.lenni0451.imnbt.ImGuiImpl;
+import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.nbt.*;
+import net.lenni0451.imnbt.ui.popups.NewPopup;
+import net.lenni0451.imnbt.ui.types.Popup;
+import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
@@ -14,7 +18,9 @@ import java.util.Map;
 public class MainWindow {
 
     private final Map<NbtType, TagRenderer> nbtRenderer = new EnumMap<>(NbtType.class);
-    private INbtTag nbt;
+    private final TagSettings tagSettings = new TagSettings();
+    private Popup popup = null;
+    private INbtTag nbt = null;
 
     public MainWindow() {
         this.nbtRenderer.put(NbtType.BYTE, new ByteTagRenderer());
@@ -29,26 +35,6 @@ public class MainWindow {
         this.nbtRenderer.put(NbtType.COMPOUND, new CompoundTagRenderer());
         this.nbtRenderer.put(NbtType.INT_ARRAY, new IntArrayTagRenderer());
         this.nbtRenderer.put(NbtType.LONG_ARRAY, new LongArrayTagRenderer());
-
-        CompoundTag tag = new CompoundTag();
-        tag.addByte("byte", (byte) 12);
-        tag.addShort("short", (short) 123);
-        tag.addInt("int", 1234);
-        tag.addLong("long", 12345L);
-        tag.addFloat("float", 123.456F);
-        tag.addDouble("double", 123.456);
-        tag.addByteArray("byteArray", new byte[]{1, 2, 3, 4, 5});
-        tag.addString("string", "Hello World");
-        tag.addList("list", 1, 2, 3, 4, 5);
-        {
-            CompoundTag subTag = new CompoundTag();
-            subTag.addString("subString", "Hello World");
-            tag.addCompound("compound", subTag);
-        }
-        tag.addIntArray("intArray", 1, 2, 3, 4, 5);
-        tag.addLongArray("longArray", 1L, 2L, 3L, 4L, 5L);
-
-        this.nbt = tag;
     }
 
     public void render() {
@@ -59,6 +45,12 @@ public class MainWindow {
                 }
                 if (ImGui.menuItem("Save")) {
 
+                }
+                if (ImGui.menuItem("New")) {
+                    this.popup = new NewPopup(this.tagSettings, success -> {
+                        if (success) this.nbt = new CompoundTag();
+                        this.popup = null;
+                    });
                 }
                 ImGui.separator();
                 if (ImGui.menuItem("Exit")) {
@@ -83,7 +75,12 @@ public class MainWindow {
             ImGui.endMenuBar();
         }
 
-        this.renderNbt("Test", this.nbt);
+        if (this.nbt == null) ImGui.text("No NBT loaded");
+        else this.renderNbt(this.tagSettings.rootName, this.nbt);
+        if (this.popup != null) {
+            this.popup.open();
+            this.popup.render();
+        }
     }
 
     public void renderNbt(final String name, final INbtTag tag) {

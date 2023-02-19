@@ -17,7 +17,7 @@ public class ImGuiImpl extends Application {
 
 
     private final ImFont[] fonts = new ImFont[5];
-    private int usedFont = 2;
+    private int usedFont = 3;
 
     public final MainWindow mainWindow = new MainWindow();
 

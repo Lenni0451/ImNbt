@@ -1,12 +1,14 @@
-package net.lenni0451.imnbt.ui;
+package net.lenni0451.imnbt.ui.types;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
+import javax.annotation.Nonnull;
+
 public abstract class TagRenderer {
 
-    public abstract void render(final String name, final INbtTag tag);
+    public abstract void render(final String name, @Nonnull final INbtTag tag);
 
     protected void renderBranch(final String text, final int hashCode, final Runnable renderChildren) {
         if (ImGui.treeNodeEx(text + "##" + hashCode, ImGuiTreeNodeFlags.SpanAvailWidth)) {
