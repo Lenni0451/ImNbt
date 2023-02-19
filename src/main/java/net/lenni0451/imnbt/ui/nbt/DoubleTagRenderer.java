@@ -6,7 +6,7 @@ import net.lenni0451.mcstructs.nbt.tags.DoubleTag;
 
 import java.text.DecimalFormat;
 
-public class DoubleTagRenderer implements TagRenderer {
+public class DoubleTagRenderer extends TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
 

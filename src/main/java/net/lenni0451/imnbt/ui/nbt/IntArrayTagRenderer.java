@@ -6,7 +6,7 @@ import net.lenni0451.mcstructs.nbt.tags.IntArrayTag;
 
 import java.text.DecimalFormat;
 
-public class IntArrayTagRenderer implements TagRenderer {
+public class IntArrayTagRenderer extends TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
 

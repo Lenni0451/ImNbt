@@ -7,7 +7,7 @@ import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
 import java.util.Map;
 
-public class CompoundTagRenderer implements TagRenderer {
+public class CompoundTagRenderer extends TagRenderer {
 
     @Override
     public void render(String name, INbtTag tag) {

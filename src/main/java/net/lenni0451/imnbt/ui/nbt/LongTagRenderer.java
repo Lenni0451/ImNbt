@@ -6,7 +6,7 @@ import net.lenni0451.mcstructs.nbt.tags.LongTag;
 
 import java.text.DecimalFormat;
 
-public class LongTagRenderer implements TagRenderer {
+public class LongTagRenderer extends TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
 

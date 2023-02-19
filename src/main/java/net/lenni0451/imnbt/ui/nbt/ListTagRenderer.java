@@ -5,7 +5,7 @@ import net.lenni0451.imnbt.ui.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
-public class ListTagRenderer implements TagRenderer {
+public class ListTagRenderer extends TagRenderer {
 
     @Override
     public void render(String name, INbtTag tag) {
