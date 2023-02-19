@@ -5,6 +5,7 @@ import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
+import net.lenni0451.imnbt.ui.MainWindow;
 
 public class ImGuiImpl extends Application {
 
@@ -17,6 +18,8 @@ public class ImGuiImpl extends Application {
 
     private final ImFont[] fonts = new ImFont[5];
     private int usedFont = 2;
+
+    public final MainWindow mainWindow = new MainWindow();
 
     public ImGuiImpl() {
         instance = this;
@@ -48,7 +51,7 @@ public class ImGuiImpl extends Application {
         ImFontConfig imFontConfig = new ImFontConfig();
         imFontConfig.setPixelSnapH(true);
         try {
-            byte[] segoeui = ImGuiImpl.class.getClassLoader().getResourceAsStream("segoeui.ttf").readAllBytes();
+            byte[] segoeui = ImGuiImpl.class.getClassLoader().getResourceAsStream("fonts/segoeui.ttf").readAllBytes();
             imFontAtlas.addFontDefault(imFontConfig);
             for (int i = 0; i < this.fonts.length; i++) {
                 int size = 15 + (5 * i);
@@ -77,7 +80,7 @@ public class ImGuiImpl extends Application {
         ImGui.setNextWindowPos(0, 0);
         ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
         ImGui.begin("MainWindow", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
-        MainWindow.render();
+        this.mainWindow.render();
         ImGui.end();
 
         ImGui.popFont();

@@ -1,0 +1,19 @@
+package net.lenni0451.imnbt.ui.nbt;
+
+import net.lenni0451.imnbt.ui.TagRenderer;
+import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.tags.ShortTag;
+
+import java.text.DecimalFormat;
+
+public class ShortTagRenderer implements TagRenderer {
+
+    private final DecimalFormat format = new DecimalFormat();
+
+    @Override
+    public void render(String name, INbtTag tag) {
+        ShortTag shortTag = (ShortTag) tag;
+        this.renderLeaf(name + ": " + this.format.format(shortTag.getValue()), tag.hashCode());
+    }
+
+}
