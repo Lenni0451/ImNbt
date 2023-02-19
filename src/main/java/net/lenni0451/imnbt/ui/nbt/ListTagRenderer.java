@@ -7,7 +7,7 @@ import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
 import javax.annotation.Nonnull;
 
-public class ListTagRenderer extends TagRenderer {
+public class ListTagRenderer implements TagRenderer {
 
     @Override
     public void render(String name, @Nonnull INbtTag tag) {
