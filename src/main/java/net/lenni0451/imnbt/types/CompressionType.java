@@ -29,12 +29,12 @@ public enum CompressionType {
         this.outputWrapper = outputWrapper;
     }
 
-    public ThrowingFunction<InputStream, InputStream> getInputWrapper() {
-        return this.inputWrapper;
+    public InputStream wrap(final InputStream is) throws Throwable {
+        return this.inputWrapper.apply(is);
     }
 
-    public ThrowingFunction<OutputStream, OutputStream> getOutputWrapper() {
-        return this.outputWrapper;
+    public OutputStream wrap(final OutputStream os) throws Throwable {
+        return this.outputWrapper.apply(os);
     }
 
 }

@@ -11,19 +11,24 @@ import net.lenni0451.imnbt.ui.popups.OpenPopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
+import net.lenni0451.imnbt.utils.IOUtils;
 import net.lenni0451.imnbt.utils.UnlimitedReadTracker;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.EnumMap;
 import java.util.Map;
 
 public class MainWindow {
+
+    private static final String ERROR_REQUIRE_TAG = "You need to create or open a Nbt Tag first.";
+    private static final String SUCCESS_OPEN = "Successfully opened the Nbt Tag.";
+    private static final String SUCCESS_SAVE = "Successfully saved the Nbt Tag.";
+    private static final String ERROR_OPEN = "An unknown error occurred while opening the Nbt Tag.";
+    private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
+
 
     private final Popup.PopupCallback VOID_CALLBACK = success -> this.popup = null;
     private final Map<NbtType, TagRenderer> tagRenderer = new EnumMap<>(NbtType.class);
@@ -50,41 +55,10 @@ public class MainWindow {
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
                 if (ImGui.menuItem("Open")) {
-                    String response = FileDialogs.open("Open Nbt Tag");
-                    if (response != null) {
-                        this.popup = new OpenPopup(this.tagSettings, success -> {
-                            if (success) {
-                                try (FileInputStream fis = new FileInputStream(response)) {
-                                    DataInput dataInput = this.tagSettings.endianType.getInputWrapper().apply(this.tagSettings.compressionType.getInputWrapper().apply(fis));
-                                    this.tagSettings.rootName = "";
-                                    this.tag = this.tagSettings.formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
-                                    this.popup = new MessagePopup("Success", "Successfully opened the NBT tag.", VOID_CALLBACK);
-                                } catch (Throwable t) {
-                                    t.printStackTrace();
-                                    this.popup = new MessagePopup("Error", "An unknown error occurred whilst opening the tag.", VOID_CALLBACK);
-                                }
-                            } else {
-                                this.popup = null;
-                            }
-                        });
-                    }
+                    this.open();
                 }
                 if (ImGui.menuItem("Save")) {
-                    if (this.tag == null) {
-                        this.popup = new MessagePopup("Error", "You first to need to open or create a tag.", VOID_CALLBACK);
-                    } else {
-                        String response = FileDialogs.save("Save Nbt Tag", null);
-                        if (response != null) {
-                            try (FileOutputStream fos = new FileOutputStream(response)) {
-                                DataOutput dataOutput = this.tagSettings.endianType.getOutputWrapper().apply(this.tagSettings.compressionType.getOutputWrapper().apply(fos));
-                                this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
-                                this.popup = new MessagePopup("Success", "Successfully saved the NBT tag.", VOID_CALLBACK);
-                            } catch (Throwable t) {
-                                t.printStackTrace();
-                                this.popup = new MessagePopup("Error", "An unknown error occurred whilst saving the tag.", VOID_CALLBACK);
-                            }
-                        }
-                    }
+                    this.save();
                 }
                 if (ImGui.menuItem("New")) {
                     this.popup = new NewPopup(this.tagSettings, success -> {
@@ -129,6 +103,54 @@ public class MainWindow {
             ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
         } else {
             renderer.render(name, tag);
+        }
+    }
+
+    private void open() {
+        String response = FileDialogs.open("Open Nbt Tag");
+        if (response == null) return;
+
+        byte[] data;
+        try (FileInputStream fis = new FileInputStream(response)) {
+            data = IOUtils.readFully(fis);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            this.popup = new MessagePopup("Error", ERROR_OPEN, VOID_CALLBACK);
+            return;
+        }
+        this.popup = new OpenPopup(data, this.tagSettings, success -> {
+            if (success) {
+                try {
+                    DataInput dataInput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(new ByteArrayInputStream(data)));
+                    this.tagSettings.rootName = "";
+                    this.tag = this.tagSettings.formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
+                    this.popup = new MessagePopup("Success", SUCCESS_OPEN, VOID_CALLBACK);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    this.popup = new MessagePopup("Error", ERROR_OPEN, VOID_CALLBACK);
+                }
+            } else {
+                this.popup = null;
+            }
+        });
+    }
+
+    private void save() {
+        if (this.tag == null) {
+            this.popup = new MessagePopup("Error", ERROR_REQUIRE_TAG, VOID_CALLBACK);
+            return;
+        }
+
+        String response = FileDialogs.save("Save Nbt Tag", null);
+        if (response != null) {
+            try (FileOutputStream fos = new FileOutputStream(response)) {
+                DataOutput dataOutput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(fos));
+                this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
+                this.popup = new MessagePopup("Success", SUCCESS_SAVE, VOID_CALLBACK);
+            } catch (Throwable t) {
+                t.printStackTrace();
+                this.popup = new MessagePopup("Error", ERROR_SAVE, VOID_CALLBACK);
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
+import net.lenni0451.imnbt.utils.FormatDetector;
 
 public class OpenPopup extends Popup {
 
@@ -15,8 +16,13 @@ public class OpenPopup extends Popup {
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
 
-    public OpenPopup(final TagSettings tagSettings, final PopupCallback callback) {
+    public OpenPopup(final byte[] data, final TagSettings tagSettings, final PopupCallback callback) {
         super("Open Nbt Tag", callback);
+
+        FormatDetector detector = new FormatDetector(data);
+        tagSettings.compressionType = detector.getCompressionType();
+        tagSettings.endianType = detector.getEndianType();
+        tagSettings.formatType = detector.getFormatType();
 
         this.tagSettings = tagSettings;
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());

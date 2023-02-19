@@ -29,12 +29,12 @@ public enum EndianType {
         this.outputWrapper = outputWrapper;
     }
 
-    public ThrowingFunction<InputStream, DataInput> getInputWrapper() {
-        return this.inputWrapper;
+    public DataInput wrap(final InputStream is) throws Throwable {
+        return this.inputWrapper.apply(is);
     }
 
-    public ThrowingFunction<OutputStream, DataOutput> getOutputWrapper() {
-        return this.outputWrapper;
+    public DataOutput wrap(final OutputStream os) throws Throwable {
+        return this.outputWrapper.apply(os);
     }
 
 }
