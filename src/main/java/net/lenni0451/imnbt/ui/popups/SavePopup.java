@@ -9,7 +9,7 @@ import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
 
-public class NewPopup extends Popup {
+public class SavePopup extends Popup {
 
     private final TagSettings tagSettings;
     private final ImString rootName;
@@ -17,8 +17,8 @@ public class NewPopup extends Popup {
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
 
-    public NewPopup(final TagSettings tagSettings, final PopupCallback callback) {
-        super("Create new Nbt Tag", callback);
+    public SavePopup(final TagSettings tagSettings, final PopupCallback callback) {
+        super("Save Nbt Tag", callback);
 
         this.tagSettings = tagSettings;
         this.rootName = new ImString(this.tagSettings.rootName, 256);
@@ -43,7 +43,7 @@ public class NewPopup extends Popup {
         }
 
         ImGui.separator();
-        if (ImGui.button("Create")) {
+        if (ImGui.button("Save")) {
             this.getCallback().onClose(true);
             this.close();
         }

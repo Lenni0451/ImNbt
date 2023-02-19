@@ -6,8 +6,8 @@ import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.nbt.*;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
-import net.lenni0451.imnbt.ui.popups.NewPopup;
 import net.lenni0451.imnbt.ui.popups.OpenPopup;
+import net.lenni0451.imnbt.ui.popups.SavePopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
@@ -15,7 +15,6 @@ import net.lenni0451.imnbt.utils.IOUtils;
 import net.lenni0451.imnbt.utils.UnlimitedReadTracker;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
-import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
 import javax.annotation.Nonnull;
 import java.io.*;
@@ -34,6 +33,7 @@ public class MainWindow {
     private final Popup.PopupCallback VOID_CALLBACK = success -> this.popup = null;
     private final Map<NbtType, TagRenderer> tagRenderer = new EnumMap<>(NbtType.class);
     private final TagSettings tagSettings = new TagSettings();
+    private String previousPath = null;
     private Popup popup = null;
     private INbtTag tag = null;
 
@@ -66,10 +66,7 @@ public class MainWindow {
                     this.save();
                 }
                 if (ImGui.menuItem("New")) {
-                    this.popup = new NewPopup(this.tagSettings, success -> {
-                        if (success) this.tag = new CompoundTag();
-                        this.popup = null;
-                    });
+
                 }
                 ImGui.separator();
                 if (ImGui.menuItem("Exit")) {
@@ -129,6 +126,7 @@ public class MainWindow {
                     DataInput dataInput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(new ByteArrayInputStream(data)));
                     this.tagSettings.rootName = "";
                     this.tag = this.tagSettings.formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
+                    this.previousPath = response;
                     this.popup = new MessagePopup("Success", SUCCESS_OPEN, VOID_CALLBACK);
                 } catch (Throwable t) {
                     t.printStackTrace();
@@ -146,16 +144,22 @@ public class MainWindow {
             return;
         }
 
-        String response = FileDialogs.save("Save Nbt Tag", null);
+        String response = FileDialogs.save("Save Nbt Tag", this.previousPath);
         if (response != null) {
-            try (FileOutputStream fos = new FileOutputStream(response)) {
-                DataOutput dataOutput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(fos));
-                this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
-                this.popup = new MessagePopup("Success", SUCCESS_SAVE, VOID_CALLBACK);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                this.popup = new MessagePopup("Error", ERROR_SAVE, VOID_CALLBACK);
-            }
+            this.popup = new SavePopup(this.tagSettings, success -> {
+                if (success) {
+                    try (FileOutputStream fos = new FileOutputStream(response)) {
+                        DataOutput dataOutput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(fos));
+                        this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
+                        this.popup = new MessagePopup("Success", SUCCESS_SAVE, VOID_CALLBACK);
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                        this.popup = new MessagePopup("Error", ERROR_SAVE, VOID_CALLBACK);
+                    }
+                } else {
+                    this.popup = null;
+                }
+            });
         }
     }
 
