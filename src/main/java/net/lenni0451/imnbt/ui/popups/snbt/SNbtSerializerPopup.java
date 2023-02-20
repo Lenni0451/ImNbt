@@ -36,6 +36,10 @@ public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
             }
         }
         ImGui.sameLine();
+        if (ImGui.button("Copy")) {
+            ImGui.setClipboardText(this.output.get());
+        }
+        ImGui.sameLine();
         if (ImGui.button("Close")) {
             this.getCallback().onClose(this, false);
             this.close();
