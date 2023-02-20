@@ -81,7 +81,7 @@ public class MainWindow {
                     for (NbtType value : NbtType.values()) {
                         if (NbtType.END.equals(value)) continue;
                         if (ImGui.menuItem(StringUtils.format(value))) {
-                            this.popup = new EditPopup("New " + StringUtils.format(value) + " Tag", "", value.newInstance(), (p, success) -> {
+                            this.popup = new EditPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
                                 if (success) {
                                     EditPopup editPopup = (EditPopup) this.popup;
                                     this.tagSettings.rootName = editPopup.getName();

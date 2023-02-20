@@ -9,13 +9,15 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 
 public class EditPopup extends Popup<EditPopup> {
 
+    private final String okText;
     private final ImString name = new ImString(256);
     private final INbtTag tag;
     private final TagRenderer tagRenderer;
 
-    public EditPopup(final String title, final String name, final INbtTag tag, final PopupCallback<EditPopup> callback) {
+    public EditPopup(final String title, final String okText, final String name, final INbtTag tag, final PopupCallback<EditPopup> callback) {
         super(title, callback);
 
+        this.okText = okText;
         this.name.set(name);
         this.tag = tag.copy();
         this.tagRenderer = ImGuiImpl.getInstance().getMainWindow().getTagRenderer(tag.getNbtType());
@@ -35,7 +37,7 @@ public class EditPopup extends Popup<EditPopup> {
         this.tagRenderer.renderValueEditor(this.tag);
 
         ImGui.separator();
-        if (ImGui.button("Save")) {
+        if (ImGui.button(this.okText)) {
             this.getCallback().onClose(this, true);
             this.close();
         }
