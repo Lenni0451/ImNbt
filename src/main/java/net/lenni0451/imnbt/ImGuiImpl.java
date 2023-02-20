@@ -55,7 +55,7 @@ public class ImGuiImpl extends Application {
         ImFontConfig imFontConfig = new ImFontConfig();
         imFontConfig.setPixelSnapH(true);
         try {
-            byte[] segoeui = ImGuiImpl.class.getClassLoader().getResourceAsStream("fonts/segoeui.ttf").readAllBytes();
+            byte[] segoeui = ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/segoeui.ttf").readAllBytes();
             imFontAtlas.addFontDefault(imFontConfig);
             for (int i = 0; i < this.fonts.length; i++) {
                 int size = 15 + (5 * i);
