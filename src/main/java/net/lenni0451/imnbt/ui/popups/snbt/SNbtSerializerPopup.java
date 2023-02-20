@@ -11,30 +11,26 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import static net.lenni0451.imnbt.utils.SNbtUtils.SERIALIZERS;
 import static net.lenni0451.imnbt.utils.SNbtUtils.SERIALIZER_NAMES;
 
-public class SNbtParserPopup extends Popup<SNbtParserPopup> {
+public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
 
-    private final ImString input = new ImString(32767);
+    private final ImString output = new ImString(32767);
     private final ImInt selectedVersion = new ImInt(SERIALIZER_NAMES.length - 1);
-    private INbtTag parsedTag;
+    private final INbtTag tag;
 
-    public SNbtParserPopup(final PopupCallback<SNbtParserPopup> callback) {
-        super("SNbt Parser", callback);
-    }
+    public SNbtSerializerPopup(final INbtTag tag, final PopupCallback<SNbtSerializerPopup> callback) {
+        super("SNbt Serializer", callback);
 
-    public INbtTag getParsedTag() {
-        return this.parsedTag;
+        this.tag = tag;
     }
 
     @Override
     protected void renderContent() {
         ImGui.combo("Version", this.selectedVersion, SERIALIZER_NAMES);
-        ImGui.inputText("Input", this.input);
+        ImGui.inputText("Output", this.output);
 
-        if (ImGui.button("Parse")) {
-            this.close();
+        if (ImGui.button("Serialize")) {
             try {
-                this.parsedTag = SERIALIZERS.get("V" + SERIALIZER_NAMES[this.selectedVersion.get()].replace('.', '_')).deserialize(this.input.get());
-                this.getCallback().onClose(this, true);
+                this.output.set(SERIALIZERS.get("V" + SERIALIZER_NAMES[this.selectedVersion.get()].replace('.', '_')).serialize(this.tag));
             } catch (Throwable t) {
                 ImGuiImpl.getInstance().getMainWindow().openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> ImGuiImpl.getInstance().getMainWindow().openPopup(this)));
             }

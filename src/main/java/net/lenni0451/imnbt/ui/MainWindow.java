@@ -10,6 +10,7 @@ import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.OpenFilePopup;
 import net.lenni0451.imnbt.ui.popups.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
+import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
@@ -108,6 +109,10 @@ public class MainWindow {
                         if (success) this.tag = p.getParsedTag();
                         this.popup = null;
                     });
+                }
+                if (ImGui.menuItem("SNbt Serializer")) {
+                    if (this.tag == null) this.popup = new MessagePopup("Error", ERROR_REQUIRE_TAG, VOID_CALLBACK);
+                    else this.popup = new SNbtSerializerPopup(this.tag, VOID_CALLBACK);
                 }
 
                 ImGui.endMenu();
