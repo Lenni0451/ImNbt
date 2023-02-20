@@ -41,8 +41,8 @@ public class ContextMenu {
     public <T extends INbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
         this.editAction = () -> ImGuiImpl.getInstance().getMainWindow().openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
             if (success) {
-                nameEditConsumer.accept(p.getName());
                 tagConsumer.accept((T) p.getTag());
+                nameEditConsumer.accept(p.getName());
             }
             ImGuiImpl.getInstance().getMainWindow().closePopup();
         }));
