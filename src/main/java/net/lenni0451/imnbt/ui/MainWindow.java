@@ -157,6 +157,7 @@ public class MainWindow {
                     this.tagSettings.rootName = "";
                     this.tag = this.tagSettings.formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
                     this.previousPath = response;
+                    this.popup = null;
                 } catch (Throwable t) {
                     t.printStackTrace();
                     this.popup = new MessagePopup("Error", ERROR_OPEN, VOID_CALLBACK);
