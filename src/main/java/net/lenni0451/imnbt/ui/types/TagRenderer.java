@@ -14,17 +14,21 @@ public interface TagRenderer {
     void renderValueEditor(final INbtTag tag);
 
     default void renderBranch(final String text, final int hashCode, final Runnable renderChildren) {
-        if (ImGui.treeNodeEx(text + "##" + hashCode, ImGuiTreeNodeFlags.SpanAvailWidth)) {
+        ImGui.pushID(hashCode);
+        if (ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.SpanAvailWidth)) {
             renderChildren.run();
             ImGui.treePop();
         }
+        ImGui.popID();
     }
 
     default void renderLeaf(final String text, final int hashCode, final Runnable renderContextMenu) {
-        if (ImGui.treeNodeEx(text + "##" + hashCode, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth)) {
+        ImGui.pushID(hashCode);
+        if (ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth)) {
             renderContextMenu.run();
             ImGui.treePop();
         }
+        ImGui.popID();
     }
 
 }
