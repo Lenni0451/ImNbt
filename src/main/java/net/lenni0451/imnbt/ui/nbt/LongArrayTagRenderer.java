@@ -18,7 +18,7 @@ public class LongArrayTagRenderer implements TagRenderer {
         LongArrayTag longArrayTag = (LongArrayTag) tag;
         this.renderBranch(name + " (" + longArrayTag.getLength() + ")", tag.hashCode(), () -> {
             ContextMenu.start().edit(name, longArrayTag, nameEditConsumer, t -> {}).render();
-
+        }, () -> {
             for (int i = 0; i < longArrayTag.getLength(); i++) {
                 this.renderLeaf(i + ": " + this.format.format(longArrayTag.get(i)) + "##" + i, tag.hashCode(), () -> {
                     //TODO: Edit value

@@ -59,7 +59,7 @@ public class ContextMenu {
     }
 
     public void render() {
-        if (ImGui.beginPopupContextWindow()) {
+        if (ImGui.beginPopupContextItem()) {
             if (!this.newTypes.isEmpty()) {
                 if (ImGui.beginMenu("New")) {
                     for (NbtType newType : this.newTypes) {

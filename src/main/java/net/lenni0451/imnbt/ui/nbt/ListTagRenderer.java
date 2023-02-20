@@ -19,7 +19,7 @@ public class ListTagRenderer implements TagRenderer {
             if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> listTag.add(newTag));
             else contextMenu.newType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
             contextMenu.render();
-
+        }, () -> {
             for (int i = 0; i < listTag.getValue().size(); i++) {
                 INbtTag listEntry = listTag.getValue().get(i);
                 ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> {}, String.valueOf(i), listEntry);

@@ -18,7 +18,7 @@ public class CompoundTagRenderer implements TagRenderer {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name + " (" + compoundTag.size() + ")", compoundTag.hashCode(), () -> {
             ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).render();
-
+        }, () -> {
             Map<INbtTag, String> changedNames = new HashMap<>();
             for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
                 ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> changedNames.put(entry.getValue(), newName), entry.getKey(), entry.getValue());

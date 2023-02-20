@@ -13,9 +13,11 @@ public interface TagRenderer {
 
     void renderValueEditor(final INbtTag tag);
 
-    default void renderBranch(final String text, final int hashCode, final Runnable renderChildren) {
+    default void renderBranch(final String text, final int hashCode, final Runnable renderContextMenu, final Runnable renderChildren) {
         ImGui.pushID(hashCode);
-        if (ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.SpanAvailWidth)) {
+        boolean open = ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.SpanAvailWidth);
+        renderContextMenu.run();
+        if (open) {
             renderChildren.run();
             ImGui.treePop();
         }
@@ -24,10 +26,9 @@ public interface TagRenderer {
 
     default void renderLeaf(final String text, final int hashCode, final Runnable renderContextMenu) {
         ImGui.pushID(hashCode);
-        if (ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            renderContextMenu.run();
-            ImGui.treePop();
-        }
+        boolean open = ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth);
+        renderContextMenu.run();
+        if (open) ImGui.treePop();
         ImGui.popID();
     }
 

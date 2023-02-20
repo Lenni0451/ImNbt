@@ -18,7 +18,7 @@ public class IntArrayTagRenderer implements TagRenderer {
         IntArrayTag intArrayTag = (IntArrayTag) tag;
         this.renderBranch(name + " (" + intArrayTag.getLength() + ")", tag.hashCode(), () -> {
             ContextMenu.start().edit(name, intArrayTag, nameEditConsumer, t -> {}).render();
-
+        }, () -> {
             for (int i = 0; i < intArrayTag.getLength(); i++) {
                 this.renderLeaf(i + ": " + this.format.format(intArrayTag.get(i)) + "##" + i, tag.hashCode(), () -> {
                     //TODO: Edit value
