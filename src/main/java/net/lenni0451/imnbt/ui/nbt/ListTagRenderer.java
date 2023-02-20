@@ -7,8 +7,6 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class ListTagRenderer implements TagRenderer {
@@ -22,12 +20,22 @@ public class ListTagRenderer implements TagRenderer {
             else contextMenu.singleType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
             contextMenu.delete(deleteListener).render();
         }, () -> {
-            List<INbtTag> removed = new ArrayList<>();
-            for (int i = 0; i < listTag.getValue().size(); i++) {
-                INbtTag listEntry = listTag.getValue().get(i);
-                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> {}, () -> removed.add(listEntry), String.valueOf(i), listEntry);
+            int[] removed = new int[]{-1};
+            for (int i = 0; i < listTag.size(); i++) {
+                final int fi = i;
+                INbtTag listEntry = listTag.get(i);
+                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> {
+                    //This gets executed multiple frames after the user clicked save in the popup
+                    try {
+                        int newIndex = Integer.parseInt(newName);
+                        if (newIndex < 0 || newIndex >= listTag.size() || newIndex == fi) return;
+                        INbtTag oldTag = listTag.getValue().remove(fi);
+                        listTag.getValue().add(newIndex, oldTag);
+                    } catch (Throwable ignored) {
+                    }
+                }, () -> removed[0] = fi, String.valueOf(i), listEntry);
             }
-            listTag.getValue().removeAll(removed);
+            if (removed[0] != -1) listTag.getValue().remove(removed[0]);
         });
     }
 

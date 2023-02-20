@@ -7,7 +7,6 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -19,13 +18,18 @@ public class CompoundTagRenderer implements TagRenderer {
         this.renderBranch(name + " (" + compoundTag.size() + ")", compoundTag.hashCode(), () -> {
             ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
-            Map<INbtTag, String> changes = new HashMap<>();
+            String[] change = new String[2];
             for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
-                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> changes.put(entry.getValue(), newName), () -> changes.put(entry.getValue(), null), entry.getKey(), entry.getValue());
+                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> {
+                    change[0] = entry.getKey();
+                    change[1] = newName;
+                }, () -> {
+                    change[0] = entry.getKey();
+                }, entry.getKey(), entry.getValue());
             }
-            for (Map.Entry<INbtTag, String> entry : changes.entrySet()) {
-                compoundTag.getValue().values().remove(entry.getKey());
-                if (entry.getValue() != null) compoundTag.getValue().put(entry.getValue(), entry.getKey());
+            if (change[0] != null) {
+                INbtTag oldValue = compoundTag.remove(change[0]);
+                if (change[1] != null) compoundTag.add(change[1], oldValue);
             }
         });
     }
