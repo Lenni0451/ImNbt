@@ -119,19 +119,19 @@ public class MainWindow {
         }
 
         if (this.tag == null) ImGui.text("No NBT loaded");
-        else this.renderNbt(newName -> this.tagSettings.rootName = newName, this.tagSettings.rootName, this.tag);
+        else this.renderNbt(newName -> this.tagSettings.rootName = newName, () -> this.tag = null, this.tagSettings.rootName, this.tag);
         if (this.popup != null) {
             this.popup.open();
             this.popup.render();
         }
     }
 
-    public void renderNbt(final Consumer<String> nameEditConsumer, final String name, final INbtTag tag) {
+    public void renderNbt(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final String name, final INbtTag tag) {
         TagRenderer renderer = this.tagRenderer.get(tag.getNbtType());
         if (renderer == null) {
             ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
         } else {
-            renderer.render(nameEditConsumer, name.isEmpty() ? "<empty>" : name, tag);
+            renderer.render(nameEditConsumer, deleteListener, name.isEmpty() ? "<empty>" : name, tag);
         }
     }
 

@@ -15,10 +15,10 @@ public class ShortTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
         ShortTag shortTag = (ShortTag) tag;
         this.renderLeaf(name + ": " + this.format.format(shortTag.getValue()), tag.hashCode(), () -> {
-            ContextMenu.start().edit(name, shortTag, nameEditConsumer, t -> shortTag.setValue(t.getValue())).render();
+            ContextMenu.start().edit(name, shortTag, nameEditConsumer, t -> shortTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }
 

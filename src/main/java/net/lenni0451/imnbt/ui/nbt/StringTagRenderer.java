@@ -15,10 +15,10 @@ public class StringTagRenderer implements TagRenderer {
     private final ImString valueEditor = new ImString(32767);
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name + ": " + stringTag.getValue(), tag.hashCode(), () -> {
-            ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> stringTag.setValue(t.getValue())).render();
+            ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> stringTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }
 

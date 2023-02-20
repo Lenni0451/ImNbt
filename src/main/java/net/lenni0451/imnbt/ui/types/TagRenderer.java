@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public interface TagRenderer {
 
-    void render(final Consumer<String> nameEditConsumer, final String name, @Nonnull final INbtTag tag);
+    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final String name, @Nonnull final INbtTag tag);
 
     void renderValueEditor(final INbtTag tag);
 

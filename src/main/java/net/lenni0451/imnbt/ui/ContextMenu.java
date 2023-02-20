@@ -23,6 +23,7 @@ public class ContextMenu {
     private final Set<NbtType> newTypes = new HashSet<>();
     private Runnable editAction;
     private BiConsumer<String, INbtTag> newTagAction;
+    private Runnable deleteListener;
 
     public ContextMenu allTypes(final BiConsumer<String, INbtTag> newTagAction) {
         Collections.addAll(this.newTypes, NbtType.values());
@@ -48,6 +49,11 @@ public class ContextMenu {
         return this;
     }
 
+    public ContextMenu delete(final Runnable deleteListener) {
+        this.deleteListener = deleteListener;
+        return this;
+    }
+
     public void render() {
         if (ImGui.beginPopupContextItem()) {
             if (!this.newTypes.isEmpty()) {
@@ -67,6 +73,11 @@ public class ContextMenu {
             if (this.editAction != null) {
                 if (ImGui.menuItem("Edit")) {
                     this.editAction.run();
+                }
+            }
+            if (this.deleteListener != null) {
+                if (ImGui.menuItem("Delete")) {
+                    this.deleteListener.run();
                 }
             }
 

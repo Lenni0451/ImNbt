@@ -15,10 +15,10 @@ public class ByteTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
         ByteTag byteTag = (ByteTag) tag;
         this.renderLeaf(name + ": " + this.format.format(byteTag.getValue()), tag.hashCode(), () -> {
-            ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).render();
+            ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }
 

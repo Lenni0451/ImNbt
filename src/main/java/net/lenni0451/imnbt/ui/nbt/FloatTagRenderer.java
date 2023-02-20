@@ -16,10 +16,10 @@ public class FloatTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
         this.renderLeaf(name + ": " + this.format.format(floatTag.getValue()), tag.hashCode(), () -> {
-            ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> floatTag.setValue(t.getValue())).render();
+            ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> floatTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }
 

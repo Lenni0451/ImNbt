@@ -14,18 +14,18 @@ import java.util.function.Consumer;
 public class CompoundTagRenderer implements TagRenderer {
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name + " (" + compoundTag.size() + ")", compoundTag.hashCode(), () -> {
-            ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).render();
+            ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
-            Map<INbtTag, String> changedNames = new HashMap<>();
+            Map<INbtTag, String> changes = new HashMap<>();
             for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
-                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> changedNames.put(entry.getValue(), newName), entry.getKey(), entry.getValue());
+                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> changes.put(entry.getValue(), newName), () -> changes.put(entry.getValue(), null), entry.getKey(), entry.getValue());
             }
-            for (Map.Entry<INbtTag, String> entry : changedNames.entrySet()) {
+            for (Map.Entry<INbtTag, String> entry : changes.entrySet()) {
                 compoundTag.getValue().values().remove(entry.getKey());
-                compoundTag.getValue().put(entry.getValue(), entry.getKey());
+                if (entry.getValue() != null) compoundTag.getValue().put(entry.getValue(), entry.getKey());
             }
         });
     }
