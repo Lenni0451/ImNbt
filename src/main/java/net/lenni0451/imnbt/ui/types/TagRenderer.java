@@ -13,9 +13,9 @@ public interface TagRenderer {
 
     void renderValueEditor(final INbtTag tag);
 
-    default void renderBranch(final String text, final String path, final Runnable renderContextMenu, final Runnable renderChildren) {
+    default void renderBranch(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Runnable renderChildren) {
         ImGui.pushID(path);
-        boolean open = ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.SpanAvailWidth);
+        boolean open = ImGui.treeNodeEx(text + " " + suffix + "###" + text, ImGuiTreeNodeFlags.SpanAvailWidth);
         renderContextMenu.run();
         if (open) {
             renderChildren.run();

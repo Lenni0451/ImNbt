@@ -16,7 +16,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         ByteArrayTag byteArrayTag = (ByteArrayTag) tag;
-        this.renderBranch(name + " (" + byteArrayTag.getLength() + ")", path, () -> {
+        this.renderBranch(name, "(" + byteArrayTag.getLength() + ")", path, () -> {
             ContextMenu.start().edit(name, byteArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
             for (int i = 0; i < byteArrayTag.getLength(); i++) {

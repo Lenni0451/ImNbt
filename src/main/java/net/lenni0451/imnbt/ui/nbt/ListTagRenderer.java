@@ -14,7 +14,7 @@ public class ListTagRenderer implements TagRenderer {
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
-        this.renderBranch(name + " (" + listTag.getValue().size() + ")", path, () -> {
+        this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
             ContextMenu contextMenu = ContextMenu.start().edit(name, listTag, nameEditConsumer, t -> {});
             if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> listTag.add(newTag));
             else contextMenu.singleType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));

@@ -16,7 +16,7 @@ public class LongArrayTagRenderer implements TagRenderer {
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         LongArrayTag longArrayTag = (LongArrayTag) tag;
-        this.renderBranch(name + " (" + longArrayTag.getLength() + ")", path, () -> {
+        this.renderBranch(name, "(" + longArrayTag.getLength() + ")", path, () -> {
             ContextMenu.start().edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
             for (int i = 0; i < longArrayTag.getLength(); i++) {
