@@ -78,20 +78,7 @@ public class MainWindow {
                     this.save();
                 }
                 if (ImGui.beginMenu("New Root Tag")) {
-                    for (NbtType value : NbtType.values()) {
-                        if (NbtType.END.equals(value)) continue;
-                        if (ImGui.menuItem(StringUtils.format(value))) {
-                            this.popup = new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
-                                if (success) {
-                                    EditTagPopup editTagPopup = (EditTagPopup) this.popup;
-                                    this.tagSettings.rootName = editTagPopup.getName();
-                                    this.tag = editTagPopup.getTag();
-                                }
-                                this.popup = null;
-                            });
-                            break;
-                        }
-                    }
+                    this.newRootTag();
 
                     ImGui.endMenu();
                 }
@@ -187,6 +174,23 @@ public class MainWindow {
                     this.popup = null;
                 }
             });
+        }
+    }
+
+    private void newRootTag() {
+        for (NbtType value : NbtType.values()) {
+            if (NbtType.END.equals(value)) continue;
+            if (ImGui.menuItem(StringUtils.format(value))) {
+                this.popup = new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
+                    if (success) {
+                        EditTagPopup editTagPopup = (EditTagPopup) this.popup;
+                        this.tagSettings.rootName = editTagPopup.getName();
+                        this.tag = editTagPopup.getTag();
+                    }
+                    this.popup = null;
+                });
+                break;
+            }
         }
     }
 
