@@ -9,6 +9,7 @@ import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.OpenFilePopup;
 import net.lenni0451.imnbt.ui.popups.SaveFilePopup;
+import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
@@ -101,6 +102,16 @@ public class MainWindow {
 
                 ImGui.endMenu();
             }
+            if (ImGui.beginMenu("SNbt")) {
+                if (ImGui.menuItem("SNbt Parser")) {
+                    this.popup = new SNbtParserPopup((p, success) -> {
+                        if (success) this.tag = p.getParsedTag();
+                        this.popup = null;
+                    });
+                }
+
+                ImGui.endMenu();
+            }
 
             ImGui.endMenuBar();
         }
@@ -141,7 +152,6 @@ public class MainWindow {
                     this.tagSettings.rootName = "";
                     this.tag = this.tagSettings.formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
                     this.previousPath = response;
-                    this.popup = new MessagePopup("Success", SUCCESS_OPEN, VOID_CALLBACK);
                 } catch (Throwable t) {
                     t.printStackTrace();
                     this.popup = new MessagePopup("Error", ERROR_OPEN, VOID_CALLBACK);
