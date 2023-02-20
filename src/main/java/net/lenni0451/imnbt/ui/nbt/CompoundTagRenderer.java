@@ -18,19 +18,15 @@ public class CompoundTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
             ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
-            String[] change = new String[2];
+            String[] removed = new String[1];
             for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
                 ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> {
-                    change[0] = entry.getKey();
-                    change[1] = newName;
-                }, () -> {
-                    change[0] = entry.getKey();
-                }, path + ">" + name, entry.getKey(), entry.getValue());
+                    //This gets executed multiple frames after the user clicked save in the popup
+                    INbtTag oldTag = compoundTag.remove(entry.getKey());
+                    compoundTag.add(newName, oldTag);
+                }, () -> removed[0] = entry.getKey(), path + ">" + name, entry.getKey(), entry.getValue());
             }
-            if (change[0] != null) {
-                INbtTag oldValue = compoundTag.remove(change[0]);
-                if (change[1] != null) compoundTag.add(change[1], oldValue);
-            }
+            if (removed[0] != null) compoundTag.remove(removed[0]);
         });
     }
 
