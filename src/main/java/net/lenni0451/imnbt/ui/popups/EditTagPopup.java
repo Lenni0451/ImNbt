@@ -7,14 +7,14 @@ import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
-public class EditPopup extends Popup<EditPopup> {
+public class EditTagPopup extends Popup<EditTagPopup> {
 
     private final String okText;
     private final ImString name = new ImString(256);
     private final INbtTag tag;
     private final TagRenderer tagRenderer;
 
-    public EditPopup(final String title, final String okText, final String name, final INbtTag tag, final PopupCallback<EditPopup> callback) {
+    public EditTagPopup(final String title, final String okText, final String name, final INbtTag tag, final PopupCallback<EditTagPopup> callback) {
         super(title, callback);
 
         this.okText = okText;

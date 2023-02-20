@@ -2,26 +2,29 @@ package net.lenni0451.imnbt.ui.popups;
 
 import imgui.ImGui;
 import imgui.type.ImInt;
-import imgui.type.ImString;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
+import net.lenni0451.imnbt.utils.FormatDetector;
 
-public class SavePopup extends Popup<SavePopup> {
+public class OpenFilePopup extends Popup<OpenFilePopup> {
 
     private final TagSettings tagSettings;
-    private final ImString rootName;
     private final ImInt selectedFormat;
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
 
-    public SavePopup(final TagSettings tagSettings, final PopupCallback<SavePopup> callback) {
-        super("Save Nbt Tag", callback);
+    public OpenFilePopup(final byte[] data, final TagSettings tagSettings, final PopupCallback<OpenFilePopup> callback) {
+        super("Open Nbt Tag", callback);
+
+        FormatDetector detector = new FormatDetector(data);
+        tagSettings.compressionType = detector.getCompressionType();
+        tagSettings.endianType = detector.getEndianType();
+        tagSettings.formatType = detector.getFormatType();
 
         this.tagSettings = tagSettings;
-        this.rootName = new ImString(this.tagSettings.rootName, 256);
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
         this.selectedEndian = new ImInt(this.tagSettings.endianType.ordinal());
         this.selectedCompression = new ImInt(this.tagSettings.compressionType.ordinal());
@@ -29,9 +32,6 @@ public class SavePopup extends Popup<SavePopup> {
 
     @Override
     protected void renderContent() {
-        if (ImGui.inputText("Root name", this.rootName)) {
-            this.tagSettings.rootName = this.rootName.get();
-        }
         if (ImGui.combo("##Format", this.selectedFormat, FormatType.NAMES)) {
             this.tagSettings.formatType = FormatType.values()[this.selectedFormat.get()];
         }
@@ -43,7 +43,7 @@ public class SavePopup extends Popup<SavePopup> {
         }
 
         ImGui.separator();
-        if (ImGui.button("Save")) {
+        if (ImGui.button("Open")) {
             this.getCallback().onClose(this, true);
             this.close();
         }

@@ -2,7 +2,7 @@ package net.lenni0451.imnbt.ui;
 
 import imgui.ImGui;
 import net.lenni0451.imnbt.ImGuiImpl;
-import net.lenni0451.imnbt.ui.popups.EditPopup;
+import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -31,7 +31,7 @@ public class ContextMenu {
     }
 
     public <T extends INbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
-        return this.edit(() -> ImGuiImpl.getInstance().getMainWindow().openPopup(new EditPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
+        return this.edit(() -> ImGuiImpl.getInstance().getMainWindow().openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
             if (success) {
                 nameEditConsumer.accept(p.getName());
                 tagConsumer.accept((T) p.getTag());
@@ -64,7 +64,7 @@ public class ContextMenu {
                 if (ImGui.beginMenu("New")) {
                     for (NbtType newType : this.newTypes) {
                         if (ImGui.menuItem(StringUtils.format(newType))) {
-                            ImGuiImpl.getInstance().getMainWindow().openPopup(new EditPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
+                            ImGuiImpl.getInstance().getMainWindow().openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
                                 if (success) this.newTagAction.accept(p.getName(), p.getTag());
                                 ImGuiImpl.getInstance().getMainWindow().closePopup();
                             }));

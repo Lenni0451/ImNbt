@@ -5,10 +5,10 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.nbt.*;
-import net.lenni0451.imnbt.ui.popups.EditPopup;
+import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
-import net.lenni0451.imnbt.ui.popups.OpenPopup;
-import net.lenni0451.imnbt.ui.popups.SavePopup;
+import net.lenni0451.imnbt.ui.popups.OpenFilePopup;
+import net.lenni0451.imnbt.ui.popups.SaveFilePopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
@@ -81,11 +81,11 @@ public class MainWindow {
                     for (NbtType value : NbtType.values()) {
                         if (NbtType.END.equals(value)) continue;
                         if (ImGui.menuItem(StringUtils.format(value))) {
-                            this.popup = new EditPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
+                            this.popup = new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
                                 if (success) {
-                                    EditPopup editPopup = (EditPopup) this.popup;
-                                    this.tagSettings.rootName = editPopup.getName();
-                                    this.tag = editPopup.getTag();
+                                    EditTagPopup editTagPopup = (EditTagPopup) this.popup;
+                                    this.tagSettings.rootName = editTagPopup.getName();
+                                    this.tag = editTagPopup.getTag();
                                 }
                                 this.popup = null;
                             });
@@ -147,7 +147,7 @@ public class MainWindow {
             this.popup = new MessagePopup("Error", ERROR_OPEN, VOID_CALLBACK);
             return;
         }
-        this.popup = new OpenPopup(data, this.tagSettings, (p, success) -> {
+        this.popup = new OpenFilePopup(data, this.tagSettings, (p, success) -> {
             if (success) {
                 try {
                     DataInput dataInput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(new ByteArrayInputStream(data)));
@@ -173,7 +173,7 @@ public class MainWindow {
 
         String response = FileDialogs.save("Save Nbt Tag", this.previousPath);
         if (response != null) {
-            this.popup = new SavePopup(this.tagSettings, (p, success) -> {
+            this.popup = new SaveFilePopup(this.tagSettings, (p, success) -> {
                 if (success) {
                     try (FileOutputStream fos = new FileOutputStream(response)) {
                         DataOutput dataOutput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(fos));
