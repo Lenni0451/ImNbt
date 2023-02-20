@@ -162,10 +162,14 @@ public class MainWindow {
         if (response != null) {
             this.popup = new SaveFilePopup(this.tagSettings, (p, success) -> {
                 if (success) {
-                    try (FileOutputStream fos = new FileOutputStream(response)) {
-                        DataOutput dataOutput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(fos));
-                        this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
-                        this.popup = new MessagePopup("Success", SUCCESS_SAVE, VOID_CALLBACK);
+                    try {
+                        FileOutputStream fos = new FileOutputStream(response);
+                        OutputStream os = this.tagSettings.compressionType.wrap(fos);
+                        try (os) {
+                            DataOutput dataOutput = this.tagSettings.endianType.wrap(os);
+                            this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
+                            this.popup = new MessagePopup("Success", SUCCESS_SAVE, VOID_CALLBACK);
+                        }
                     } catch (Throwable t) {
                         t.printStackTrace();
                         this.popup = new MessagePopup("Error", ERROR_SAVE, VOID_CALLBACK);
