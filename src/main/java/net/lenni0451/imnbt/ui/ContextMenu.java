@@ -8,7 +8,7 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -20,7 +20,7 @@ public class ContextMenu {
     }
 
 
-    private final Set<NbtType> newTypes = new HashSet<>();
+    private final Set<NbtType> newTypes = new LinkedHashSet<>();
     private Runnable editAction;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
