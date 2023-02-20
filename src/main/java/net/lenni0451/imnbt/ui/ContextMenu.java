@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.ui;
 import imgui.ImGui;
 import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
+import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -12,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ContextMenu {
 
@@ -24,6 +26,7 @@ public class ContextMenu {
     private Runnable editAction;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
+    private Supplier<INbtTag> sNbtSerializerListener;
 
     public ContextMenu allTypes(final BiConsumer<String, INbtTag> newTagAction) {
         Collections.addAll(this.newTypes, NbtType.values());
@@ -54,6 +57,11 @@ public class ContextMenu {
         return this;
     }
 
+    public ContextMenu sNbtParser(final Supplier<INbtTag> sNbtSerializerListener) {
+        this.sNbtSerializerListener = sNbtSerializerListener;
+        return this;
+    }
+
     public void render() {
         if (ImGui.beginPopupContextItem()) {
             if (!this.newTypes.isEmpty()) {
@@ -78,6 +86,11 @@ public class ContextMenu {
             if (this.deleteListener != null) {
                 if (ImGui.menuItem("Delete")) {
                     this.deleteListener.run();
+                }
+            }
+            if (this.sNbtSerializerListener != null) {
+                if (ImGui.menuItem("SNbt Serializer")) {
+                    ImGuiImpl.getInstance().getMainWindow().openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), (p, success) -> ImGuiImpl.getInstance().getMainWindow().closePopup()));
                 }
             }
 

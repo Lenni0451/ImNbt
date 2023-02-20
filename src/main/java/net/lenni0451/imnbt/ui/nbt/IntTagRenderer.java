@@ -20,7 +20,7 @@ public class IntTagRenderer implements TagRenderer {
         IntTag intTag = (IntTag) tag;
         this.renderLeaf(name + ": " + this.format.format(intTag.getValue()), path, () -> {
             this.renderIcon(2);
-            ContextMenu.start().edit(name, intTag, nameEditConsumer, t -> intTag.setValue(t.getValue())).delete(deleteListener).render();
+            ContextMenu.start().edit(name, intTag, nameEditConsumer, t -> intTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });
     }
 

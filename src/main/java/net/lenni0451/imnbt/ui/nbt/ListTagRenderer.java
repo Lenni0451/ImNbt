@@ -19,7 +19,7 @@ public class ListTagRenderer implements TagRenderer {
             ContextMenu contextMenu = ContextMenu.start().edit(name, listTag, nameEditConsumer, t -> {});
             if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> listTag.add(newTag));
             else contextMenu.singleType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
-            contextMenu.delete(deleteListener).render();
+            contextMenu.delete(deleteListener).sNbtParser(() -> tag).render();
         }, () -> {
             int[] removed = new int[]{-1};
             for (int i = 0; i < listTag.size(); i++) {

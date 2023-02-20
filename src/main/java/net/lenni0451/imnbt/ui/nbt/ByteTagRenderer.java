@@ -19,7 +19,7 @@ public class ByteTagRenderer implements TagRenderer {
         ByteTag byteTag = (ByteTag) tag;
         this.renderLeaf(name + ": " + this.format.format(byteTag.getValue()), path, () -> {
             this.renderIcon(0);
-            ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).render();
+            ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });
     }
 

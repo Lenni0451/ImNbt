@@ -19,7 +19,7 @@ public class StringTagRenderer implements TagRenderer {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name + ": " + stringTag.getValue(), path, () -> {
             this.renderIcon(7);
-            ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> stringTag.setValue(t.getValue())).delete(deleteListener).render();
+            ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> stringTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });
     }
 

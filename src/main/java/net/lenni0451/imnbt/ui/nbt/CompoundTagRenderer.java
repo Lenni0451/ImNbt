@@ -17,7 +17,7 @@ public class CompoundTagRenderer implements TagRenderer {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
             this.renderIcon(9);
-            ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
+            ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
         }, () -> {
             String[] removed = new String[1];
             for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {

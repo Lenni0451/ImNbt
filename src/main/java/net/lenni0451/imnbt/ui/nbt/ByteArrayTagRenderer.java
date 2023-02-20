@@ -30,7 +30,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
                 }
                 if (index == -1) byteArrayTag.add(((ByteTag) newTag).getValue());
                 else byteArrayTag.setValue(ArrayUtils.insert(byteArrayTag.getValue(), index, ((ByteTag) newTag).getValue()));
-            }).edit(name, byteArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
+            }).edit(name, byteArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
         }, () -> {
             int[] removed = new int[]{-1};
             for (int i = 0; i < byteArrayTag.getLength(); i++) {

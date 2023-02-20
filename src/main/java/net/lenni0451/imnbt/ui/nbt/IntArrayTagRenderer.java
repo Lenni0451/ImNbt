@@ -30,7 +30,7 @@ public class IntArrayTagRenderer implements TagRenderer {
                 }
                 if (index == -1) intArrayTag.add(((IntTag) newTag).getValue());
                 else intArrayTag.setValue(ArrayUtils.insert(intArrayTag.getValue(), index, ((IntTag) newTag).getValue()));
-            }).edit(name, intArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
+            }).edit(name, intArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
         }, () -> {
             int[] removed = new int[]{-1};
             for (int i = 0; i < intArrayTag.getLength(); i++) {

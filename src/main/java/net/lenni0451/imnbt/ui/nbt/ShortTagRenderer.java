@@ -19,7 +19,7 @@ public class ShortTagRenderer implements TagRenderer {
         ShortTag shortTag = (ShortTag) tag;
         this.renderLeaf(name + ": " + this.format.format(shortTag.getValue()), path, () -> {
             this.renderIcon(1);
-            ContextMenu.start().edit(name, shortTag, nameEditConsumer, t -> shortTag.setValue(t.getValue())).delete(deleteListener).render();
+            ContextMenu.start().edit(name, shortTag, nameEditConsumer, t -> shortTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });
     }
 

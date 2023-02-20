@@ -20,7 +20,7 @@ public class DoubleTagRenderer implements TagRenderer {
         DoubleTag doubleTag = (DoubleTag) tag;
         this.renderLeaf(name + ": " + this.format.format(doubleTag.getValue()), path, () -> {
             this.renderIcon(5);
-            ContextMenu.start().edit(name, doubleTag, nameEditConsumer, t -> doubleTag.setValue(t.getValue())).delete(deleteListener).render();
+            ContextMenu.start().edit(name, doubleTag, nameEditConsumer, t -> doubleTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });
     }
 

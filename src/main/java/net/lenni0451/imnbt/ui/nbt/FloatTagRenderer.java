@@ -20,7 +20,7 @@ public class FloatTagRenderer implements TagRenderer {
         FloatTag floatTag = (FloatTag) tag;
         this.renderLeaf(name + ": " + this.format.format(floatTag.getValue()), path, () -> {
             this.renderIcon(4);
-            ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> floatTag.setValue(t.getValue())).delete(deleteListener).render();
+            ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> floatTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });
     }
 
