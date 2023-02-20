@@ -20,6 +20,7 @@ public class IntArrayTagRenderer implements TagRenderer {
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         IntArrayTag intArrayTag = (IntArrayTag) tag;
         this.renderBranch(name, "(" + intArrayTag.getLength() + ")", path, () -> {
+            this.renderIcon(10);
             ContextMenu.start().singleType(NbtType.INT, (newName, newTag) -> {
                 intArrayTag.add(((IntTag) newTag).getValue());
             }).edit(name, intArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();

@@ -18,6 +18,7 @@ public class ByteTagRenderer implements TagRenderer {
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         ByteTag byteTag = (ByteTag) tag;
         this.renderLeaf(name + ": " + this.format.format(byteTag.getValue()), path, () -> {
+            this.renderIcon(0);
             ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }

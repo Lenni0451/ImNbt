@@ -16,6 +16,7 @@ public class CompoundTagRenderer implements TagRenderer {
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
+            this.renderIcon(9);
             ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
             String[] removed = new String[1];

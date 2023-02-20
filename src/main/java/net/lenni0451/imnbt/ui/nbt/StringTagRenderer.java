@@ -18,6 +18,7 @@ public class StringTagRenderer implements TagRenderer {
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name + ": " + stringTag.getValue(), path, () -> {
+            this.renderIcon(7);
             ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> stringTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }
