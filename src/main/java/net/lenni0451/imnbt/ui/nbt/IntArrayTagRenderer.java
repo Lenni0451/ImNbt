@@ -36,6 +36,7 @@ public class IntArrayTagRenderer implements TagRenderer {
             for (int i = 0; i < intArrayTag.getLength(); i++) {
                 final int fi = i;
                 this.renderLeaf(i + ": " + this.format.format(intArrayTag.get(i)) + "##" + i, path, () -> {
+                    this.renderIcon(2);
                     ContextMenu.start().edit(String.valueOf(fi), new IntTag(intArrayTag.get(fi)), newName -> {
                         //This gets executed multiple frames after the user clicked save in the popup
                         try {

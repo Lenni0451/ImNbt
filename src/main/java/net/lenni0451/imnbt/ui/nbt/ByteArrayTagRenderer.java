@@ -36,6 +36,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
             for (int i = 0; i < byteArrayTag.getLength(); i++) {
                 final int fi = i;
                 this.renderLeaf(i + ": " + this.format.format(byteArrayTag.get(i)) + "##" + i, path, () -> {
+                    this.renderIcon(0);
                     ContextMenu.start().edit(String.valueOf(fi), new ByteTag(byteArrayTag.get(fi)), newName -> {
                         //This gets executed multiple frames after the user clicked save in the popup
                         try {
