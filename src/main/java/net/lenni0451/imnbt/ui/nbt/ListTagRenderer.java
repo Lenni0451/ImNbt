@@ -17,7 +17,7 @@ public class ListTagRenderer implements TagRenderer {
         this.renderBranch(name + " (" + listTag.getValue().size() + ")", tag.hashCode(), () -> {
             ContextMenu contextMenu = ContextMenu.start().edit(name, listTag, nameEditConsumer, t -> {});
             if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> listTag.add(newTag));
-            else contextMenu.newType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
+            else contextMenu.singleType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
             contextMenu.render();
         }, () -> {
             for (int i = 0; i < listTag.getValue().size(); i++) {
