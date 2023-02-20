@@ -22,7 +22,14 @@ public class ByteArrayTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + byteArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(6);
             ContextMenu.start().singleType(NbtType.BYTE, (newName, newTag) -> {
-                byteArrayTag.add(((ByteTag) newTag).getValue());
+                int index = -1;
+                try {
+                    int newIndex = Integer.parseInt(newName);
+                    if (newIndex >= 0 && newIndex <= byteArrayTag.getLength()) index = newIndex;
+                } catch (Throwable ignored) {
+                }
+                if (index == -1) byteArrayTag.add(((ByteTag) newTag).getValue());
+                else byteArrayTag.setValue(ArrayUtils.insert(byteArrayTag.getValue(), index, ((ByteTag) newTag).getValue()));
             }).edit(name, byteArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
             int[] removed = new int[]{-1};

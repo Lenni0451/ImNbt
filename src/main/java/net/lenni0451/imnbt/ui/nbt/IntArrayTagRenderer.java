@@ -22,7 +22,14 @@ public class IntArrayTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + intArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(10);
             ContextMenu.start().singleType(NbtType.INT, (newName, newTag) -> {
-                intArrayTag.add(((IntTag) newTag).getValue());
+                int index = -1;
+                try {
+                    int newIndex = Integer.parseInt(newName);
+                    if (newIndex >= 0 && newIndex <= intArrayTag.getLength()) index = newIndex;
+                } catch (Throwable ignored) {
+                }
+                if (index == -1) intArrayTag.add(((IntTag) newTag).getValue());
+                else intArrayTag.setValue(ArrayUtils.insert(intArrayTag.getValue(), index, ((IntTag) newTag).getValue()));
             }).edit(name, intArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
             int[] removed = new int[]{-1};

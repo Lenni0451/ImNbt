@@ -22,7 +22,14 @@ public class LongArrayTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + longArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(11);
             ContextMenu.start().singleType(NbtType.LONG, (newName, newTag) -> {
-                longArrayTag.add(((LongTag) newTag).getValue());
+                int index = -1;
+                try {
+                    int newIndex = Integer.parseInt(newName);
+                    if (newIndex >= 0 && newIndex <= longArrayTag.getLength()) index = newIndex;
+                } catch (Throwable ignored) {
+                }
+                if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
+                else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
             }).edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
             int[] removed = new int[]{-1};
