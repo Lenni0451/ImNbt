@@ -9,14 +9,14 @@ import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.utils.FormatDetector;
 
-public class OpenPopup extends Popup {
+public class OpenPopup extends Popup<OpenPopup> {
 
     private final TagSettings tagSettings;
     private final ImInt selectedFormat;
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
 
-    public OpenPopup(final byte[] data, final TagSettings tagSettings, final PopupCallback callback) {
+    public OpenPopup(final byte[] data, final TagSettings tagSettings, final PopupCallback<OpenPopup> callback) {
         super("Open Nbt Tag", callback);
 
         FormatDetector detector = new FormatDetector(data);
@@ -44,12 +44,12 @@ public class OpenPopup extends Popup {
 
         ImGui.separator();
         if (ImGui.button("Open")) {
-            this.getCallback().onClose(true);
+            this.getCallback().onClose(this, true);
             this.close();
         }
         ImGui.sameLine();
         if (ImGui.button("Cancel")) {
-            this.getCallback().onClose(false);
+            this.getCallback().onClose(this, false);
             this.close();
         }
     }

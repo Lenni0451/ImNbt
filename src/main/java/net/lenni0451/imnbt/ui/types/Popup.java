@@ -3,13 +3,13 @@ package net.lenni0451.imnbt.ui.types;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 
-public abstract class Popup {
+public abstract class Popup<P extends Popup<P>> {
 
     private final String title;
-    private final PopupCallback callback;
+    private final PopupCallback<P> callback;
     private boolean opened = false;
 
-    public Popup(final String title, final PopupCallback callback) {
+    public Popup(final String title, final PopupCallback<P> callback) {
         this.title = title;
         this.callback = callback;
     }
@@ -18,7 +18,7 @@ public abstract class Popup {
         return this.title;
     }
 
-    public PopupCallback getCallback() {
+    public PopupCallback<P> getCallback() {
         return this.callback;
     }
 
@@ -46,8 +46,8 @@ public abstract class Popup {
 
 
     @FunctionalInterface
-    public interface PopupCallback {
-        void onClose(final boolean success);
+    public interface PopupCallback<P> {
+        void onClose(final P popup, final boolean success);
     }
 
 }

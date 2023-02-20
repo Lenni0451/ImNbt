@@ -22,7 +22,9 @@ import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
+@SuppressWarnings("unchecked")
 public class MainWindow {
 
     private static final String ERROR_REQUIRE_TAG = "You need to create or open a Nbt Tag first.";
@@ -32,11 +34,11 @@ public class MainWindow {
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
 
 
-    private final Popup.PopupCallback VOID_CALLBACK = success -> this.popup = null;
+    private final Popup.PopupCallback VOID_CALLBACK = (p, success) -> this.popup = null;
     private final Map<NbtType, TagRenderer> tagRenderer = new EnumMap<>(NbtType.class);
     private final TagSettings tagSettings = new TagSettings();
     private String previousPath = null;
-    private Popup popup = null;
+    private Popup<?> popup = null;
     private INbtTag tag = null;
 
     public MainWindow() {
@@ -58,7 +60,7 @@ public class MainWindow {
         return this.tagRenderer.get(type);
     }
 
-    public void openPopup(final Popup popup) {
+    public void openPopup(final Popup<?> popup) {
         this.popup = popup;
     }
 
@@ -79,7 +81,7 @@ public class MainWindow {
                     for (NbtType value : NbtType.values()) {
                         if (NbtType.END.equals(value)) continue;
                         if (ImGui.menuItem(StringUtils.format(value))) {
-                            this.popup = new EditPopup("New " + StringUtils.format(value) + " Tag", "", value.newInstance(), success -> {
+                            this.popup = new EditPopup("New " + StringUtils.format(value) + " Tag", "", value.newInstance(), (p, success) -> {
                                 if (success) {
                                     EditPopup editPopup = (EditPopup) this.popup;
                                     this.tagSettings.rootName = editPopup.getName();
@@ -117,19 +119,19 @@ public class MainWindow {
         }
 
         if (this.tag == null) ImGui.text("No NBT loaded");
-        else this.renderNbt(this.tagSettings.rootName.isEmpty() ? "<root>" : this.tagSettings.rootName, this.tag);
+        else this.renderNbt(newName -> this.tagSettings.rootName = newName, this.tagSettings.rootName, this.tag);
         if (this.popup != null) {
             this.popup.open();
             this.popup.render();
         }
     }
 
-    public void renderNbt(final String name, final INbtTag tag) {
+    public void renderNbt(final Consumer<String> nameEditConsumer, final String name, final INbtTag tag) {
         TagRenderer renderer = this.tagRenderer.get(tag.getNbtType());
         if (renderer == null) {
             ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
         } else {
-            renderer.render(name, tag);
+            renderer.render(nameEditConsumer, name.isEmpty() ? "<empty>" : name, tag);
         }
     }
 
@@ -145,7 +147,7 @@ public class MainWindow {
             this.popup = new MessagePopup("Error", ERROR_OPEN, VOID_CALLBACK);
             return;
         }
-        this.popup = new OpenPopup(data, this.tagSettings, success -> {
+        this.popup = new OpenPopup(data, this.tagSettings, (p, success) -> {
             if (success) {
                 try {
                     DataInput dataInput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(new ByteArrayInputStream(data)));
@@ -171,7 +173,7 @@ public class MainWindow {
 
         String response = FileDialogs.save("Save Nbt Tag", this.previousPath);
         if (response != null) {
-            this.popup = new SavePopup(this.tagSettings, success -> {
+            this.popup = new SavePopup(this.tagSettings, (p, success) -> {
                 if (success) {
                     try (FileOutputStream fos = new FileOutputStream(response)) {
                         DataOutput dataOutput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(fos));

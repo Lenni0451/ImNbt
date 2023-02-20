@@ -5,10 +5,11 @@ import imgui.flag.ImGuiTreeNodeFlags;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 public interface TagRenderer {
 
-    void render(final String name, @Nonnull final INbtTag tag);
+    void render(final Consumer<String> nameEditConsumer, final String name, @Nonnull final INbtTag tag);
 
     void renderValueEditor(final INbtTag tag);
 
@@ -19,8 +20,9 @@ public interface TagRenderer {
         }
     }
 
-    default void renderLeaf(final String text, final int hashCode) {
+    default void renderLeaf(final String text, final int hashCode, final Runnable renderContextMenu) {
         if (ImGui.treeNodeEx(text + "##" + hashCode, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth)) {
+            renderContextMenu.run();
             ImGui.treePop();
         }
     }

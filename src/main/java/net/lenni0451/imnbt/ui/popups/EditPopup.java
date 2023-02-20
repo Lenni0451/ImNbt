@@ -7,17 +7,17 @@ import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
-public class EditPopup extends Popup {
+public class EditPopup extends Popup<EditPopup> {
 
     private final ImString name = new ImString(256);
     private final INbtTag tag;
     private final TagRenderer tagRenderer;
 
-    public EditPopup(final String title, final String name, final INbtTag tag, final PopupCallback callback) {
+    public EditPopup(final String title, final String name, final INbtTag tag, final PopupCallback<EditPopup> callback) {
         super(title, callback);
 
         this.name.set(name);
-        this.tag = tag;
+        this.tag = tag.copy();
         this.tagRenderer = ImGuiImpl.getInstance().getMainWindow().getTagRenderer(tag.getNbtType());
     }
 
@@ -36,12 +36,12 @@ public class EditPopup extends Popup {
 
         ImGui.separator();
         if (ImGui.button("Save")) {
-            this.getCallback().onClose(true);
+            this.getCallback().onClose(this, true);
             this.close();
         }
         ImGui.sameLine();
         if (ImGui.button("Cancel")) {
-            this.getCallback().onClose(false);
+            this.getCallback().onClose(this, false);
             this.close();
         }
     }

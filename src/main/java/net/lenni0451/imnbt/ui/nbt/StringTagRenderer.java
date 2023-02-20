@@ -2,20 +2,24 @@ package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
 import imgui.type.ImString;
+import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.StringTag;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 public class StringTagRenderer implements TagRenderer {
 
     private final ImString valueEditor = new ImString(32767);
 
     @Override
-    public void render(String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, String name, @Nonnull INbtTag tag) {
         StringTag stringTag = (StringTag) tag;
-        this.renderLeaf(name + ": " + stringTag.getValue(), tag.hashCode());
+        this.renderLeaf(name + ": " + stringTag.getValue(), tag.hashCode(), () -> {
+            ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> stringTag.setValue(t.getValue())).render();
+        });
     }
 
     @Override
