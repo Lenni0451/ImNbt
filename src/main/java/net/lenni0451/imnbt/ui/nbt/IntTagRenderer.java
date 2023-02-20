@@ -16,9 +16,9 @@ public class IntTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         IntTag intTag = (IntTag) tag;
-        this.renderLeaf(name + ": " + this.format.format(intTag.getValue()), tag.hashCode(), () -> {
+        this.renderLeaf(name + ": " + this.format.format(intTag.getValue()), path, () -> {
             ContextMenu.start().edit(name, intTag, nameEditConsumer, t -> intTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }

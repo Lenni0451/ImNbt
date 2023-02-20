@@ -18,9 +18,9 @@ public class LongTagRenderer implements TagRenderer {
     private final ImString longInput = new ImString(128);
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         LongTag longTag = (LongTag) tag;
-        this.renderLeaf(name + ": " + this.format.format(longTag.getValue()), tag.hashCode(), () -> {
+        this.renderLeaf(name + ": " + this.format.format(longTag.getValue()), path, () -> {
             ContextMenu.start().edit(name, longTag, nameEditConsumer, t -> longTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }

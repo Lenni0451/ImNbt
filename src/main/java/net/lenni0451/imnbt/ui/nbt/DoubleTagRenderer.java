@@ -16,9 +16,9 @@ public class DoubleTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         DoubleTag doubleTag = (DoubleTag) tag;
-        this.renderLeaf(name + ": " + this.format.format(doubleTag.getValue()), tag.hashCode(), () -> {
+        this.renderLeaf(name + ": " + this.format.format(doubleTag.getValue()), path, () -> {
             ContextMenu.start().edit(name, doubleTag, nameEditConsumer, t -> doubleTag.setValue(t.getValue())).delete(deleteListener).render();
         });
     }

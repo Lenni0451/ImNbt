@@ -12,9 +12,9 @@ import java.util.function.Consumer;
 public class ListTagRenderer implements TagRenderer {
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
-        this.renderBranch(name + " (" + listTag.getValue().size() + ")", tag.hashCode(), () -> {
+        this.renderBranch(name + " (" + listTag.getValue().size() + ")", path, () -> {
             ContextMenu contextMenu = ContextMenu.start().edit(name, listTag, nameEditConsumer, t -> {});
             if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> listTag.add(newTag));
             else contextMenu.singleType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
@@ -33,7 +33,7 @@ public class ListTagRenderer implements TagRenderer {
                         listTag.getValue().add(newIndex, oldTag);
                     } catch (Throwable ignored) {
                     }
-                }, () -> removed[0] = fi, String.valueOf(i), listEntry);
+                }, () -> removed[0] = fi, path + ">" + name, String.valueOf(i), listEntry);
             }
             if (removed[0] != -1) listTag.getValue().remove(removed[0]);
         });

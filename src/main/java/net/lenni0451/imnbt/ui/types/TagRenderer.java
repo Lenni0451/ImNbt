@@ -9,12 +9,12 @@ import java.util.function.Consumer;
 
 public interface TagRenderer {
 
-    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final String name, @Nonnull final INbtTag tag);
+    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final String path, final String name, @Nonnull final INbtTag tag);
 
     void renderValueEditor(final INbtTag tag);
 
-    default void renderBranch(final String text, final int hashCode, final Runnable renderContextMenu, final Runnable renderChildren) {
-        ImGui.pushID(hashCode);
+    default void renderBranch(final String text, final String path, final Runnable renderContextMenu, final Runnable renderChildren) {
+        ImGui.pushID(path);
         boolean open = ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.SpanAvailWidth);
         renderContextMenu.run();
         if (open) {
@@ -24,8 +24,8 @@ public interface TagRenderer {
         ImGui.popID();
     }
 
-    default void renderLeaf(final String text, final int hashCode, final Runnable renderContextMenu) {
-        ImGui.pushID(hashCode);
+    default void renderLeaf(final String text, final String path, final Runnable renderContextMenu) {
+        ImGui.pushID(path);
         boolean open = ImGui.treeNodeEx(text, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth);
         renderContextMenu.run();
         if (open) ImGui.treePop();

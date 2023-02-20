@@ -13,9 +13,9 @@ import java.util.function.Consumer;
 public class CompoundTagRenderer implements TagRenderer {
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
-        this.renderBranch(name + " (" + compoundTag.size() + ")", compoundTag.hashCode(), () -> {
+        this.renderBranch(name + " (" + compoundTag.size() + ")", path, () -> {
             ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).render();
         }, () -> {
             String[] change = new String[2];
@@ -25,7 +25,7 @@ public class CompoundTagRenderer implements TagRenderer {
                     change[1] = newName;
                 }, () -> {
                     change[0] = entry.getKey();
-                }, entry.getKey(), entry.getValue());
+                }, path + ">" + name, entry.getKey(), entry.getValue());
             }
             if (change[0] != null) {
                 INbtTag oldValue = compoundTag.remove(change[0]);
