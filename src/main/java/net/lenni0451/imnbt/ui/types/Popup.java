@@ -50,6 +50,10 @@ public abstract class Popup<P extends Popup<P>> {
     public interface PopupCallback<P> {
         Popup.PopupCallback CLOSE = (p, success) -> Main.getInstance().getImGuiImpl().closePopup();
 
+        static <T> PopupCallback<T> close() {
+            return CLOSE;
+        }
+
         void onClose(final P popup, final boolean success);
     }
 

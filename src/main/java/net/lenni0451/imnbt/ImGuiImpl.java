@@ -6,11 +6,14 @@ import imgui.app.Configuration;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.types.Popup;
+import net.lenni0451.imnbt.ui.types.Window;
+import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
 import net.lenni0451.imnbt.utils.ImageUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +22,14 @@ public class ImGuiImpl extends Application {
 
     private int iconsTexture;
     private Popup<?> popup;
+    private Window window;
+
     private final MainWindow mainWindow = new MainWindow();
+    private final AboutWindow aboutWindow = new AboutWindow();
+
+    public ImGuiImpl() {
+        this.window = this.mainWindow;
+    }
 
     public int getIconsTexture() {
         return this.iconsTexture;
@@ -31,6 +41,18 @@ public class ImGuiImpl extends Application {
 
     public void closePopup() {
         this.popup = null;
+    }
+
+    public MainWindow getMainWindow() {
+        return this.mainWindow;
+    }
+
+    public AboutWindow getAboutWindow() {
+        return this.aboutWindow;
+    }
+
+    public void showWindow(@Nonnull final Window window) {
+        this.window = window;
     }
 
     @Override
@@ -103,7 +125,7 @@ public class ImGuiImpl extends Application {
         ImGui.setNextWindowPos(0, 0);
         ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
         ImGui.begin("MainWindow", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
-        this.mainWindow.render();
+        this.window.render();
         ImGui.end();
         if (this.popup != null) {
             this.popup.open();

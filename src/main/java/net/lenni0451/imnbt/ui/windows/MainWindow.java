@@ -5,7 +5,6 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
-import net.lenni0451.imnbt.ui.popups.AboutPopup;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.file.OpenFilePopup;
@@ -21,9 +20,8 @@ import net.lenni0451.mcstructs.nbt.NbtType;
 
 import java.io.*;
 
-import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.CLOSE;
+import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
-@SuppressWarnings("unchecked")
 public class MainWindow extends Window {
 
     private static final String ERROR_REQUIRE_TAG = "You need to create or open a Nbt Tag first.";
@@ -78,20 +76,14 @@ public class MainWindow extends Window {
                     }));
                 }
                 if (ImGui.menuItem("SNbt Serializer")) {
-                    if (this.tag == null) Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, CLOSE));
-                    else Main.getInstance().getImGuiImpl().openPopup(new SNbtSerializerPopup(this.tag, CLOSE));
+                    if (this.tag == null) Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
+                    else Main.getInstance().getImGuiImpl().openPopup(new SNbtSerializerPopup(this.tag, close()));
                 }
 
                 ImGui.endMenu();
             }
             if (ImGui.menuItem("About")) {
-                Main.getInstance().getImGuiImpl().openPopup(new AboutPopup((p, success) -> {
-                    if (success) {
-                        Main.getInstance().getImGuiImpl().closePopup();
-                    } else {
-                        Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", "An unknown error occurred while opening the URL.", CLOSE));
-                    }
-                }));
+                Main.getInstance().getImGuiImpl().getAboutWindow().show();
             }
 
             ImGui.endMenuBar();
@@ -110,7 +102,7 @@ public class MainWindow extends Window {
             data = fis.readAllBytes();
         } catch (Throwable t) {
             t.printStackTrace();
-            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, CLOSE));
+            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, close()));
             return;
         }
         this.open(response, data);
@@ -127,7 +119,7 @@ public class MainWindow extends Window {
                     Main.getInstance().getImGuiImpl().closePopup();
                 } catch (Throwable t) {
                     t.printStackTrace();
-                    Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, CLOSE));
+                    Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, close()));
                 }
             } else {
                 Main.getInstance().getImGuiImpl().closePopup();
@@ -137,7 +129,7 @@ public class MainWindow extends Window {
 
     private void save() {
         if (this.tag == null) {
-            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, CLOSE));
+            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
             return;
         }
 
@@ -151,11 +143,11 @@ public class MainWindow extends Window {
                         try (os) {
                             DataOutput dataOutput = this.tagSettings.endianType.wrap(os);
                             this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
-                            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Success", SUCCESS_SAVE, CLOSE));
+                            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Success", SUCCESS_SAVE, close()));
                         }
                     } catch (Throwable t) {
                         t.printStackTrace();
-                        Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_SAVE, CLOSE));
+                        Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_SAVE, close()));
                     }
                 } else {
                     Main.getInstance().getImGuiImpl().closePopup();

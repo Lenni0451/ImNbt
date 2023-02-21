@@ -1,36 +1,24 @@
-package net.lenni0451.imnbt.ui.popups;
+package net.lenni0451.imnbt.ui.windows;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
-import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.Main;
-import net.lenni0451.imnbt.ui.types.Popup;
+import net.lenni0451.imnbt.ui.popups.MessagePopup;
+import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.Licenses;
 
 import java.awt.*;
 import java.net.URI;
 
-public class AboutPopup extends Popup<AboutPopup> {
+import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
-    public AboutPopup(final PopupCallback<AboutPopup> callback) {
-        super("About", callback);
-    }
+public class AboutWindow extends Window {
 
     @Override
     public void render() {
-        ImGui.setNextWindowPos(0, 0);
-        ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
-        ImGui.begin("About", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
-        this.renderContent();
-        ImGui.end();
-    }
-
-    @Override
-    protected void renderContent() {
         if (ImGui.beginMenuBar()) {
             if (ImGui.menuItem("Close")) {
-                this.getCallback().onClose(this, true);
-                this.close();
+                this.hide();
             }
             if (ImGui.menuItem("Github")) {
                 this.openURL("https://github.com/Lenni0451/ImNbt");
@@ -83,12 +71,11 @@ public class AboutPopup extends Popup<AboutPopup> {
     private void openURL(final String url) {
         try {
             Desktop.getDesktop().browse(new URI(url));
-            this.getCallback().onClose(this, true);
         } catch (Throwable t) {
             t.printStackTrace();
-            this.getCallback().onClose(this, false);
+            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", "Failed to open the URL", close()));
         }
-        this.close();
+        this.hide();
     }
 
 }
