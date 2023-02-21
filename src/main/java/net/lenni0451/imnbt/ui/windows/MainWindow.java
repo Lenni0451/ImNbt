@@ -108,7 +108,12 @@ public class MainWindow extends Window {
         this.open(response, data);
     }
 
-    public void open(final String path, final byte[] data) {
+    @Override
+    public void dragAndDrop(File file, byte[] data) {
+        this.open(file.getAbsolutePath(), data);
+    }
+
+    private void open(final String path, final byte[] data) {
         Main.getInstance().getImGuiImpl().openPopup(new OpenFilePopup(data, this.tagSettings, (p, success) -> {
             if (success) {
                 try {

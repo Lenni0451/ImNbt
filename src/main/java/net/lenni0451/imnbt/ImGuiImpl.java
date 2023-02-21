@@ -104,7 +104,7 @@ public class ImGuiImpl extends Application {
             File file = new File(GLFWDropCallback.getName(names, 0));
             try (FileInputStream fis = new FileInputStream(file)) {
                 byte[] data = fis.readAllBytes();
-                this.mainWindow.open(file.getAbsolutePath(), data);
+                this.window.dragAndDrop(file, data);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
