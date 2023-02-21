@@ -20,41 +20,44 @@ public class AboutPopup extends Popup<AboutPopup> {
     public void render() {
         ImGui.setNextWindowPos(0, 0);
         ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
-        ImGui.begin("About", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse);
+        ImGui.begin("About", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
         this.renderContent();
         ImGui.end();
     }
 
     @Override
     protected void renderContent() {
+        if (ImGui.beginMenuBar()) {
+            if (ImGui.menuItem("Close")) {
+                this.getCallback().onClose(this, true);
+                this.close();
+            }
+            if (ImGui.menuItem("Github")) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://github.com/Lenni0451/ImNbt"));
+                    this.getCallback().onClose(this, true);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    this.getCallback().onClose(this, false);
+                }
+                this.close();
+            }
+            if (ImGui.menuItem("Jenkins")) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://build.lenni0451.net/job/ImNbt/"));
+                    this.getCallback().onClose(this, true);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    this.getCallback().onClose(this, false);
+                }
+                this.close();
+            }
+
+            ImGui.endMenuBar();
+        }
+
         ImGui.text("ImNbt by Lenni0451");
         ImGui.text("Version: " + Main.VERSION);
-        if (ImGui.button("GitHub")) {
-            try {
-                Desktop.getDesktop().browse(new URI("https://github.com/Lenni0451/ImNbt"));
-                this.getCallback().onClose(this, true);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                this.getCallback().onClose(this, false);
-            }
-            this.close();
-        }
-        ImGui.sameLine();
-        if (ImGui.button("Jenkins")) {
-            try {
-                Desktop.getDesktop().browse(new URI("https://build.lenni0451.net/job/ImNbt/"));
-                this.getCallback().onClose(this, true);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                this.getCallback().onClose(this, false);
-            }
-            this.close();
-        }
-        ImGui.sameLine();
-        if (ImGui.button("Close")) {
-            this.getCallback().onClose(this, true);
-            this.close();
-        }
         ImGui.separator();
         ImGui.text("Open Source Licenses");
         if (ImGui.treeNodeEx("Guava", ImGuiTreeNodeFlags.SpanAvailWidth)) {
