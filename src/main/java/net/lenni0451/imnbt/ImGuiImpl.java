@@ -63,6 +63,7 @@ public class ImGuiImpl extends Application {
         super.initImGui(config);
 
         ImGuiIO imGuiIO = ImGui.getIO();
+        imGuiIO.setIniFilename(null);
         ImFontAtlas imFontAtlas = imGuiIO.getFonts();
         ImFontConfig imFontConfig = new ImFontConfig();
         imFontConfig.setPixelSnapH(true);
