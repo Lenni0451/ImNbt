@@ -5,10 +5,11 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.nbt.*;
+import net.lenni0451.imnbt.ui.popups.AboutPopup;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
-import net.lenni0451.imnbt.ui.popups.OpenFilePopup;
-import net.lenni0451.imnbt.ui.popups.SaveFilePopup;
+import net.lenni0451.imnbt.ui.popups.file.OpenFilePopup;
+import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Popup;
@@ -115,6 +116,15 @@ public class MainWindow {
                 }
 
                 ImGui.endMenu();
+            }
+            if (ImGui.menuItem("About")) {
+                this.popup = new AboutPopup((p, success) -> {
+                    if (success) {
+                        this.popup = null;
+                    } else {
+                        this.popup = new MessagePopup("Error", "An unknown error occurred while opening the URL.", VOID_CALLBACK);
+                    }
+                });
             }
 
             ImGui.endMenuBar();

@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    include "com.google.code.findbugs:jsr305:3.0.2"
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
     include "com.google.guava:guava:31.1-jre"
 
     include "net.lenni0451.mcstructs:nbt:2.2.0"
