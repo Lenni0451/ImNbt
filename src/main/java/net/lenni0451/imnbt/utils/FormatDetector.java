@@ -41,7 +41,7 @@ public class FormatDetector {
     private void detectCompression() {
         try {
             if (this.data[0] == GZIP_HEADER[0] && this.data[1] == GZIP_HEADER[1]) {
-                this.data = IOUtils.readFully(CompressionType.GZIP.wrap(new ByteArrayInputStream(this.data)));
+                this.data = CompressionType.GZIP.wrap(new ByteArrayInputStream(this.data)).readAllBytes();
                 this.compressionType = CompressionType.GZIP;
             }
         } catch (Throwable ignored) {

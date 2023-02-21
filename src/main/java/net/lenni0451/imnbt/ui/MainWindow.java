@@ -14,7 +14,6 @@ import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
-import net.lenni0451.imnbt.utils.IOUtils;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.UnlimitedReadTracker;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -144,19 +143,23 @@ public class MainWindow {
 
         byte[] data;
         try (FileInputStream fis = new FileInputStream(response)) {
-            data = IOUtils.readFully(fis);
+            data = fis.readAllBytes();
         } catch (Throwable t) {
             t.printStackTrace();
             this.popup = new MessagePopup("Error", ERROR_OPEN, VOID_CALLBACK);
             return;
         }
+        this.open(response, data);
+    }
+
+    public void open(final String path, final byte[] data) {
         this.popup = new OpenFilePopup(data, this.tagSettings, (p, success) -> {
             if (success) {
                 try {
                     DataInput dataInput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(new ByteArrayInputStream(data)));
                     this.tagSettings.rootName = "";
                     this.tag = this.tagSettings.formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
-                    this.previousPath = response;
+                    this.previousPath = path;
                     this.popup = null;
                 } catch (Throwable t) {
                     t.printStackTrace();

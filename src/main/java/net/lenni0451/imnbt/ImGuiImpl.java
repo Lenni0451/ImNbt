@@ -7,8 +7,12 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.MainWindow;
 import net.lenni0451.imnbt.utils.ImageUtils;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWDropCallback;
 
 import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.FileInputStream;
 
 public class ImGuiImpl extends Application {
 
@@ -84,13 +88,22 @@ public class ImGuiImpl extends Application {
             t.printStackTrace();
             System.exit(-1);
         }
-
         try {
             ImageUtils.setIcon(this.getHandle(), ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/logo.png"));
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(-1);
         }
+        GLFW.glfwSetDropCallback(this.getHandle(), (window, count, names) -> {
+            if (count != 1) return;
+            File file = new File(GLFWDropCallback.getName(names, 0));
+            try (FileInputStream fis = new FileInputStream(file)) {
+                byte[] data = fis.readAllBytes();
+                this.mainWindow.open(file.getAbsolutePath(), data);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
