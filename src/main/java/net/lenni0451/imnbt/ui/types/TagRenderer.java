@@ -3,7 +3,7 @@ package net.lenni0451.imnbt.ui.types;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiTreeNodeFlags;
-import net.lenni0451.imnbt.ImGuiImpl;
+import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.utils.ImageUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -43,7 +43,7 @@ public interface TagRenderer {
         int nbtTypes = NbtType.values().length - 1;
         int size = ImGui.getFontSize();
         ImGui.getWindowDrawList().addImage(
-                ImGuiImpl.getInstance().getIconsTexture(),
+                Main.getInstance().getIconsTexture(),
                 xy.x,
                 xy.y,
                 xy.x + size,

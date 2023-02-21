@@ -1,9 +1,10 @@
-package net.lenni0451.imnbt.ui;
+package net.lenni0451.imnbt.ui.windows;
 
 import imgui.ImFont;
 import imgui.ImGui;
-import net.lenni0451.imnbt.ImGuiImpl;
+import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.TagSettings;
+import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.popups.AboutPopup;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
@@ -12,6 +13,7 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Popup;
+import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.FileDialogs;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.UnlimitedReadTracker;
@@ -21,10 +23,9 @@ import net.lenni0451.mcstructs.nbt.NbtType;
 import java.io.*;
 
 @SuppressWarnings("unchecked")
-public class MainWindow {
+public class MainWindow extends Window {
 
     private static final String ERROR_REQUIRE_TAG = "You need to create or open a Nbt Tag first.";
-    private static final String SUCCESS_OPEN = "Successfully opened the Nbt Tag.";
     private static final String SUCCESS_SAVE = "Successfully saved the Nbt Tag.";
     private static final String ERROR_OPEN = "An unknown error occurred while opening the Nbt Tag.";
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
@@ -44,6 +45,7 @@ public class MainWindow {
         this.popup = null;
     }
 
+    @Override
     public void render() {
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
@@ -66,12 +68,12 @@ public class MainWindow {
                 ImGui.endMenu();
             }
             if (ImGui.beginMenu("Font Size")) {
-                ImFont[] fonts = ImGuiImpl.getInstance().getFonts();
-                int usedFont = ImGuiImpl.getInstance().getUsedFont();
+                ImFont[] fonts = Main.getInstance().getConfig().getFonts();
+                int usedFont = Main.getInstance().getConfig().getUsedFont();
                 for (int i = 0; i < fonts.length; i++) {
                     ImFont font = fonts[i];
                     if (ImGui.menuItem("Size " + String.format("%.0f", font.getFontSize()), "", i == usedFont)) {
-                        ImGuiImpl.getInstance().setUsedFont(i);
+                        Main.getInstance().getConfig().setUsedFont(i);
                     }
                 }
 

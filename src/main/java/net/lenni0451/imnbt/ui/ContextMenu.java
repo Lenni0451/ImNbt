@@ -1,7 +1,7 @@
 package net.lenni0451.imnbt.ui;
 
 import imgui.ImGui;
-import net.lenni0451.imnbt.ImGuiImpl;
+import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
@@ -42,12 +42,12 @@ public class ContextMenu {
     }
 
     public <T extends INbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
-        this.editAction = () -> ImGuiImpl.getInstance().getMainWindow().openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
+        this.editAction = () -> Main.getInstance().getMainWindow().openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
             if (success) {
                 tagConsumer.accept((T) p.getTag());
                 nameEditConsumer.accept(p.getName());
             }
-            ImGuiImpl.getInstance().getMainWindow().closePopup();
+            Main.getInstance().getMainWindow().closePopup();
         }));
         return this;
     }
@@ -68,9 +68,9 @@ public class ContextMenu {
                 if (ImGui.beginMenu("New")) {
                     for (NbtType newType : this.newTypes) {
                         if (ImGui.menuItem(StringUtils.format(newType))) {
-                            ImGuiImpl.getInstance().getMainWindow().openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
+                            Main.getInstance().getMainWindow().openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
                                 if (success) this.newTagAction.accept(p.getName(), p.getTag());
-                                ImGuiImpl.getInstance().getMainWindow().closePopup();
+                                Main.getInstance().getMainWindow().closePopup();
                             }));
                         }
                     }
@@ -90,7 +90,7 @@ public class ContextMenu {
             }
             if (this.sNbtSerializerListener != null) {
                 if (ImGui.menuItem("SNbt Serializer")) {
-                    ImGuiImpl.getInstance().getMainWindow().openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), (p, success) -> ImGuiImpl.getInstance().getMainWindow().closePopup()));
+                    Main.getInstance().getMainWindow().openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), (p, success) -> Main.getInstance().getMainWindow().closePopup()));
                 }
             }
 

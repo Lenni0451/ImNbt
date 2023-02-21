@@ -3,7 +3,7 @@ package net.lenni0451.imnbt.ui.popups.snbt;
 import imgui.ImGui;
 import imgui.type.ImInt;
 import imgui.type.ImString;
-import net.lenni0451.imnbt.ImGuiImpl;
+import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -32,7 +32,7 @@ public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
             try {
                 this.output.set(SERIALIZERS.get("V" + SERIALIZER_NAMES[this.selectedVersion.get()].replace('.', '_')).serialize(this.tag));
             } catch (Throwable t) {
-                ImGuiImpl.getInstance().getMainWindow().openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> ImGuiImpl.getInstance().getMainWindow().openPopup(this)));
+                Main.getInstance().getMainWindow().openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> Main.getInstance().getMainWindow().openPopup(this)));
             }
         }
         ImGui.sameLine();

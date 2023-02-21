@@ -5,7 +5,6 @@ import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
-import net.lenni0451.imnbt.ui.MainWindow;
 import net.lenni0451.imnbt.utils.ImageUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
@@ -16,43 +15,6 @@ import java.io.FileInputStream;
 
 public class ImGuiImpl extends Application {
 
-    private static ImGuiImpl instance;
-
-    public static ImGuiImpl getInstance() {
-        return instance;
-    }
-
-
-    private final ImFont[] fonts = new ImFont[5];
-    private int usedFont = 3;
-    private int iconsTexture;
-
-    private final MainWindow mainWindow = new MainWindow();
-
-    public ImGuiImpl() {
-        instance = this;
-    }
-
-    public ImFont[] getFonts() {
-        return this.fonts;
-    }
-
-    public int getUsedFont() {
-        return this.usedFont;
-    }
-
-    public void setUsedFont(final int usedFont) {
-        this.usedFont = usedFont;
-    }
-
-    public int getIconsTexture() {
-        return this.iconsTexture;
-    }
-
-    public MainWindow getMainWindow() {
-        return this.mainWindow;
-    }
-
     @Override
     protected void configure(Configuration config) {
         config.setTitle("ImNbt");
@@ -61,6 +23,20 @@ public class ImGuiImpl extends Application {
     @Override
     protected void initImGui(Configuration config) {
         super.initImGui(config);
+        try {
+            ImageUtils.setIcon(handle, Main.class.getClassLoader().getResourceAsStream("assets/logo.png"));
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.exit(-1);
+        }
+        try {
+            int textureId = ImageUtils.loadTexture(ImageIO.read(Main.class.getClassLoader().getResourceAsStream("assets/icons.png")));
+            if (textureId < 0) throw new IllegalStateException("Failed to load icons texture");
+            Main.getInstance().setIconsTexture(textureId);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.exit(-1);
+        }
 
         ImGuiIO imGuiIO = ImGui.getIO();
         imGuiIO.setIniFilename(null);
@@ -68,12 +44,14 @@ public class ImGuiImpl extends Application {
         ImFontConfig imFontConfig = new ImFontConfig();
         imFontConfig.setPixelSnapH(true);
         try {
+            ImFont[] fonts = Main.getInstance().getConfig().getFonts();
+
             byte[] segoeui = ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/segoeui.ttf").readAllBytes();
             imFontAtlas.addFontDefault(imFontConfig);
-            for (int i = 0; i < this.fonts.length; i++) {
+            for (int i = 0; i < fonts.length; i++) {
                 int size = 15 + (5 * i);
                 imFontConfig.setName("SegoeUI " + i + "px");
-                this.fonts[i] = imFontAtlas.addFontFromMemoryTTF(segoeui, size, imFontConfig, imFontAtlas.getGlyphRangesDefault());
+                fonts[i] = imFontAtlas.addFontFromMemoryTTF(segoeui, size, imFontConfig, imFontAtlas.getGlyphRangesDefault());
             }
             imFontAtlas.build();
         } catch (Throwable t) {
@@ -82,25 +60,12 @@ public class ImGuiImpl extends Application {
         }
         imFontConfig.destroy();
 
-        try {
-            this.iconsTexture = ImageUtils.loadTexture(ImageIO.read(ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/icons.png")));
-            if (this.iconsTexture < 0) throw new IllegalStateException("Failed to load icons texture");
-        } catch (Throwable t) {
-            t.printStackTrace();
-            System.exit(-1);
-        }
-        try {
-            ImageUtils.setIcon(this.getHandle(), ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/logo.png"));
-        } catch (Throwable t) {
-            t.printStackTrace();
-            System.exit(-1);
-        }
         GLFW.glfwSetDropCallback(this.getHandle(), (window, count, names) -> {
             if (count != 1) return;
             File file = new File(GLFWDropCallback.getName(names, 0));
             try (FileInputStream fis = new FileInputStream(file)) {
                 byte[] data = fis.readAllBytes();
-                this.mainWindow.open(file.getAbsolutePath(), data);
+                Main.getInstance().getMainWindow().open(file.getAbsolutePath(), data);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -116,12 +81,12 @@ public class ImGuiImpl extends Application {
     @Override
     public void process() {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0);
-        ImGui.pushFont(this.fonts[usedFont]);
+        ImGui.pushFont(Main.getInstance().getConfig().getFonts()[Main.getInstance().getConfig().getUsedFont()]);
 
         ImGui.setNextWindowPos(0, 0);
         ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
         ImGui.begin("MainWindow", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
-        this.mainWindow.render();
+        Main.getInstance().getMainWindow().render();
         ImGui.end();
 
         ImGui.popFont();
