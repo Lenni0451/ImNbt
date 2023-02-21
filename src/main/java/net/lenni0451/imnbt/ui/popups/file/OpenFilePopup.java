@@ -16,18 +16,22 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
 
-    public OpenFilePopup(final byte[] data, final TagSettings tagSettings, final PopupCallback<OpenFilePopup> callback) {
+    public OpenFilePopup(final byte[] data, final PopupCallback<OpenFilePopup> callback) {
         super("Open Nbt Tag", callback);
 
         FormatDetector detector = new FormatDetector(data);
-        tagSettings.compressionType = detector.getCompressionType();
-        tagSettings.endianType = detector.getEndianType();
-        tagSettings.formatType = detector.getFormatType();
+        this.tagSettings = new TagSettings();
+        this.tagSettings.compressionType = detector.getCompressionType();
+        this.tagSettings.endianType = detector.getEndianType();
+        this.tagSettings.formatType = detector.getFormatType();
 
-        this.tagSettings = tagSettings;
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
         this.selectedEndian = new ImInt(this.tagSettings.endianType.ordinal());
         this.selectedCompression = new ImInt(this.tagSettings.compressionType.ordinal());
+    }
+
+    public TagSettings getTagSettings() {
+        return this.tagSettings;
     }
 
     @Override

@@ -9,11 +9,11 @@ import javax.annotation.Nullable;
 public class FileDialogs {
 
     @Nullable
-    public static String save(final String title, @Nullable final String defaultFile) {
+    public static String save(final String title) {
         MemoryStack memoryStack = MemoryStack.stackPush();
         PointerBuffer pointerBuffer = memoryStack.callocPointer(1);
         pointerBuffer.put(memoryStack.UTF8("*.*")).flip();
-        String response = TinyFileDialogs.tinyfd_saveFileDialog(title, defaultFile, pointerBuffer, "Any File");
+        String response = TinyFileDialogs.tinyfd_saveFileDialog(title, null, pointerBuffer, "Any File");
         memoryStack.pop();
         return response;
     }

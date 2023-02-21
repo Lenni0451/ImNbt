@@ -19,6 +19,8 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
@@ -30,9 +32,8 @@ public class MainWindow extends Window {
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
 
 
-    private final TagSettings tagSettings = new TagSettings();
-    private String previousPath = null;
-    private INbtTag tag = null;
+    private final List<Tag> tags = new ArrayList<>();
+    private int openTab;
 
     @Override
     public void render() {
@@ -43,6 +44,9 @@ public class MainWindow extends Window {
                 }
                 if (ImGui.menuItem("Save")) {
                     this.save();
+                }
+                if (ImGui.menuItem("Close")) {
+                    this.tags.remove(this.openTab);
                 }
                 if (ImGui.beginMenu("New Root Tag")) {
                     this.newRootTag();
@@ -70,14 +74,18 @@ public class MainWindow extends Window {
             }
             if (ImGui.beginMenu("SNbt")) {
                 if (ImGui.menuItem("SNbt Parser")) {
+                    Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
                     Main.getInstance().getImGuiImpl().openPopup(new SNbtParserPopup((p, success) -> {
-                        if (success) this.tag = p.getParsedTag();
+                        if (success) {
+                            if (tag != null && tag.tag == null) tag.tag = p.getParsedTag();
+                            else this.tags.add(new Tag(p.getParsedTag()));
+                        }
                         Main.getInstance().getImGuiImpl().closePopup();
                     }));
                 }
                 if (ImGui.menuItem("SNbt Serializer")) {
-                    if (this.tag == null) Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
-                    else Main.getInstance().getImGuiImpl().openPopup(new SNbtSerializerPopup(this.tag, close()));
+                    if (!this.hasTag()) Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
+                    else Main.getInstance().getImGuiImpl().openPopup(new SNbtSerializerPopup(this.tags.get(this.openTab).tag, close()));
                 }
 
                 ImGui.endMenu();
@@ -89,8 +97,30 @@ public class MainWindow extends Window {
             ImGui.endMenuBar();
         }
 
-        if (this.tag == null) ImGui.text("No NBT loaded");
-        else NbtTreeRenderer.render(newName -> this.tagSettings.rootName = newName, () -> this.tag = null, "", this.tagSettings.rootName, this.tag);
+        if (this.tags.isEmpty()) {
+            ImGui.text("No Nbt Tags loaded");
+        } else {
+            if (ImGui.beginTabBar("##Tags")) {
+                for (int i = 0; i < this.tags.size(); i++) {
+                    ImGui.pushID(i);
+                    Tag tag = this.tags.get(i);
+                    if (ImGui.beginTabItem(tag.settings.rootName.isEmpty() ? "<empty>" : tag.settings.rootName)) {
+                        this.openTab = i;
+                        if (tag.tag == null) ImGui.text("No Nbt Tag present");
+                        else NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, "", tag.settings.rootName, tag.tag);
+
+                        ImGui.endTabItem();
+                    }
+                    ImGui.popID();
+                }
+
+                ImGui.endTabBar();
+            }
+        }
+    }
+
+    private boolean hasTag() {
+        return this.tags.size() > 0 && this.tags.get(this.openTab).tag != null;
     }
 
     private void open() {
@@ -105,22 +135,27 @@ public class MainWindow extends Window {
             Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, close()));
             return;
         }
-        this.open(response, data);
+        this.open(data);
     }
 
     @Override
     public void dragAndDrop(File file, byte[] data) {
-        this.open(file.getAbsolutePath(), data);
+        this.open(data);
     }
 
-    private void open(final String path, final byte[] data) {
-        Main.getInstance().getImGuiImpl().openPopup(new OpenFilePopup(data, this.tagSettings, (p, success) -> {
+    private void open(final byte[] data) {
+        Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
+        Main.getInstance().getImGuiImpl().openPopup(new OpenFilePopup(data, (p, success) -> {
             if (success) {
                 try {
-                    DataInput dataInput = this.tagSettings.endianType.wrap(this.tagSettings.compressionType.wrap(new ByteArrayInputStream(data)));
-                    this.tagSettings.rootName = "";
-                    this.tag = this.tagSettings.formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
-                    this.previousPath = path;
+                    DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(new ByteArrayInputStream(data)));
+                    INbtTag nbtTag = p.getTagSettings().formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
+                    if (tag != null && tag.tag == null) {
+                        tag.settings = p.getTagSettings();
+                        tag.tag = nbtTag;
+                    } else {
+                        this.tags.add(new Tag(p.getTagSettings(), nbtTag));
+                    }
                     Main.getInstance().getImGuiImpl().closePopup();
                 } catch (Throwable t) {
                     t.printStackTrace();
@@ -133,21 +168,22 @@ public class MainWindow extends Window {
     }
 
     private void save() {
-        if (this.tag == null) {
+        if (!this.hasTag()) {
             Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
             return;
         }
 
-        String response = FileDialogs.save("Save Nbt Tag", this.previousPath);
+        String response = FileDialogs.save("Save Nbt Tag");
         if (response != null) {
-            Main.getInstance().getImGuiImpl().openPopup(new SaveFilePopup(this.tagSettings, (p, success) -> {
+            Tag tag = this.tags.get(this.openTab);
+            Main.getInstance().getImGuiImpl().openPopup(new SaveFilePopup(tag.settings, (p, success) -> {
                 if (success) {
                     try {
                         FileOutputStream fos = new FileOutputStream(response);
-                        OutputStream os = this.tagSettings.compressionType.wrap(fos);
+                        OutputStream os = tag.settings.compressionType.wrap(fos);
                         try (os) {
-                            DataOutput dataOutput = this.tagSettings.endianType.wrap(os);
-                            this.tagSettings.formatType.getNbtIO().write(dataOutput, this.tagSettings.rootName, this.tag);
+                            DataOutput dataOutput = tag.settings.endianType.wrap(os);
+                            tag.settings.formatType.getNbtIO().write(dataOutput, tag.settings.rootName, tag.tag);
                             Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Success", SUCCESS_SAVE, close()));
                         }
                     } catch (Throwable t) {
@@ -162,18 +198,41 @@ public class MainWindow extends Window {
     }
 
     private void newRootTag() {
+        Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
         for (NbtType value : NbtType.values()) {
             if (NbtType.END.equals(value)) continue;
             if (ImGui.menuItem(StringUtils.format(value))) {
                 Main.getInstance().getImGuiImpl().openPopup(new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
                     if (success) {
-                        this.tagSettings.rootName = p.getName();
-                        this.tag = p.getTag();
+                        System.out.println(tag);
+                        if (tag != null && tag.tag == null) {
+                            tag.settings.rootName = p.getName();
+                            tag.tag = p.getTag();
+                        } else {
+                            Tag newTag = new Tag(p.getTag());
+                            newTag.settings.rootName = p.getName();
+                            this.tags.add(newTag);
+                        }
                     }
                     Main.getInstance().getImGuiImpl().closePopup();
                 }));
                 break;
             }
+        }
+    }
+
+
+    private static class Tag {
+        private TagSettings settings;
+        private INbtTag tag;
+
+        private Tag(final INbtTag tag) {
+            this(new TagSettings(), tag);
+        }
+
+        private Tag(final TagSettings settings, final INbtTag tag) {
+            this.settings = settings;
+            this.tag = tag;
         }
     }
 

@@ -27,6 +27,10 @@ public class SaveFilePopup extends Popup<SaveFilePopup> {
         this.selectedCompression = new ImInt(this.tagSettings.compressionType.ordinal());
     }
 
+    public TagSettings getTagSettings() {
+        return this.tagSettings;
+    }
+
     @Override
     protected void renderContent() {
         if (ImGui.inputText("Root name", this.rootName)) {
