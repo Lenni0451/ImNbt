@@ -1,7 +1,6 @@
 package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
-import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -29,8 +28,8 @@ public class LongTagRenderer implements TagRenderer {
     @Override
     public void renderValueEditor(INbtTag tag) {
         LongTag longTag = (LongTag) tag;
-        this.longInput.set(this.format.format(longTag.getValue()));
-        if (ImGui.inputText("Value", this.longInput, ImGuiInputTextFlags.EnterReturnsTrue)) {
+        this.longInput.set(longTag.getValue());
+        if (ImGui.inputText("Value", this.longInput)) {
             try {
                 longTag.setValue(Long.parseLong(this.longInput.get()));
             } catch (NumberFormatException ignored) {
