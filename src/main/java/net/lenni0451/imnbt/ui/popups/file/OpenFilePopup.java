@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.ui.popups;
+package net.lenni0451.imnbt.ui.popups.file;
 
 import imgui.ImGui;
 import imgui.type.ImInt;
