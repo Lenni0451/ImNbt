@@ -2,7 +2,7 @@ package net.lenni0451.imnbt.ui.popups;
 
 import imgui.ImGui;
 import imgui.type.ImString;
-import net.lenni0451.imnbt.ImGuiImpl;
+import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -20,7 +20,7 @@ public class EditTagPopup extends Popup<EditTagPopup> {
         this.okText = okText;
         this.name.set(name);
         this.tag = tag.copy();
-        this.tagRenderer = ImGuiImpl.getInstance().getMainWindow().getTagRenderer(tag.getNbtType());
+        this.tagRenderer = NbtTreeRenderer.getTagRenderer(tag.getNbtType());
     }
 
     public String getName() {

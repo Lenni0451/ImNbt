@@ -1,7 +1,7 @@
 package net.lenni0451.imnbt.ui.nbt;
 
-import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.ui.ContextMenu;
+import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
@@ -21,7 +21,7 @@ public class CompoundTagRenderer implements TagRenderer {
         }, () -> {
             String[] removed = new String[1];
             for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
-                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> {
+                NbtTreeRenderer.render(newName -> {
                     //This gets executed multiple frames after the user clicked save in the popup
                     INbtTag oldTag = compoundTag.remove(entry.getKey());
                     compoundTag.add(newName, oldTag);

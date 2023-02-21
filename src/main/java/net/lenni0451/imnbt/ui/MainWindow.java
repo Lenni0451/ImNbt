@@ -4,7 +4,6 @@ import imgui.ImFont;
 import imgui.ImGui;
 import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.TagSettings;
-import net.lenni0451.imnbt.ui.nbt.*;
 import net.lenni0451.imnbt.ui.popups.AboutPopup;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
@@ -13,18 +12,13 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Popup;
-import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.FileDialogs;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.UnlimitedReadTracker;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
-import javax.annotation.Nonnull;
 import java.io.*;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.function.Consumer;
 
 @SuppressWarnings("unchecked")
 public class MainWindow {
@@ -37,30 +31,10 @@ public class MainWindow {
 
 
     private final Popup.PopupCallback VOID_CALLBACK = (p, success) -> this.popup = null;
-    private final Map<NbtType, TagRenderer> tagRenderer = new EnumMap<>(NbtType.class);
     private final TagSettings tagSettings = new TagSettings();
     private String previousPath = null;
     private Popup<?> popup = null;
     private INbtTag tag = null;
-
-    public MainWindow() {
-        this.tagRenderer.put(NbtType.BYTE, new ByteTagRenderer());
-        this.tagRenderer.put(NbtType.SHORT, new ShortTagRenderer());
-        this.tagRenderer.put(NbtType.INT, new IntTagRenderer());
-        this.tagRenderer.put(NbtType.LONG, new LongTagRenderer());
-        this.tagRenderer.put(NbtType.FLOAT, new FloatTagRenderer());
-        this.tagRenderer.put(NbtType.DOUBLE, new DoubleTagRenderer());
-        this.tagRenderer.put(NbtType.BYTE_ARRAY, new ByteArrayTagRenderer());
-        this.tagRenderer.put(NbtType.STRING, new StringTagRenderer());
-        this.tagRenderer.put(NbtType.LIST, new ListTagRenderer());
-        this.tagRenderer.put(NbtType.COMPOUND, new CompoundTagRenderer());
-        this.tagRenderer.put(NbtType.INT_ARRAY, new IntArrayTagRenderer());
-        this.tagRenderer.put(NbtType.LONG_ARRAY, new LongArrayTagRenderer());
-    }
-
-    public TagRenderer getTagRenderer(@Nonnull final NbtType type) {
-        return this.tagRenderer.get(type);
-    }
 
     public void openPopup(final Popup<?> popup) {
         this.popup = popup;
@@ -131,19 +105,10 @@ public class MainWindow {
         }
 
         if (this.tag == null) ImGui.text("No NBT loaded");
-        else this.renderNbt(newName -> this.tagSettings.rootName = newName, () -> this.tag = null, "", this.tagSettings.rootName, this.tag);
+        else NbtTreeRenderer.render(newName -> this.tagSettings.rootName = newName, () -> this.tag = null, "", this.tagSettings.rootName, this.tag);
         if (this.popup != null) {
             this.popup.open();
             this.popup.render();
-        }
-    }
-
-    public void renderNbt(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final String path, final String name, final INbtTag tag) {
-        TagRenderer renderer = this.tagRenderer.get(tag.getNbtType());
-        if (renderer == null) {
-            ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
-        } else {
-            renderer.render(nameEditConsumer, deleteListener, path, name.isEmpty() ? "<empty>" : name, tag);
         }
     }
 

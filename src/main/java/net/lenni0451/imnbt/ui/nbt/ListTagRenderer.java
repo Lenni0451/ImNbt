@@ -1,7 +1,7 @@
 package net.lenni0451.imnbt.ui.nbt;
 
-import net.lenni0451.imnbt.ImGuiImpl;
 import net.lenni0451.imnbt.ui.ContextMenu;
+import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
@@ -25,7 +25,7 @@ public class ListTagRenderer implements TagRenderer {
             for (int i = 0; i < listTag.size(); i++) {
                 final int fi = i;
                 INbtTag listEntry = listTag.get(i);
-                ImGuiImpl.getInstance().getMainWindow().renderNbt(newName -> {
+                NbtTreeRenderer.render(newName -> {
                     //This gets executed multiple frames after the user clicked save in the popup
                     try {
                         int newIndex = Integer.parseInt(newName);
