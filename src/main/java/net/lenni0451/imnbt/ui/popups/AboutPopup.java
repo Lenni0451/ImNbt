@@ -33,24 +33,10 @@ public class AboutPopup extends Popup<AboutPopup> {
                 this.close();
             }
             if (ImGui.menuItem("Github")) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://github.com/Lenni0451/ImNbt"));
-                    this.getCallback().onClose(this, true);
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                    this.getCallback().onClose(this, false);
-                }
-                this.close();
+                this.openURL("https://github.com/Lenni0451/ImNbt");
             }
             if (ImGui.menuItem("Jenkins")) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://build.lenni0451.net/job/ImNbt/"));
-                    this.getCallback().onClose(this, true);
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                    this.getCallback().onClose(this, false);
-                }
-                this.close();
+                this.openURL("https://build.lenni0451.net/job/ImNbt/");
             }
 
             ImGui.endMenuBar();
@@ -92,6 +78,17 @@ public class AboutPopup extends Popup<AboutPopup> {
             ImGui.text(Licenses.PNGDECODER);
             ImGui.treePop();
         }
+    }
+
+    private void openURL(final String url) {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+            this.getCallback().onClose(this, true);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            this.getCallback().onClose(this, false);
+        }
+        this.close();
     }
 
 }
