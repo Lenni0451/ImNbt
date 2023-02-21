@@ -43,7 +43,7 @@ public interface TagRenderer {
         int nbtTypes = NbtType.values().length - 1;
         int size = ImGui.getFontSize();
         ImGui.getWindowDrawList().addImage(
-                Main.getInstance().getIconsTexture(),
+                Main.getInstance().getImGuiImpl().getIconsTexture(),
                 xy.x,
                 xy.y,
                 xy.x + size,

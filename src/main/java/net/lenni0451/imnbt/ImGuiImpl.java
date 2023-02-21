@@ -5,6 +5,7 @@ import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
+import net.lenni0451.imnbt.ui.windows.MainWindow;
 import net.lenni0451.imnbt.utils.ImageUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
@@ -14,6 +15,17 @@ import java.io.File;
 import java.io.FileInputStream;
 
 public class ImGuiImpl extends Application {
+
+    private int iconsTexture;
+    private final MainWindow mainWindow = new MainWindow();
+
+    public int getIconsTexture() {
+        return this.iconsTexture;
+    }
+
+    public MainWindow getMainWindow() {
+        return this.mainWindow;
+    }
 
     @Override
     protected void configure(Configuration config) {
@@ -30,9 +42,8 @@ public class ImGuiImpl extends Application {
             System.exit(-1);
         }
         try {
-            int textureId = ImageUtils.loadTexture(ImageIO.read(Main.class.getClassLoader().getResourceAsStream("assets/icons.png")));
-            if (textureId < 0) throw new IllegalStateException("Failed to load icons texture");
-            Main.getInstance().setIconsTexture(textureId);
+            this.iconsTexture = ImageUtils.loadTexture(ImageIO.read(Main.class.getClassLoader().getResourceAsStream("assets/icons.png")));
+            if (this.iconsTexture < 0) throw new IllegalStateException("Failed to load icons texture");
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(-1);
@@ -65,7 +76,7 @@ public class ImGuiImpl extends Application {
             File file = new File(GLFWDropCallback.getName(names, 0));
             try (FileInputStream fis = new FileInputStream(file)) {
                 byte[] data = fis.readAllBytes();
-                Main.getInstance().getMainWindow().open(file.getAbsolutePath(), data);
+                this.mainWindow.open(file.getAbsolutePath(), data);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
@@ -86,7 +97,7 @@ public class ImGuiImpl extends Application {
         ImGui.setNextWindowPos(0, 0);
         ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
         ImGui.begin("MainWindow", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
-        Main.getInstance().getMainWindow().render();
+        this.mainWindow.render();
         ImGui.end();
 
         ImGui.popFont();

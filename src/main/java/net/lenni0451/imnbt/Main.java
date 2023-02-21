@@ -1,7 +1,6 @@
 package net.lenni0451.imnbt;
 
 import imgui.app.Application;
-import net.lenni0451.imnbt.ui.windows.MainWindow;
 
 public class Main {
 
@@ -20,9 +19,6 @@ public class Main {
 
     private final ImGuiImpl imGuiImpl = new ImGuiImpl();
     private final Config config = new Config();
-    private int iconsTexture;
-
-    private final MainWindow mainWindow = new MainWindow();
 
     private void init() {
         Application.launch(this.imGuiImpl);
@@ -34,18 +30,6 @@ public class Main {
 
     public Config getConfig() {
         return this.config;
-    }
-
-    public int getIconsTexture() {
-        return this.iconsTexture;
-    }
-
-    void setIconsTexture(final int textureId) {
-        this.iconsTexture = textureId;
-    }
-
-    public MainWindow getMainWindow() {
-        return this.mainWindow;
     }
 
 }

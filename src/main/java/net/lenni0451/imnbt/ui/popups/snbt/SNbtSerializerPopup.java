@@ -32,7 +32,7 @@ public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
             try {
                 this.output.set(SERIALIZERS.get("V" + SERIALIZER_NAMES[this.selectedVersion.get()].replace('.', '_')).serialize(this.tag));
             } catch (Throwable t) {
-                Main.getInstance().getMainWindow().openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> Main.getInstance().getMainWindow().openPopup(this)));
+                Main.getInstance().getImGuiImpl().getMainWindow().openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> Main.getInstance().getImGuiImpl().getMainWindow().openPopup(this)));
             }
         }
         ImGui.sameLine();
