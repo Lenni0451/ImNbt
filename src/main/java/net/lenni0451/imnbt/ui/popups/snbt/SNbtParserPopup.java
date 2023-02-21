@@ -36,7 +36,7 @@ public class SNbtParserPopup extends Popup<SNbtParserPopup> {
                 this.parsedTag = SERIALIZERS.get("V" + SERIALIZER_NAMES[this.selectedVersion.get()].replace('.', '_')).deserialize(this.input.get());
                 this.getCallback().onClose(this, true);
             } catch (Throwable t) {
-                Main.getInstance().getImGuiImpl().getMainWindow().openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> Main.getInstance().getImGuiImpl().getMainWindow().openPopup(this)));
+                Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> Main.getInstance().getImGuiImpl().openPopup(this)));
             }
         }
         ImGui.sameLine();

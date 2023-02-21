@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.types;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
+import net.lenni0451.imnbt.Main;
 
 public abstract class Popup<P extends Popup<P>> {
 
@@ -47,6 +48,8 @@ public abstract class Popup<P extends Popup<P>> {
 
     @FunctionalInterface
     public interface PopupCallback<P> {
+        Popup.PopupCallback CLOSE = (p, success) -> Main.getInstance().getImGuiImpl().closePopup();
+
         void onClose(final P popup, final boolean success);
     }
 

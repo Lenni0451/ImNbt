@@ -5,6 +5,7 @@ import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
+import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
 import net.lenni0451.imnbt.utils.ImageUtils;
 import org.lwjgl.glfw.GLFW;
@@ -17,14 +18,19 @@ import java.io.FileInputStream;
 public class ImGuiImpl extends Application {
 
     private int iconsTexture;
+    private Popup<?> popup;
     private final MainWindow mainWindow = new MainWindow();
 
     public int getIconsTexture() {
         return this.iconsTexture;
     }
 
-    public MainWindow getMainWindow() {
-        return this.mainWindow;
+    public void openPopup(final Popup<?> popup) {
+        this.popup = popup;
+    }
+
+    public void closePopup() {
+        this.popup = null;
     }
 
     @Override
@@ -99,6 +105,10 @@ public class ImGuiImpl extends Application {
         ImGui.begin("MainWindow", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
         this.mainWindow.render();
         ImGui.end();
+        if (this.popup != null) {
+            this.popup.open();
+            this.popup.render();
+        }
 
         ImGui.popFont();
         ImGui.popStyleVar();

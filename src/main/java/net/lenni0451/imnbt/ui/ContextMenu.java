@@ -42,12 +42,12 @@ public class ContextMenu {
     }
 
     public <T extends INbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
-        this.editAction = () -> Main.getInstance().getImGuiImpl().getMainWindow().openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
+        this.editAction = () -> Main.getInstance().getImGuiImpl().openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
             if (success) {
                 tagConsumer.accept((T) p.getTag());
                 nameEditConsumer.accept(p.getName());
             }
-            Main.getInstance().getImGuiImpl().getMainWindow().closePopup();
+            Main.getInstance().getImGuiImpl().closePopup();
         }));
         return this;
     }
@@ -68,9 +68,9 @@ public class ContextMenu {
                 if (ImGui.beginMenu("New")) {
                     for (NbtType newType : this.newTypes) {
                         if (ImGui.menuItem(StringUtils.format(newType))) {
-                            Main.getInstance().getImGuiImpl().getMainWindow().openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
+                            Main.getInstance().getImGuiImpl().openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
                                 if (success) this.newTagAction.accept(p.getName(), p.getTag());
-                                Main.getInstance().getImGuiImpl().getMainWindow().closePopup();
+                                Main.getInstance().getImGuiImpl().closePopup();
                             }));
                         }
                     }
@@ -90,7 +90,7 @@ public class ContextMenu {
             }
             if (this.sNbtSerializerListener != null) {
                 if (ImGui.menuItem("SNbt Serializer")) {
-                    Main.getInstance().getImGuiImpl().getMainWindow().openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), (p, success) -> Main.getInstance().getImGuiImpl().getMainWindow().closePopup()));
+                    Main.getInstance().getImGuiImpl().openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), (p, success) -> Main.getInstance().getImGuiImpl().closePopup()));
                 }
             }
 
