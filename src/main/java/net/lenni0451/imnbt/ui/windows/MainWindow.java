@@ -47,6 +47,7 @@ public class MainWindow extends Window {
                 }
                 if (ImGui.menuItem("Close")) {
                     this.tags.remove(this.openTab);
+                    this.openTab--;
                 }
                 if (ImGui.beginMenu("New Root Tag")) {
                     this.newRootTag();
@@ -204,7 +205,6 @@ public class MainWindow extends Window {
             if (ImGui.menuItem(StringUtils.format(value))) {
                 Main.getInstance().getImGuiImpl().openPopup(new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
                     if (success) {
-                        System.out.println(tag);
                         if (tag != null && tag.tag == null) {
                             tag.settings.rootName = p.getName();
                             tag.tag = p.getTag();
