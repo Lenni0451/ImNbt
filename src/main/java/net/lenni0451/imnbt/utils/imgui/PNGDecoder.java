@@ -27,7 +27,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.lenni0451.imnbt.utils;
+package net.lenni0451.imnbt.utils.imgui;
 
 import java.io.EOFException;
 import java.io.IOException;

@@ -4,7 +4,7 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiTreeNodeFlags;
 import net.lenni0451.imnbt.Main;
-import net.lenni0451.imnbt.utils.ImageUtils;
+import net.lenni0451.imnbt.utils.imgui.ImageUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 

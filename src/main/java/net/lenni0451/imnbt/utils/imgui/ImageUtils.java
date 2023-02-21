@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils;
+package net.lenni0451.imnbt.utils.imgui;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;

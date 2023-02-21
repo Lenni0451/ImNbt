@@ -9,7 +9,7 @@ import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
-import net.lenni0451.imnbt.utils.ImageUtils;
+import net.lenni0451.imnbt.utils.imgui.ImageUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
 

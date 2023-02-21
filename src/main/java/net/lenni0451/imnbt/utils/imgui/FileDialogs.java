@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils;
+package net.lenni0451.imnbt.utils.imgui;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;

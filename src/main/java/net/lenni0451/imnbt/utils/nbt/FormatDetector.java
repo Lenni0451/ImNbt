@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils;
+package net.lenni0451.imnbt.utils.nbt;
 
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.EndianType;

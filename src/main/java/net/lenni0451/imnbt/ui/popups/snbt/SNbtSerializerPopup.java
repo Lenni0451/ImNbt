@@ -8,8 +8,8 @@ import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
-import static net.lenni0451.imnbt.utils.SNbtUtils.SERIALIZERS;
-import static net.lenni0451.imnbt.utils.SNbtUtils.SERIALIZER_NAMES;
+import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZERS;
+import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZER_NAMES;
 
 public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
 

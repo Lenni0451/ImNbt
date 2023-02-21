@@ -12,9 +12,9 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
-import net.lenni0451.imnbt.utils.FileDialogs;
 import net.lenni0451.imnbt.utils.StringUtils;
-import net.lenni0451.imnbt.utils.UnlimitedReadTracker;
+import net.lenni0451.imnbt.utils.imgui.FileDialogs;
+import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 

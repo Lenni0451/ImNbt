@@ -7,7 +7,7 @@ import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
-import net.lenni0451.imnbt.utils.FormatDetector;
+import net.lenni0451.imnbt.utils.nbt.FormatDetector;
 
 public class OpenFilePopup extends Popup<OpenFilePopup> {
 
