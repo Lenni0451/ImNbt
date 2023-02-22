@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.ui.nbt;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.ArrayUtils;
+import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.ByteArrayTag;
@@ -11,13 +12,14 @@ import net.lenni0451.mcstructs.nbt.tags.ByteTag;
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ByteArrayTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, String path, String name, @Nonnull INbtTag tag) {
         ByteArrayTag byteArrayTag = (ByteArrayTag) tag;
         this.renderBranch(name, "(" + byteArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(6);
@@ -49,10 +51,10 @@ public class ByteArrayTagRenderer implements TagRenderer {
                         } catch (Throwable ignored) {
                         }
                     }, newTag -> byteArrayTag.set(fi, newTag.getValue())).delete(() -> removed[0] = fi).render();
-                });
+                }, colorProvider);
             }
             if (removed[0] != -1) byteArrayTag.setValue(ArrayUtils.remove(byteArrayTag.getValue(), removed[0]));
-        });
+        }, colorProvider);
     }
 
     @Override

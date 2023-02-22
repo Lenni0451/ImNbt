@@ -3,16 +3,18 @@ package net.lenni0451.imnbt.ui.nbt;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
+import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ListTagRenderer implements TagRenderer {
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, String path, String name, @Nonnull INbtTag tag) {
         ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
         this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
             this.renderIcon(8);
@@ -34,10 +36,10 @@ public class ListTagRenderer implements TagRenderer {
                         listTag.getValue().add(newIndex, oldTag);
                     } catch (Throwable ignored) {
                     }
-                }, () -> removed[0] = fi, path + "[" + i + "]", String.valueOf(i), listEntry);
+                }, () -> removed[0] = fi, colorProvider, path + "[" + i + "]", String.valueOf(i), listEntry);
             }
             if (removed[0] != -1) listTag.getValue().remove(removed[0]);
-        });
+        }, colorProvider);
     }
 
     @Override

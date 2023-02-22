@@ -110,7 +110,7 @@ public class MainWindow extends Window {
                     if (ImGui.beginTabItem(tag.settings.rootName.isEmpty() ? "<empty>" : tag.settings.rootName, open)) {
                         this.openTab = i;
                         if (tag.tag == null) ImGui.text("No Nbt Tag present");
-                        else NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, "", tag.settings.rootName, tag.tag);
+                        else NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, p -> null, "", tag.settings.rootName, tag.tag);
 
                         ImGui.endTabItem();
                     }

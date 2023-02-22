@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.ui;
 import imgui.ImGui;
 import net.lenni0451.imnbt.ui.nbt.*;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
+import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
@@ -10,6 +11,7 @@ import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class NbtTreeRenderer {
 
@@ -34,10 +36,10 @@ public class NbtTreeRenderer {
         return TAG_RENDERER.get(type);
     }
 
-    public static void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final String path, final String name, final INbtTag tag) {
+    public static void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final String path, final String name, final INbtTag tag) {
         TagRenderer renderer = TAG_RENDERER.get(tag.getNbtType());
         if (renderer == null) ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
-        else renderer.render(nameEditConsumer, deleteListener, path, name, tag);
+        else renderer.render(nameEditConsumer, deleteListener, colorProvider, path, name, tag);
     }
 
 }
