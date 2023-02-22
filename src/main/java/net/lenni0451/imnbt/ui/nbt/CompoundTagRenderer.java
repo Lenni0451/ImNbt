@@ -27,7 +27,7 @@ public class CompoundTagRenderer implements TagRenderer {
                     //This gets executed multiple frames after the user clicked save in the popup
                     INbtTag oldTag = compoundTag.remove(entry.getKey());
                     compoundTag.add(newName, oldTag);
-                }, () -> removed[0] = entry.getKey(), colorProvider, path + "." + name, entry.getKey(), entry.getValue());
+                }, () -> removed[0] = entry.getKey(), colorProvider, path + "." + entry.getKey(), entry.getKey(), entry.getValue());
             }
             if (removed[0] != null) compoundTag.remove(removed[0]);
         }, colorProvider);
