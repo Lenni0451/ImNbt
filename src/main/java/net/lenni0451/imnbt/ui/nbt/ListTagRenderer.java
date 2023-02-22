@@ -34,7 +34,7 @@ public class ListTagRenderer implements TagRenderer {
                         listTag.getValue().add(newIndex, oldTag);
                     } catch (Throwable ignored) {
                     }
-                }, () -> removed[0] = fi, path + ">" + name, String.valueOf(i), listEntry);
+                }, () -> removed[0] = fi, path + "[" + i + "]", String.valueOf(i), listEntry);
             }
             if (removed[0] != -1) listTag.getValue().remove(removed[0]);
         });

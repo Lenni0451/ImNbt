@@ -35,7 +35,7 @@ public class LongArrayTagRenderer implements TagRenderer {
             int[] removed = new int[]{-1};
             for (int i = 0; i < longArrayTag.getLength(); i++) {
                 final int fi = i;
-                this.renderLeaf(String.valueOf(i), ": " + this.format.format(longArrayTag.get(i)) + "##" + i, path, () -> {
+                this.renderLeaf(String.valueOf(i), ": " + this.format.format(longArrayTag.get(i)), path + "[" + i + "]", () -> {
                     this.renderIcon(3);
                     ContextMenu.start().edit(String.valueOf(fi), new LongTag(longArrayTag.get(fi)), newName -> {
                         //This gets executed multiple frames after the user clicked save in the popup

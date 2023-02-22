@@ -19,7 +19,7 @@ public interface TagRenderer {
 
     default void renderBranch(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Runnable renderChildren) {
         ImGui.pushID(path);
-        boolean open = ImGui.treeNodeEx("    " + text + " " + suffix + "###" + text, ImGuiTreeNodeFlags.SpanAvailWidth);
+        boolean open = ImGui.treeNodeEx("    " + text + " " + suffix, ImGuiTreeNodeFlags.SpanAvailWidth);
         renderContextMenu.run();
         if (open) {
             renderChildren.run();
@@ -30,7 +30,7 @@ public interface TagRenderer {
 
     default void renderLeaf(final String text, final String suffix, final String path, final Runnable renderContextMenu) {
         ImGui.pushID(path);
-        boolean open = ImGui.treeNodeEx("    " + text + suffix + "###" + text + suffix, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth);
+        boolean open = ImGui.treeNodeEx("    " + text + suffix, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth);
         renderContextMenu.run();
         if (open) ImGui.treePop();
         ImGui.popID();
