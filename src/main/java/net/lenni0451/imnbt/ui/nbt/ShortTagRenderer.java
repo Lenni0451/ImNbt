@@ -17,7 +17,7 @@ public class ShortTagRenderer implements TagRenderer {
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         ShortTag shortTag = (ShortTag) tag;
-        this.renderLeaf(name + ": " + this.format.format(shortTag.getValue()), path, () -> {
+        this.renderLeaf(name, ": " + this.format.format(shortTag.getValue()), path, () -> {
             this.renderIcon(1);
             ContextMenu.start().edit(name, shortTag, nameEditConsumer, t -> shortTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });

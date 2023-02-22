@@ -18,7 +18,7 @@ public class FloatTagRenderer implements TagRenderer {
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
-        this.renderLeaf(name + ": " + this.format.format(floatTag.getValue()), path, () -> {
+        this.renderLeaf(name, ": " + this.format.format(floatTag.getValue()), path, () -> {
             this.renderIcon(4);
             ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> floatTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });

@@ -37,7 +37,7 @@ public class NbtTreeRenderer {
     public static void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final String path, final String name, final INbtTag tag) {
         TagRenderer renderer = TAG_RENDERER.get(tag.getNbtType());
         if (renderer == null) ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
-        else renderer.render(nameEditConsumer, deleteListener, path, name.isEmpty() ? "<empty>" : name, tag);
+        else renderer.render(nameEditConsumer, deleteListener, path, name, tag);
     }
 
 }

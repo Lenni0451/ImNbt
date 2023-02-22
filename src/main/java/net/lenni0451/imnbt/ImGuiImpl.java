@@ -8,6 +8,7 @@ import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
+import net.lenni0451.imnbt.ui.windows.DiffWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
 import net.lenni0451.imnbt.utils.imgui.ImageUtils;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +27,7 @@ public class ImGuiImpl extends Application {
 
     private final MainWindow mainWindow = new MainWindow();
     private final AboutWindow aboutWindow = new AboutWindow();
+    private final DiffWindow diffWindow = new DiffWindow();
 
     public ImGuiImpl() {
         this.window = this.mainWindow;
@@ -49,6 +51,10 @@ public class ImGuiImpl extends Application {
 
     public AboutWindow getAboutWindow() {
         return this.aboutWindow;
+    }
+
+    public DiffWindow getDiffWindow() {
+        return this.diffWindow;
     }
 
     public void showWindow(@Nonnull final Window window) {

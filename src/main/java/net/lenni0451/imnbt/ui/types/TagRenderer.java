@@ -28,9 +28,9 @@ public interface TagRenderer {
         ImGui.popID();
     }
 
-    default void renderLeaf(final String text, final String path, final Runnable renderContextMenu) {
+    default void renderLeaf(final String text, final String suffix, final String path, final Runnable renderContextMenu) {
         ImGui.pushID(path);
-        boolean open = ImGui.treeNodeEx("    " + text + "###" + text, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth);
+        boolean open = ImGui.treeNodeEx("    " + text + suffix + "###" + text + suffix, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth);
         renderContextMenu.run();
         if (open) ImGui.treePop();
         ImGui.popID();

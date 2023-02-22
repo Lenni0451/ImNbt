@@ -18,7 +18,7 @@ public class IntTagRenderer implements TagRenderer {
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, String path, String name, @Nonnull INbtTag tag) {
         IntTag intTag = (IntTag) tag;
-        this.renderLeaf(name + ": " + this.format.format(intTag.getValue()), path, () -> {
+        this.renderLeaf(name, ": " + this.format.format(intTag.getValue()), path, () -> {
             this.renderIcon(2);
             ContextMenu.start().edit(name, intTag, nameEditConsumer, t -> intTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
         });
