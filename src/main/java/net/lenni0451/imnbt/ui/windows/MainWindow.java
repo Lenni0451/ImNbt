@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.windows;
 
 import imgui.ImFont;
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
@@ -105,12 +106,17 @@ public class MainWindow extends Window {
                 for (int i = 0; i < this.tags.size(); i++) {
                     ImGui.pushID(i);
                     Tag tag = this.tags.get(i);
-                    if (ImGui.beginTabItem(tag.settings.rootName.isEmpty() ? "<empty>" : tag.settings.rootName)) {
+                    ImBoolean open = new ImBoolean(true);
+                    if (ImGui.beginTabItem(tag.settings.rootName.isEmpty() ? "<empty>" : tag.settings.rootName, open)) {
                         this.openTab = i;
                         if (tag.tag == null) ImGui.text("No Nbt Tag present");
                         else NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, "", tag.settings.rootName, tag.tag);
 
                         ImGui.endTabItem();
+                    }
+                    if (!open.get()) {
+                        this.tags.remove(i);
+                        i--;
                     }
                     ImGui.popID();
                 }
