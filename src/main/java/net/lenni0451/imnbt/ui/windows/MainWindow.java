@@ -132,8 +132,13 @@ public class MainWindow extends Window {
                     ImBoolean open = new ImBoolean(true);
                     if (ImGui.beginTabItem(tag.settings.rootName.isEmpty() ? "<empty>" : tag.settings.rootName, open)) {
                         this.openTab = i;
-                        if (tag.tag == null) ImGui.text("No Nbt Tag present");
-                        else NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, p -> null, true, "", tag.settings.rootName, tag.tag);
+                        if (tag.tag == null) {
+                            ImGui.text("No Nbt Tag present");
+                        } else {
+                            ImGui.beginChild("##NbtTree");
+                            NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, p -> null, true, "", tag.settings.rootName, tag.tag);
+                            ImGui.endChild();
+                        }
 
                         ImGui.endTabItem();
                     }
