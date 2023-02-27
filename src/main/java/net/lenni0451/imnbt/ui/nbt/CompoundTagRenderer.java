@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static net.lenni0451.imnbt.utils.NbtPath.get;
+
 public class CompoundTagRenderer implements TagRenderer {
 
     @Override
@@ -27,7 +29,7 @@ public class CompoundTagRenderer implements TagRenderer {
                     //This gets executed multiple frames after the user clicked save in the popup
                     INbtTag oldTag = compoundTag.remove(entry.getKey());
                     compoundTag.add(newName, oldTag);
-                }, () -> removed[0] = entry.getKey(), colorProvider, path + "." + entry.getKey(), entry.getKey(), entry.getValue());
+                }, () -> removed[0] = entry.getKey(), colorProvider, get(path, entry.getKey()), entry.getKey(), entry.getValue());
             }
             if (removed[0] != null) compoundTag.remove(removed[0]);
         }, colorProvider);

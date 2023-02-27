@@ -14,6 +14,8 @@ import java.text.DecimalFormat;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static net.lenni0451.imnbt.utils.NbtPath.get;
+
 public class ByteArrayTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
@@ -37,7 +39,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
             int[] removed = new int[]{-1};
             for (int i = 0; i < byteArrayTag.getLength(); i++) {
                 final int fi = i;
-                this.renderLeaf(String.valueOf(i), ": " + this.format.format(byteArrayTag.get(i)), path + "[" + i + "]", () -> {
+                this.renderLeaf(String.valueOf(i), ": " + this.format.format(byteArrayTag.get(i)), get(path, i), () -> {
                     this.renderIcon(0);
                     ContextMenu.start().edit(String.valueOf(fi), new ByteTag(byteArrayTag.get(fi)), newName -> {
                         //This gets executed multiple frames after the user clicked save in the popup

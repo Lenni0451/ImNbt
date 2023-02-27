@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static net.lenni0451.imnbt.utils.NbtPath.get;
+
 public class ListTagRenderer implements TagRenderer {
 
     @Override
@@ -36,7 +38,7 @@ public class ListTagRenderer implements TagRenderer {
                         listTag.getValue().add(newIndex, oldTag);
                     } catch (Throwable ignored) {
                     }
-                }, () -> removed[0] = fi, colorProvider, path + "[" + i + "]", String.valueOf(i), listEntry);
+                }, () -> removed[0] = fi, colorProvider, get(path, i), String.valueOf(i), listEntry);
             }
             if (removed[0] != -1) listTag.getValue().remove(removed[0]);
         }, colorProvider);
