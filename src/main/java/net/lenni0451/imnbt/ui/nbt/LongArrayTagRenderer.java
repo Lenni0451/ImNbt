@@ -40,26 +40,29 @@ public class LongArrayTagRenderer implements TagRenderer {
         }, () -> {
             int[] removed = new int[]{-1};
             for (int i = 0; i < longArrayTag.getLength(); i++) {
-                final int fi = i;
-                this.renderLeaf(String.valueOf(i), ": " + this.format.format(longArrayTag.get(i)), get(path, i), () -> {
-                    this.renderIcon(3);
-                    if (openContextMenu) {
-                        ContextMenu.start().edit(String.valueOf(fi), new LongTag(longArrayTag.get(fi)), newName -> {
-                            //This gets executed multiple frames after the user clicked save in the popup
-                            try {
-                                int newIndex = Integer.parseInt(newName);
-                                if (newIndex < 0 || newIndex >= longArrayTag.getLength() || newIndex == fi) return;
-                                long val = longArrayTag.get(fi);
-                                long[] newValue = ArrayUtils.remove(longArrayTag.getValue(), fi);
-                                newValue = ArrayUtils.insert(newValue, newIndex, val);
-                                longArrayTag.setValue(newValue);
-                            } catch (Throwable ignored) {
-                            }
-                        }, newTag -> longArrayTag.set(fi, newTag.getValue())).delete(() -> removed[0] = fi).render();
-                    }
-                }, colorProvider);
+                this.renderLong(longArrayTag, i, removed, colorProvider, openContextMenu, path + "." + i);
             }
             if (removed[0] != -1) longArrayTag.setValue(ArrayUtils.remove(longArrayTag.getValue(), removed[0]));
+        }, colorProvider);
+    }
+
+    private void renderLong(final LongArrayTag longArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path) {
+        this.renderLeaf(String.valueOf(index), ": " + this.format.format(longArrayTag.get(index)), get(path, index), () -> {
+            this.renderIcon(3);
+            if (openContextMenu) {
+                ContextMenu.start().edit(String.valueOf(index), new LongTag(longArrayTag.get(index)), newName -> {
+                    //This gets executed multiple frames after the user clicked save in the popup
+                    try {
+                        int newIndex = Integer.parseInt(newName);
+                        if (newIndex < 0 || newIndex >= longArrayTag.getLength() || newIndex == index) return;
+                        long val = longArrayTag.get(index);
+                        long[] newValue = ArrayUtils.remove(longArrayTag.getValue(), index);
+                        newValue = ArrayUtils.insert(newValue, newIndex, val);
+                        longArrayTag.setValue(newValue);
+                    } catch (Throwable ignored) {
+                    }
+                }, newTag -> longArrayTag.set(index, newTag.getValue())).delete(() -> removed[0] = index).render();
+            }
         }, colorProvider);
     }
 

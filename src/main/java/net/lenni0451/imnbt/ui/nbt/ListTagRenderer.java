@@ -29,21 +29,24 @@ public class ListTagRenderer implements TagRenderer {
         }, () -> {
             int[] removed = new int[]{-1};
             for (int i = 0; i < listTag.size(); i++) {
-                final int fi = i;
                 INbtTag listEntry = listTag.get(i);
-                NbtTreeRenderer.render(newName -> {
-                    //This gets executed multiple frames after the user clicked save in the popup
-                    try {
-                        int newIndex = Integer.parseInt(newName);
-                        if (newIndex < 0 || newIndex >= listTag.size() || newIndex == fi) return;
-                        INbtTag oldTag = listTag.getValue().remove(fi);
-                        listTag.getValue().add(newIndex, oldTag);
-                    } catch (Throwable ignored) {
-                    }
-                }, () -> removed[0] = fi, colorProvider, openContextMenu, get(path, i), String.valueOf(i), listEntry);
+                this.renderEntry(listTag, listEntry, i, removed, colorProvider, openContextMenu, path);
             }
             if (removed[0] != -1) listTag.getValue().remove(removed[0]);
         }, colorProvider);
+    }
+
+    private void renderEntry(final ListTag<INbtTag> listTag, final INbtTag entry, final int i, final int[] removed, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path) {
+        NbtTreeRenderer.render(newName -> {
+            //This gets executed multiple frames after the user clicked save in the popup
+            try {
+                int newIndex = Integer.parseInt(newName);
+                if (newIndex < 0 || newIndex >= listTag.size() || newIndex == i) return;
+                INbtTag oldTag = listTag.getValue().remove(i);
+                listTag.getValue().add(newIndex, oldTag);
+            } catch (Throwable ignored) {
+            }
+        }, () -> removed[0] = i, colorProvider, openContextMenu, get(path, i), String.valueOf(i), entry);
     }
 
     @Override

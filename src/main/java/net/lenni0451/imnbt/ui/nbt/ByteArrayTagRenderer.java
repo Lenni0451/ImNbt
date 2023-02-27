@@ -40,26 +40,29 @@ public class ByteArrayTagRenderer implements TagRenderer {
         }, () -> {
             int[] removed = new int[]{-1};
             for (int i = 0; i < byteArrayTag.getLength(); i++) {
-                final int fi = i;
-                this.renderLeaf(String.valueOf(i), ": " + this.format.format(byteArrayTag.get(i)), get(path, i), () -> {
-                    this.renderIcon(0);
-                    if (openContextMenu) {
-                        ContextMenu.start().edit(String.valueOf(fi), new ByteTag(byteArrayTag.get(fi)), newName -> {
-                            //This gets executed multiple frames after the user clicked save in the popup
-                            try {
-                                int newIndex = Integer.parseInt(newName);
-                                if (newIndex < 0 || newIndex >= byteArrayTag.getLength() || newIndex == fi) return;
-                                byte val = byteArrayTag.get(fi);
-                                byte[] newValue = ArrayUtils.remove(byteArrayTag.getValue(), fi);
-                                newValue = ArrayUtils.insert(newValue, newIndex, val);
-                                byteArrayTag.setValue(newValue);
-                            } catch (Throwable ignored) {
-                            }
-                        }, newTag -> byteArrayTag.set(fi, newTag.getValue())).delete(() -> removed[0] = fi).render();
-                    }
-                }, colorProvider);
+                this.renderByte(byteArrayTag, i, removed, colorProvider, openContextMenu, path);
             }
             if (removed[0] != -1) byteArrayTag.setValue(ArrayUtils.remove(byteArrayTag.getValue(), removed[0]));
+        }, colorProvider);
+    }
+
+    private void renderByte(final ByteArrayTag byteArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path) {
+        this.renderLeaf(String.valueOf(index), ": " + this.format.format(byteArrayTag.get(index)), get(path, index), () -> {
+            this.renderIcon(0);
+            if (openContextMenu) {
+                ContextMenu.start().edit(String.valueOf(index), new ByteTag(byteArrayTag.get(index)), newName -> {
+                    //This gets executed multiple frames after the user clicked save in the popup
+                    try {
+                        int newIndex = Integer.parseInt(newName);
+                        if (newIndex < 0 || newIndex >= byteArrayTag.getLength() || newIndex == index) return;
+                        byte val = byteArrayTag.get(index);
+                        byte[] newValue = ArrayUtils.remove(byteArrayTag.getValue(), index);
+                        newValue = ArrayUtils.insert(newValue, newIndex, val);
+                        byteArrayTag.setValue(newValue);
+                    } catch (Throwable ignored) {
+                    }
+                }, newTag -> byteArrayTag.set(index, newTag.getValue())).delete(() -> removed[0] = index).render();
+            }
         }, colorProvider);
     }
 

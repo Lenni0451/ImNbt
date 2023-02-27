@@ -27,14 +27,18 @@ public class CompoundTagRenderer implements TagRenderer {
         }, () -> {
             String[] removed = new String[1];
             for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
-                NbtTreeRenderer.render(newName -> {
-                    //This gets executed multiple frames after the user clicked save in the popup
-                    INbtTag oldTag = compoundTag.remove(entry.getKey());
-                    compoundTag.add(newName, oldTag);
-                }, () -> removed[0] = entry.getKey(), colorProvider, openContextMenu, get(path, entry.getKey()), entry.getKey(), entry.getValue());
+                this.renderEntry(compoundTag, entry.getKey(), entry.getValue(), removed, colorProvider, openContextMenu, path);
             }
             if (removed[0] != null) compoundTag.remove(removed[0]);
         }, colorProvider);
+    }
+
+    private void renderEntry(final CompoundTag compoundTag, final String key, final INbtTag value, final String[] removed, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path) {
+        NbtTreeRenderer.render(newName -> {
+            //This gets executed multiple frames after the user clicked save in the popup
+            INbtTag oldTag = compoundTag.remove(key);
+            compoundTag.add(newName, oldTag);
+        }, () -> removed[0] = key, colorProvider, openContextMenu, get(path, key), key, value);
     }
 
     @Override
