@@ -1,5 +1,7 @@
 package net.lenni0451.imnbt.ui.nbt;
 
+import imgui.ImGui;
+import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.ArrayUtils;
@@ -11,6 +13,8 @@ import net.lenni0451.mcstructs.nbt.tags.IntTag;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -18,6 +22,7 @@ import static net.lenni0451.imnbt.utils.NbtPath.get;
 
 public class IntArrayTagRenderer implements TagRenderer {
 
+    private final Map<String, int[]> pageCache = new HashMap<>();
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
@@ -39,8 +44,23 @@ public class IntArrayTagRenderer implements TagRenderer {
             }
         }, () -> {
             int[] removed = new int[]{-1};
-            for (int i = 0; i < intArrayTag.getLength(); i++) {
-                this.renderInt(intArrayTag, i, removed, colorProvider, openContextMenu, path);
+            int pages = (int) Math.ceil(intArrayTag.getLength() / (float) Main.LINES_PER_PAGE);
+            if (pages == 1) {
+                for (int i = 0; i < intArrayTag.getLength(); i++) {
+                    this.renderInt(intArrayTag, i, removed, colorProvider, openContextMenu, path);
+                }
+            } else {
+                ImGui.text("Page");
+                ImGui.sameLine();
+                ImGui.setNextItemWidth(1 - 2);
+                int[] page = this.pageCache.computeIfAbsent(path, p -> new int[]{1});
+                ImGui.sliderInt("##page " + path, page, 1, pages);
+
+                int start = (Math.max(1, Math.min(page[0], pages)) - 1) * Main.LINES_PER_PAGE;
+                int end = Math.min(start + Main.LINES_PER_PAGE, intArrayTag.getLength());
+                for (int i = start; i < end; i++) {
+                    this.renderInt(intArrayTag, i, removed, colorProvider, openContextMenu, path);
+                }
             }
             if (removed[0] != -1) intArrayTag.setValue(ArrayUtils.remove(intArrayTag.getValue(), removed[0]));
         }, colorProvider);

@@ -5,6 +5,7 @@ import imgui.app.Application;
 public class Main {
 
     public static final String VERSION = "${version}";
+    public static final int LINES_PER_PAGE = 500;
     private static Main instance;
 
     public static void main(String[] args) {
