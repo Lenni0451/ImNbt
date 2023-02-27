@@ -24,7 +24,7 @@ public interface TagRenderer {
         ImGui.pushID(path);
         Color color = colorProvider.apply(path);
         if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
-        boolean open = ImGui.treeNodeEx("    " + text + " " + suffix, ImGuiTreeNodeFlags.SpanAvailWidth);
+        boolean open = ImGui.treeNodeEx("    " + text + " " + suffix + "###    " + text, ImGuiTreeNodeFlags.SpanAvailWidth);
         if (color != null) ImGui.popStyleColor();
         renderContextMenu.run();
         if (open) {
