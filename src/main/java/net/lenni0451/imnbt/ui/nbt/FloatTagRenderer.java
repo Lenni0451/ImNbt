@@ -17,6 +17,10 @@ public class FloatTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
 
+    public FloatTagRenderer() {
+        this.format.setMaximumFractionDigits(Float.MAX_EXPONENT);
+    }
+
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;

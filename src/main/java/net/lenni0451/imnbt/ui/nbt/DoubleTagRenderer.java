@@ -17,6 +17,10 @@ public class DoubleTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
 
+    public DoubleTagRenderer() {
+        this.format.setMaximumFractionDigits(Double.MAX_EXPONENT);
+    }
+
     @Override
     public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         DoubleTag doubleTag = (DoubleTag) tag;
