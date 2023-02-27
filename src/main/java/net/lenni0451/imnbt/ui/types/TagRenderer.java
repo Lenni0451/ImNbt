@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public interface TagRenderer {
 
-    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final String path, final String name, @Nonnull final INbtTag tag);
+    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
 
     void renderValueEditor(final INbtTag tag);
 

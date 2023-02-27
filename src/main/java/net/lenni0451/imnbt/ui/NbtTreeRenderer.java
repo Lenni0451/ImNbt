@@ -36,10 +36,10 @@ public class NbtTreeRenderer {
         return TAG_RENDERER.get(type);
     }
 
-    public static void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final String path, final String name, final INbtTag tag) {
+    public static void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path, final String name, final INbtTag tag) {
         TagRenderer renderer = TAG_RENDERER.get(tag.getNbtType());
         if (renderer == null) ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
-        else renderer.render(nameEditConsumer, deleteListener, colorProvider, path, name, tag);
+        else renderer.render(nameEditConsumer, deleteListener, colorProvider, openContextMenu, path, name, tag);
     }
 
 }

@@ -18,11 +18,13 @@ public class IntTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         IntTag intTag = (IntTag) tag;
         this.renderLeaf(name, ": " + this.format.format(intTag.getValue()), path, () -> {
             this.renderIcon(2);
-            ContextMenu.start().edit(name, intTag, nameEditConsumer, t -> intTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            if (openContextMenu) {
+                ContextMenu.start().edit(name, intTag, nameEditConsumer, t -> intTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            }
         }, colorProvider);
     }
 

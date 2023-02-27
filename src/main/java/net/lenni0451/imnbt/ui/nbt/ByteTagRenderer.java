@@ -17,11 +17,13 @@ public class ByteTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ByteTag byteTag = (ByteTag) tag;
         this.renderLeaf(name, ": " + this.format.format(byteTag.getValue()), path, () -> {
             this.renderIcon(0);
-            ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            if (openContextMenu) {
+                ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            }
         }, colorProvider);
     }
 

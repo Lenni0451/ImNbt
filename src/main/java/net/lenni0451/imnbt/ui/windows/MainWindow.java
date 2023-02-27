@@ -31,10 +31,13 @@ public class MainWindow extends Window {
     private static final String SUCCESS_SAVE = "Successfully saved the Nbt Tag.";
     private static final String ERROR_OPEN = "An unknown error occurred while opening the Nbt Tag.";
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
+    private static final String REQUIRE_BOTH_DIFF_TAGS = "You need to select two Nbt Tags to compare them.";
 
 
     private final List<Tag> tags = new ArrayList<>();
     private int openTab;
+    private INbtTag leftDiff;
+    private INbtTag rightDiff;
 
     @Override
     public void render() {
@@ -92,6 +95,26 @@ public class MainWindow extends Window {
 
                 ImGui.endMenu();
             }
+            if (ImGui.beginMenu("Diff")) {
+                if (ImGui.menuItem("Select Left", "", this.leftDiff != null)) {
+                    if (this.hasTag()) this.leftDiff = this.tags.get(this.openTab).tag;
+                    else Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
+                }
+                if (ImGui.menuItem("Select Right", "", this.rightDiff != null)) {
+                    if (this.hasTag()) this.rightDiff = this.tags.get(this.openTab).tag;
+                    else Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
+                }
+                if (ImGui.menuItem("Diff")) {
+                    if (this.leftDiff == null || this.rightDiff == null) {
+                        Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", REQUIRE_BOTH_DIFF_TAGS, close()));
+                    } else {
+                        Main.getInstance().getImGuiImpl().getDiffWindow().diff(this.leftDiff, this.rightDiff);
+                        Main.getInstance().getImGuiImpl().getDiffWindow().show();
+                    }
+                }
+
+                ImGui.endMenu();
+            }
             if (ImGui.menuItem("About")) {
                 Main.getInstance().getImGuiImpl().getAboutWindow().show();
             }
@@ -110,7 +133,7 @@ public class MainWindow extends Window {
                     if (ImGui.beginTabItem(tag.settings.rootName.isEmpty() ? "<empty>" : tag.settings.rootName, open)) {
                         this.openTab = i;
                         if (tag.tag == null) ImGui.text("No Nbt Tag present");
-                        else NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, p -> null, "", tag.settings.rootName, tag.tag);
+                        else NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, p -> null, true, "", tag.settings.rootName, tag.tag);
 
                         ImGui.endTabItem();
                     }

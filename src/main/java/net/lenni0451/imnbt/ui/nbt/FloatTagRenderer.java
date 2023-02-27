@@ -18,11 +18,13 @@ public class FloatTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
         this.renderLeaf(name, ": " + this.format.format(floatTag.getValue()), path, () -> {
             this.renderIcon(4);
-            ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> floatTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            if (openContextMenu) {
+                ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> floatTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            }
         }, colorProvider);
     }
 

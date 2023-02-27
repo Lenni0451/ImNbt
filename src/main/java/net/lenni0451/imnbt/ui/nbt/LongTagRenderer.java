@@ -19,11 +19,13 @@ public class LongTagRenderer implements TagRenderer {
     private final ImString longInput = new ImString(128);
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         LongTag longTag = (LongTag) tag;
         this.renderLeaf(name, ": " + this.format.format(longTag.getValue()), path, () -> {
             this.renderIcon(3);
-            ContextMenu.start().edit(name, longTag, nameEditConsumer, t -> longTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            if (openContextMenu) {
+                ContextMenu.start().edit(name, longTag, nameEditConsumer, t -> longTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+            }
         }, colorProvider);
     }
 
