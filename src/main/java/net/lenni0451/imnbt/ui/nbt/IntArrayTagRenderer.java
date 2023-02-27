@@ -45,7 +45,7 @@ public class IntArrayTagRenderer implements TagRenderer {
         }, () -> {
             int[] removed = new int[]{-1};
             int pages = (int) Math.ceil(intArrayTag.getLength() / (float) Main.LINES_PER_PAGE);
-            if (pages == 1) {
+            if (pages <= 1) {
                 for (int i = 0; i < intArrayTag.getLength(); i++) {
                     this.renderInt(intArrayTag, i, removed, colorProvider, openContextMenu, path);
                 }

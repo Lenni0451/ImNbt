@@ -45,7 +45,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
         }, () -> {
             int[] removed = new int[]{-1};
             int pages = (int) Math.ceil(byteArrayTag.getLength() / (float) Main.LINES_PER_PAGE);
-            if (pages == 1) {
+            if (pages <= 1) {
                 for (int i = 0; i < byteArrayTag.getLength(); i++) {
                     this.renderByte(byteArrayTag, i, removed, colorProvider, openContextMenu, path);
                 }

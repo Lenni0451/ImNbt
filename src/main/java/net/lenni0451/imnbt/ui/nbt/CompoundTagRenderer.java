@@ -34,7 +34,7 @@ public class CompoundTagRenderer implements TagRenderer {
         }, () -> {
             String[] removed = new String[1];
             int pages = (int) Math.ceil(compoundTag.size() / (float) Main.LINES_PER_PAGE);
-            if (pages == 1) {
+            if (pages <= 1) {
                 for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
                     this.renderEntry(compoundTag, entry.getKey(), entry.getValue(), removed, colorProvider, openContextMenu, path);
                 }

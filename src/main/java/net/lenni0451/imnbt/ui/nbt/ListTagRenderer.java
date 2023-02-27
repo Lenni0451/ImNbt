@@ -35,7 +35,7 @@ public class ListTagRenderer implements TagRenderer {
         }, () -> {
             int[] removed = new int[]{-1};
             int pages = (int) Math.ceil(listTag.size() / (float) Main.LINES_PER_PAGE);
-            if (pages == 1) {
+            if (pages <= 1) {
                 for (int i = 0; i < listTag.size(); i++) {
                     this.renderEntry(listTag, listTag.get(i), i, removed, colorProvider, openContextMenu, path);
                 }
