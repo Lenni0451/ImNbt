@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.windows;
 
 import imgui.ImFont;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.type.ImBoolean;
 import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.TagSettings;
@@ -13,9 +14,11 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
+import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.imgui.FileDialogs;
 import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
+import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
@@ -111,6 +114,16 @@ public class MainWindow extends Window {
                         Main.getInstance().getImGuiImpl().getDiffWindow().diff(this.leftDiff, this.rightDiff);
                         Main.getInstance().getImGuiImpl().getDiffWindow().show();
                     }
+                }
+                if (ImGui.beginMenu("Legend")) {
+                    for (DiffType value : DiffType.values()) {
+                        Color color = value.getColor();
+                        if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
+                        ImGui.text(StringUtils.format(value));
+                        if (color != null) ImGui.popStyleColor();
+                    }
+
+                    ImGui.endMenu();
                 }
 
                 ImGui.endMenu();
