@@ -1,7 +1,7 @@
 package net.lenni0451.imnbt.utils.nbt.diff;
 
-import net.lenni0451.imnbt.utils.NbtPath;
 import net.lenni0451.imnbt.utils.TriConsumer;
+import net.lenni0451.imnbt.utils.nbt.NbtPath;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.*;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static net.lenni0451.imnbt.utils.NbtPath.get;
+import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
 public class DiffMap {
 

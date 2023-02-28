@@ -3,7 +3,7 @@ package net.lenni0451.imnbt.utils.nbt.diff;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.*;
 
-import static net.lenni0451.imnbt.utils.NbtPath.get;
+import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
 public class Differ {
 

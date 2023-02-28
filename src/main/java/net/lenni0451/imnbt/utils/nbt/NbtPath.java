@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils;
+package net.lenni0451.imnbt.utils.nbt;
 
 import java.util.ArrayList;
 import java.util.List;

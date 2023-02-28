@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static net.lenni0451.imnbt.utils.NbtPath.get;
+import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
 public class IntArrayTagRenderer implements TagRenderer {
 
