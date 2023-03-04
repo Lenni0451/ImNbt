@@ -1,9 +1,13 @@
 package net.lenni0451.imnbt.ui.windows;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.types.Window;
+import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffMap;
+import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.imnbt.utils.nbt.diff.Differ;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
@@ -25,6 +29,17 @@ public class DiffWindow extends Window {
         if (ImGui.beginMenuBar()) {
             if (ImGui.menuItem("Close")) {
                 this.hide();
+            }
+            ImGui.separator();
+            boolean first = true;
+            for (DiffType value : DiffType.values()) {
+                if (first) first = false;
+                else ImGui.sameLine();
+
+                Color color = value.getColor();
+                if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
+                ImGui.text(StringUtils.format(value));
+                if (color != null) ImGui.popStyleColor();
             }
 
             ImGui.endMenuBar();
