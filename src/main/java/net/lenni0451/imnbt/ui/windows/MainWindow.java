@@ -85,8 +85,13 @@ public class MainWindow extends Window {
                     Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
                     Main.getInstance().getImGuiImpl().openPopup(new SNbtParserPopup((p, success) -> {
                         if (success) {
-                            if (tag != null && tag.tag == null) tag.tag = p.getParsedTag();
-                            else this.tags.add(new Tag(p.getParsedTag()));
+                            if (tag != null && tag.tag == null) {
+                                tag.settings.rootName = "";
+                                tag.tag = p.getParsedTag();
+                                tag.fileName = null;
+                            } else {
+                                this.tags.add(new Tag(p.getParsedTag()));
+                            }
                         }
                         Main.getInstance().getImGuiImpl().closePopup();
                     }));
@@ -143,13 +148,20 @@ public class MainWindow extends Window {
                     ImGui.pushID(i);
                     Tag tag = this.tags.get(i);
                     ImBoolean open = new ImBoolean(true);
-                    if (ImGui.beginTabItem(tag.settings.rootName.isEmpty() ? "<empty>" : tag.settings.rootName, open)) {
+                    String tabName = tag.settings.rootName;
+                    if (tabName.isEmpty()) tabName = tag.fileName;
+                    if (tabName == null) tabName = "<empty>";
+                    if (ImGui.beginTabItem(tabName, open)) {
                         this.openTab = i;
                         if (tag.tag == null) {
                             ImGui.text("No Nbt Tag present");
                         } else {
                             ImGui.beginChild("##NbtTree");
-                            NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> tag.tag = null, p -> null, true, "", tag.settings.rootName, tag.tag);
+                            NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> {
+                                tag.settings.rootName = "";
+                                tag.tag = null;
+                                tag.fileName = null;
+                            }, p -> null, true, "", tag.settings.rootName, tag.tag);
                             ImGui.endChild();
                         }
 
@@ -174,24 +186,25 @@ public class MainWindow extends Window {
     private void open() {
         String response = FileDialogs.open("Open Nbt Tag");
         if (response == null) return;
+        File file = new File(response);
 
         byte[] data;
-        try (FileInputStream fis = new FileInputStream(response)) {
+        try (FileInputStream fis = new FileInputStream(file)) {
             data = fis.readAllBytes();
         } catch (Throwable t) {
             t.printStackTrace();
             Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, close()));
             return;
         }
-        this.open(data);
+        this.open(data, file.getName());
     }
 
     @Override
     public void dragAndDrop(File file, byte[] data) {
-        this.open(data);
+        this.open(data, file.getName());
     }
 
-    private void open(final byte[] data) {
+    private void open(final byte[] data, final String fileName) {
         Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
         Main.getInstance().getImGuiImpl().openPopup(new OpenFilePopup(data, (p, success) -> {
             if (success) {
@@ -201,8 +214,11 @@ public class MainWindow extends Window {
                     if (tag != null && tag.tag == null) {
                         tag.settings = p.getTagSettings();
                         tag.tag = nbtTag;
+                        tag.fileName = fileName;
                     } else {
-                        this.tags.add(new Tag(p.getTagSettings(), nbtTag));
+                        Tag readTag = new Tag(p.getTagSettings(), nbtTag);
+                        readTag.fileName = fileName;
+                        this.tags.add(readTag);
                     }
                     Main.getInstance().getImGuiImpl().closePopup();
                 } catch (Throwable t) {
@@ -255,6 +271,7 @@ public class MainWindow extends Window {
                         if (tag != null && tag.tag == null) {
                             tag.settings.rootName = p.getName();
                             tag.tag = p.getTag();
+                            tag.fileName = null;
                         } else {
                             Tag newTag = new Tag(p.getTag());
                             newTag.settings.rootName = p.getName();
@@ -272,6 +289,7 @@ public class MainWindow extends Window {
     private static class Tag {
         private TagSettings settings;
         private INbtTag tag;
+        private String fileName;
 
         private Tag(final INbtTag tag) {
             this(new TagSettings(), tag);
