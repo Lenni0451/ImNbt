@@ -53,8 +53,10 @@ public class MainWindow extends Window {
                     this.save();
                 }
                 if (ImGui.menuItem("Close")) {
-                    this.tags.remove(this.openTab);
-                    this.openTab--;
+                    if (!this.tags.isEmpty()) {
+                        this.tags.remove(this.openTab);
+                        this.openTab--;
+                    }
                 }
                 if (ImGui.beginMenu("New Root Tag")) {
                     this.newRootTag();
