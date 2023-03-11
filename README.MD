@@ -5,6 +5,33 @@ A Nbt viewer and editor using ImGui.
 You can download the latest release from the [releases page](https://github.com/Lenni0451/ImNbt/releases/latest) on GitHub.\
 The latest dev build can be found on my [Jenkins Server](https://build.lenni0451.net/job/ImNbt/).
 
+## Features
+ - View Nbt tags in a tree view
+ - Supported Formats:
+   - Java/Bedrock
+   - Little/Big Endian
+   - GZip compressed/uncompressed
+ - Edit all tag types
+ - Pages for huge tags
+ - SNbt parsing and serialization
+ - Diff viewer for two tags
+ - Drag and drop support
+
+<details>
+    <summary>Images of the GUI</summary>
+
+### Main window
+![Main window](images/main.jpg)
+### Open file
+![Open file](images/open.jpg)
+### Opened tag
+![Loaded tag](images/tag.jpg)
+### Edit tag
+![Edit string tag](images/edit_string.jpg)
+### Diff two tags
+![Diff two tags](images/diff.jpg)
+</details>
+
 ## Running
 ImNbt is written in Java 17 and thus requires a java 17 runtime to run.
 
