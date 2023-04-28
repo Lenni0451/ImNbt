@@ -21,6 +21,7 @@ import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
+import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -212,13 +213,24 @@ public class MainWindow extends Window {
             if (success) {
                 try {
                     DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(new ByteArrayInputStream(data)));
-                    INbtTag nbtTag = p.getTagSettings().formatType.getNbtIO().read(dataInput, UnlimitedReadTracker.INSTANCE);
+                    NamedTag namedTag = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
                     if (tag != null && tag.tag == null) {
                         tag.settings = p.getTagSettings();
-                        tag.tag = nbtTag;
+                        if (namedTag == null) {
+                            tag.tag = null;
+                        } else {
+                            tag.settings.rootName = namedTag.getName();
+                            tag.tag = namedTag.getTag();
+                        }
                         tag.fileName = fileName;
                     } else {
-                        Tag readTag = new Tag(p.getTagSettings(), nbtTag);
+                        Tag readTag;
+                        if (namedTag == null) {
+                            readTag = new Tag(p.getTagSettings(), null);
+                        } else {
+                            readTag = new Tag(p.getTagSettings(), namedTag.getTag());
+                            readTag.settings.rootName = namedTag.getName();
+                        }
                         readTag.fileName = fileName;
                         this.tags.add(readTag);
                     }
