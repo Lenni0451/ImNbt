@@ -5,7 +5,6 @@ import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,20 +96,18 @@ public class NbtPath {
         return parts.toArray(new String[0]);
     }
 
-    public static Map<String, INbtTag> getTags(final INbtTag tag, final String path) {
-        Map<String, INbtTag> tags = new HashMap<>();
+    public static void getTags(final Map<String, INbtTag> tags, final INbtTag tag, final String path) {
         tags.put(path, tag);
         switch (tag.getNbtType()) {
             case LIST -> {
                 ListTag<?> list = tag.asListTag();
-                for (int i = 0; i < list.size(); i++) tags.putAll(getTags(list.get(i), get(path, i)));
+                for (int i = 0; i < list.size(); i++) getTags(tags, list.get(i), get(path, i));
             }
             case COMPOUND -> {
                 CompoundTag compound = tag.asCompoundTag();
-                for (Map.Entry<String, INbtTag> entry : compound.getValue().entrySet()) tags.putAll(getTags(entry.getValue(), get(path, entry.getKey())));
+                for (Map.Entry<String, INbtTag> entry : compound.getValue().entrySet()) getTags(tags, entry.getValue(), get(path, entry.getKey()));
             }
         }
-        return tags;
     }
 
 

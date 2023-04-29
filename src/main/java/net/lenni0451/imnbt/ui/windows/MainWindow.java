@@ -93,6 +93,13 @@ public class MainWindow extends Window {
                     Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
                     if (tag != null) this.searchProvider.buildSearchPaths(tag.tag);
                 }
+                if (ImGui.button("Back")) {
+                    this.searchProvider.setDoScroll(SearchProvider.SearchDirection.BACK);
+                }
+                ImGui.sameLine();
+                if (ImGui.button("Next")) {
+                    this.searchProvider.setDoScroll(SearchProvider.SearchDirection.NEXT);
+                }
 
                 ImGui.endMenu();
             }

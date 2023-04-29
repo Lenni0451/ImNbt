@@ -54,6 +54,8 @@ public interface TagRenderer {
             ImVec2 size = ImGui.getItemRectMax();
 
             ImGui.getWindowDrawList().addRectFilled(pos.x, pos.y, size.x, size.y, 0x80FFFFFF);
+
+            if (searchProvider.shouldDoScroll(path)) ImGui.setScrollHereY();
         }
     }
 

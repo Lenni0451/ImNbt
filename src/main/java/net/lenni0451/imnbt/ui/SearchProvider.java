@@ -5,15 +5,14 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.tags.StringTag;
 
 import javax.annotation.Nullable;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SearchProvider {
 
-    private final Set<String> searchPaths = new LinkedHashSet<>();
+    private final List<String> searchPaths = new ArrayList<>();
     private final Set<String> expandPaths = new LinkedHashSet<>();
     private String search = "";
+    private int currentScrollIndex = -1;
     private boolean doScroll = false;
 
     public void setSearch(final String search) {
@@ -21,15 +20,14 @@ public class SearchProvider {
     }
 
     public void buildSearchPaths(@Nullable final INbtTag tag) {
-        if (this.search.isEmpty() || tag == null) {
-            this.searchPaths.clear();
-            this.expandPaths.clear();
-            return;
-        }
-
         this.searchPaths.clear();
         this.expandPaths.clear();
-        Map<String, INbtTag> tags = NbtPath.getTags(tag, "");
+        this.currentScrollIndex = -1;
+        this.doScroll = false;
+        if (this.search.isEmpty() || tag == null) return;
+
+        Map<String, INbtTag> tags = new LinkedHashMap<>();
+        NbtPath.getTags(tags, tag, "");
         for (Map.Entry<String, INbtTag> entry : tags.entrySet()) {
             NbtPath.IPathNode[] paths = NbtPath.parse(entry.getKey());
             String name = paths[paths.length - 1].name();
@@ -93,24 +91,38 @@ public class SearchProvider {
     }
 
     public boolean isTargeted(final String path) {
-        if (this.search.isEmpty()) return false;
+        if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
         return this.searchPaths.contains(path);
     }
 
     public boolean isExpanded(final String path) {
-        if (this.search.isEmpty()) return false;
+        if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
         return this.expandPaths.contains(path);
     }
 
-    public void setDoScroll(final boolean doScroll) {
-        this.doScroll = doScroll;
+    public void setDoScroll(final SearchDirection direction) {
+        if (this.search.isEmpty() || this.searchPaths.isEmpty()) return;
+        this.doScroll = true;
+        this.currentScrollIndex += switch (direction) {
+            case BACK -> -1;
+            case NEXT -> 1;
+        };
+        this.currentScrollIndex %= this.searchPaths.size();
+        if (this.currentScrollIndex < 0) this.currentScrollIndex = this.searchPaths.size() - 1;
     }
 
-    public boolean shouldDoScroll() {
-        if (this.doScroll) {
+    public boolean shouldDoScroll(final String path) {
+        if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
+        if (this.doScroll && this.searchPaths.get(this.currentScrollIndex).equals(path)) {
             this.doScroll = false;
             return true;
         }
         return false;
     }
+
+
+    public enum SearchDirection {
+        BACK, NEXT
+    }
+
 }
