@@ -4,9 +4,11 @@ import imgui.ImFont;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.type.ImBoolean;
+import imgui.type.ImString;
 import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
+import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.file.OpenFilePopup;
@@ -37,8 +39,9 @@ public class MainWindow extends Window {
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
     private static final String REQUIRE_BOTH_DIFF_TAGS = "You need to select two Nbt Tags to compare them.";
 
-
     private final List<Tag> tags = new ArrayList<>();
+    private final SearchProvider searchProvider = new SearchProvider();
+    private final ImString searchText = new ImString(1024);
     private int openTab;
     private INbtTag leftDiff;
     private INbtTag rightDiff;
@@ -79,6 +82,16 @@ public class MainWindow extends Window {
                     if (ImGui.menuItem("Size " + String.format("%.0f", font.getFontSize()), "", i == usedFont)) {
                         Main.getInstance().getConfig().setUsedFont(i);
                     }
+                }
+
+                ImGui.endMenu();
+            }
+            if (ImGui.beginMenu("Search")) {
+                if (ImGui.inputText("Search", this.searchText)) {
+                    this.searchProvider.setSearch(this.searchText.get());
+
+                    Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
+                    if (tag != null) this.searchProvider.buildSearchPaths(tag.tag);
                 }
 
                 ImGui.endMenu();
@@ -164,7 +177,7 @@ public class MainWindow extends Window {
                                 tag.settings.rootName = "";
                                 tag.tag = null;
                                 tag.fileName = null;
-                            }, p -> null, true, "", tag.settings.rootName, tag.tag);
+                            }, p -> null, this.searchProvider, true, "", tag.settings.rootName, tag.tag);
                             ImGui.endChild();
                         }
 

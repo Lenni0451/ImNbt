@@ -4,6 +4,7 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
+import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -22,7 +23,7 @@ public class ListTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
         this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
             this.renderIcon(8);
@@ -32,12 +33,13 @@ public class ListTagRenderer implements TagRenderer {
                 else contextMenu.singleType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
                 contextMenu.delete(deleteListener).sNbtParser(() -> tag).render();
             }
+            this.handleSearch(searchProvider, path);
         }, () -> {
             int[] removed = new int[]{-1};
             int pages = (int) Math.ceil(listTag.size() / (float) Main.LINES_PER_PAGE);
             if (pages <= 1) {
                 for (int i = 0; i < listTag.size(); i++) {
-                    this.renderEntry(listTag, listTag.get(i), i, removed, colorProvider, openContextMenu, path);
+                    this.renderEntry(listTag, listTag.get(i), i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
                 ImGui.text("Page");
@@ -49,14 +51,14 @@ public class ListTagRenderer implements TagRenderer {
                 int start = (Math.max(1, Math.min(page[0], pages)) - 1) * Main.LINES_PER_PAGE;
                 int end = Math.min(start + Main.LINES_PER_PAGE, listTag.size());
                 for (int i = start; i < end; i++) {
-                    this.renderEntry(listTag, listTag.get(i), i, removed, colorProvider, openContextMenu, path);
+                    this.renderEntry(listTag, listTag.get(i), i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
             if (removed[0] != -1) listTag.getValue().remove(removed[0]);
-        }, colorProvider);
+        }, colorProvider, searchProvider);
     }
 
-    private void renderEntry(final ListTag<INbtTag> listTag, final INbtTag entry, final int i, final int[] removed, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path) {
+    private void renderEntry(final ListTag<INbtTag> listTag, final INbtTag entry, final int i, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         NbtTreeRenderer.render(newName -> {
             //This gets executed multiple frames after the user clicked save in the popup
             try {
@@ -66,7 +68,7 @@ public class ListTagRenderer implements TagRenderer {
                 listTag.getValue().add(newIndex, oldTag);
             } catch (Throwable ignored) {
             }
-        }, () -> removed[0] = i, colorProvider, openContextMenu, get(path, i), String.valueOf(i), entry);
+        }, () -> removed[0] = i, colorProvider, searchProvider, openContextMenu, get(path, i), String.valueOf(i), entry);
     }
 
     @Override

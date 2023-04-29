@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.ui.windows;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
+import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.StringUtils;
@@ -13,6 +14,7 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 
 public class DiffWindow extends Window {
 
+    private final SearchProvider searchProvider = new SearchProvider(); //Unused here as there is no search (yet?)
     private INbtTag left;
     private INbtTag right;
     private DiffMap diffMap;
@@ -50,9 +52,9 @@ public class DiffWindow extends Window {
             ImGui.tableSetupColumn("Right");
 
             ImGui.tableNextColumn();
-            NbtTreeRenderer.render(n -> {}, () -> {}, p -> this.diffMap.getLeft(p).getColor(), false, "", "", this.left);
+            NbtTreeRenderer.render(n -> {}, () -> {}, p -> this.diffMap.getLeft(p).getColor(), this.searchProvider, false, "", "", this.left);
             ImGui.tableNextColumn();
-            NbtTreeRenderer.render(n -> {}, () -> {}, p -> this.diffMap.getRight(p).getColor(), false, "", "", this.right);
+            NbtTreeRenderer.render(n -> {}, () -> {}, p -> this.diffMap.getRight(p).getColor(), this.searchProvider, false, "", "", this.right);
 
             ImGui.endTable();
         }

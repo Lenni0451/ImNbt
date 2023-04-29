@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
 import net.lenni0451.imnbt.ui.ContextMenu;
+import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -17,14 +18,15 @@ public class ByteTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ByteTag byteTag = (ByteTag) tag;
         this.renderLeaf(name, ": " + this.format.format(byteTag.getValue()), path, () -> {
             this.renderIcon(0);
             if (openContextMenu) {
                 ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
             }
-        }, colorProvider);
+        }, colorProvider, searchProvider);
+        this.handleSearch(searchProvider, path);
     }
 
     @Override

@@ -5,6 +5,7 @@ import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiTreeNodeFlags;
 import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.imgui.ImageUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -16,14 +17,15 @@ import java.util.function.Function;
 
 public interface TagRenderer {
 
-    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
+    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
 
     void renderValueEditor(final INbtTag tag);
 
-    default void renderBranch(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Runnable renderChildren, final Function<String, Color> colorProvider) {
+    default void renderBranch(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Runnable renderChildren, final Function<String, Color> colorProvider, final SearchProvider searchProvider) {
         ImGui.pushID(path);
         Color color = colorProvider.apply(path);
         if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
+        if (searchProvider.isExpanded(path)) ImGui.setNextItemOpen(true);
         boolean open = ImGui.treeNodeEx("    " + text + " " + suffix + "###    " + text, ImGuiTreeNodeFlags.SpanAvailWidth);
         if (color != null) ImGui.popStyleColor();
         renderContextMenu.run();
@@ -34,15 +36,25 @@ public interface TagRenderer {
         ImGui.popID();
     }
 
-    default void renderLeaf(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Function<String, Color> colorProvider) {
+    default void renderLeaf(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Function<String, Color> colorProvider, final SearchProvider searchProvider) {
         ImGui.pushID(path);
         Color color = colorProvider.apply(path);
         if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
+        if (searchProvider.isExpanded(path)) ImGui.setNextItemOpen(true);
         boolean open = ImGui.treeNodeEx("    " + text + suffix, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.SpanAvailWidth);
         if (color != null) ImGui.popStyleColor();
         renderContextMenu.run();
         if (open) ImGui.treePop();
         ImGui.popID();
+    }
+
+    default void handleSearch(final SearchProvider searchProvider, final String path) {
+        if (searchProvider.isTargeted(path)) {
+            ImVec2 pos = ImGui.getItemRectMin();
+            ImVec2 size = ImGui.getItemRectMax();
+
+            ImGui.getWindowDrawList().addRectFilled(pos.x, pos.y, size.x, size.y, 0x80FFFFFF);
+        }
     }
 
     default void renderIcon(final int index) {

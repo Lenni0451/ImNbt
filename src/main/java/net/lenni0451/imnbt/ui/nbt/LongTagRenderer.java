@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.ui.nbt;
 import imgui.ImGui;
 import imgui.type.ImString;
 import net.lenni0451.imnbt.ui.ContextMenu;
+import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -19,14 +20,15 @@ public class LongTagRenderer implements TagRenderer {
     private final ImString longInput = new ImString(128);
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         LongTag longTag = (LongTag) tag;
         this.renderLeaf(name, ": " + this.format.format(longTag.getValue()), path, () -> {
             this.renderIcon(3);
             if (openContextMenu) {
                 ContextMenu.start().edit(name, longTag, nameEditConsumer, t -> longTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
             }
-        }, colorProvider);
+        }, colorProvider, searchProvider);
+        this.handleSearch(searchProvider, path);
     }
 
     @Override

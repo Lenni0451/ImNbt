@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.ui.nbt;
 import imgui.ImGui;
 import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.ui.ContextMenu;
+import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.ArrayUtils;
 import net.lenni0451.imnbt.utils.Color;
@@ -26,7 +27,7 @@ public class LongArrayTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         LongArrayTag longArrayTag = (LongArrayTag) tag;
         this.renderBranch(name, "(" + longArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(11);
@@ -47,7 +48,7 @@ public class LongArrayTagRenderer implements TagRenderer {
             int pages = (int) Math.ceil(longArrayTag.getLength() / (float) Main.LINES_PER_PAGE);
             if (pages <= 1) {
                 for (int i = 0; i < longArrayTag.getLength(); i++) {
-                    this.renderLong(longArrayTag, i, removed, colorProvider, openContextMenu, path);
+                    this.renderLong(longArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
                 ImGui.text("Page");
@@ -59,14 +60,15 @@ public class LongArrayTagRenderer implements TagRenderer {
                 int start = (Math.max(1, Math.min(page[0], pages)) - 1) * Main.LINES_PER_PAGE;
                 int end = Math.min(start + Main.LINES_PER_PAGE, longArrayTag.getLength());
                 for (int i = start; i < end; i++) {
-                    this.renderLong(longArrayTag, i, removed, colorProvider, openContextMenu, path);
+                    this.renderLong(longArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
             if (removed[0] != -1) longArrayTag.setValue(ArrayUtils.remove(longArrayTag.getValue(), removed[0]));
-        }, colorProvider);
+        }, colorProvider, searchProvider);
+        this.handleSearch(searchProvider, path);
     }
 
-    private void renderLong(final LongArrayTag longArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final boolean openContextMenu, final String path) {
+    private void renderLong(final LongArrayTag longArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(longArrayTag.get(index)), get(path, index), () -> {
             this.renderIcon(3);
             if (openContextMenu) {
@@ -83,7 +85,7 @@ public class LongArrayTagRenderer implements TagRenderer {
                     }
                 }, newTag -> longArrayTag.set(index, newTag.getValue())).delete(() -> removed[0] = index).render();
             }
-        }, colorProvider);
+        }, colorProvider, searchProvider);
     }
 
     @Override

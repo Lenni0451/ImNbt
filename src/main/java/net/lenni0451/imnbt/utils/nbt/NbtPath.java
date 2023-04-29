@@ -1,7 +1,13 @@
 package net.lenni0451.imnbt.utils.nbt;
 
+import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
+import net.lenni0451.mcstructs.nbt.tags.ListTag;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NbtPath {
 
@@ -91,6 +97,22 @@ public class NbtPath {
         return parts.toArray(new String[0]);
     }
 
+    public static Map<String, INbtTag> getTags(final INbtTag tag, final String path) {
+        Map<String, INbtTag> tags = new HashMap<>();
+        tags.put(path, tag);
+        switch (tag.getNbtType()) {
+            case LIST -> {
+                ListTag<?> list = tag.asListTag();
+                for (int i = 0; i < list.size(); i++) tags.putAll(getTags(list.get(i), get(path, i)));
+            }
+            case COMPOUND -> {
+                CompoundTag compound = tag.asCompoundTag();
+                for (Map.Entry<String, INbtTag> entry : compound.getValue().entrySet()) tags.putAll(getTags(entry.getValue(), get(path, entry.getKey())));
+            }
+        }
+        return tags;
+    }
+
 
     public interface IPathNode {
         String name();
@@ -99,13 +121,7 @@ public class NbtPath {
     public record PathNode(String name) implements IPathNode {
     }
 
-    public static class PathIndex implements IPathNode {
-        private final int index;
-
-        public PathIndex(final int index) {
-            this.index = index;
-        }
-
+    public record PathIndex(int index) implements IPathNode {
         @Override
         public String name() {
             return INDEX_START + this.index + INDEX_END;
