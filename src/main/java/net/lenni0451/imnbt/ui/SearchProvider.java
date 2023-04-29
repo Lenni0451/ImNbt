@@ -10,6 +10,7 @@ import java.util.*;
 public class SearchProvider {
 
     private final List<String> searchPaths = new ArrayList<>();
+    private final Set<String> searchPathsSet = new LinkedHashSet<>();
     private final Set<String> expandPaths = new LinkedHashSet<>();
     private String search = "";
     private int currentScrollIndex = -1;
@@ -21,6 +22,7 @@ public class SearchProvider {
 
     public void buildSearchPaths(@Nullable final INbtTag tag) {
         this.searchPaths.clear();
+        this.searchPathsSet.clear();
         this.expandPaths.clear();
         this.currentScrollIndex = -1;
         this.doScroll = false;
@@ -33,6 +35,7 @@ public class SearchProvider {
             String name = paths[paths.length - 1].name();
             if (name.toLowerCase().contains(this.search.toLowerCase())) {
                 this.searchPaths.add(entry.getKey());
+                this.searchPathsSet.add(entry.getKey());
                 this.expandParents(paths);
             } else {
                 switch (entry.getValue().getNbtType()) {
@@ -61,6 +64,7 @@ public class SearchProvider {
                         StringTag string = (StringTag) entry.getValue();
                         if (string.getValue().toLowerCase().contains(this.search.toLowerCase())) {
                             this.searchPaths.add(entry.getKey());
+                            this.searchPathsSet.add(entry.getKey());
                             this.expandParents(paths);
                         }
                     }
@@ -92,7 +96,7 @@ public class SearchProvider {
 
     public boolean isTargeted(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
-        return this.searchPaths.contains(path);
+        return this.searchPathsSet.contains(path);
     }
 
     public boolean isExpanded(final String path) {

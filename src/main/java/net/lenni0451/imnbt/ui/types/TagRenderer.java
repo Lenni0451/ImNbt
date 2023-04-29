@@ -50,10 +50,10 @@ public interface TagRenderer {
 
     default void handleSearch(final SearchProvider searchProvider, final String path) {
         if (searchProvider.isTargeted(path)) {
-            ImVec2 pos = ImGui.getItemRectMin();
-            ImVec2 size = ImGui.getItemRectMax();
+            ImVec2 start = ImGui.getItemRectMin();
+            ImVec2 end = ImGui.getItemRectMax();
 
-            ImGui.getWindowDrawList().addRectFilled(pos.x, pos.y, size.x, size.y, 0x80FFFFFF);
+            if (start.y >= 0 && start.y <= ImGui.getIO().getDisplaySizeY()) ImGui.getWindowDrawList().addRectFilled(start.x, start.y, end.x, end.y, 0x80FFFFFF);
 
             if (searchProvider.shouldDoScroll(path)) ImGui.setScrollHereY();
         }
@@ -62,6 +62,7 @@ public interface TagRenderer {
     default void renderIcon(final int index) {
         ImVec2 xy = ImGui.getItemRectMin();
         xy.x += ImGui.getFontSize();
+        if (xy.y < 0 || xy.y > ImGui.getIO().getDisplaySizeY()) return;
 
         int nbtTypes = NbtType.values().length - 1;
         int size = ImGui.getFontSize();
