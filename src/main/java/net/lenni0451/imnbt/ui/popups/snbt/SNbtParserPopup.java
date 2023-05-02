@@ -19,6 +19,7 @@ public class SNbtParserPopup extends Popup<SNbtParserPopup> {
 
     public SNbtParserPopup(final PopupCallback<SNbtParserPopup> callback) {
         super("SNbt Parser", callback);
+        this.input.inputData.isResizable = true;
     }
 
     public INbtTag getParsedTag() {

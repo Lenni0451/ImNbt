@@ -19,6 +19,7 @@ public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
 
     public SNbtSerializerPopup(final INbtTag tag, final PopupCallback<SNbtSerializerPopup> callback) {
         super("SNbt Serializer", callback);
+        this.output.inputData.isResizable = true;
 
         this.tag = tag;
     }
