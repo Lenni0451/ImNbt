@@ -1,8 +1,9 @@
 package net.lenni0451.imnbt.ui;
 
+import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.NbtPath;
 import net.lenni0451.mcstructs.nbt.INbtTag;
-import net.lenni0451.mcstructs.nbt.tags.StringTag;
+import net.lenni0451.mcstructs.nbt.tags.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -33,46 +34,85 @@ public class SearchProvider {
         for (Map.Entry<String, INbtTag> entry : tags.entrySet()) {
             NbtPath.IPathNode[] paths = NbtPath.parse(entry.getKey());
             String name = paths[paths.length - 1].name();
-            if (name.toLowerCase().contains(this.search.toLowerCase())) {
+            final Runnable addTag = () -> {
                 this.searchPaths.add(entry.getKey());
                 this.searchPathsSet.add(entry.getKey());
                 this.expandParents(paths);
+            };
+
+            if (name.toLowerCase().contains(this.search.toLowerCase())) {
+                addTag.run();
             } else {
                 switch (entry.getValue().getNbtType()) {
                     case BYTE -> {
-
+                        ByteTag byteTag = entry.getValue().asByteTag();
+                        Byte value = NumberUtils.asByte(this.search);
+                        if (value != null && byteTag.getValue() == value) addTag.run();
                     }
                     case SHORT -> {
-
+                        ShortTag shortTag = entry.getValue().asShortTag();
+                        Short value = NumberUtils.asShort(this.search);
+                        if (value != null && shortTag.getValue() == value) addTag.run();
                     }
                     case INT -> {
-
+                        IntTag intTag = entry.getValue().asIntTag();
+                        Integer value = NumberUtils.asInt(this.search);
+                        if (value != null && intTag.getValue() == value) addTag.run();
                     }
                     case LONG -> {
-
+                        LongTag longTag = entry.getValue().asLongTag();
+                        Long value = NumberUtils.asLong(this.search);
+                        if (value != null && longTag.getValue() == value) addTag.run();
                     }
                     case FLOAT -> {
-
+                        FloatTag floatTag = entry.getValue().asFloatTag();
+                        Float value = NumberUtils.asFloat(this.search);
+                        if (value != null && floatTag.getValue() == value) addTag.run();
                     }
                     case DOUBLE -> {
-
+                        DoubleTag doubleTag = entry.getValue().asDoubleTag();
+                        Double value = NumberUtils.asDouble(this.search);
+                        if (value != null && doubleTag.getValue() == value) addTag.run();
                     }
                     case BYTE_ARRAY -> {
-
-                    }
-                    case STRING -> {
-                        StringTag string = (StringTag) entry.getValue();
-                        if (string.getValue().toLowerCase().contains(this.search.toLowerCase())) {
-                            this.searchPaths.add(entry.getKey());
-                            this.searchPathsSet.add(entry.getKey());
-                            this.expandParents(paths);
+                        ByteArrayTag byteArrayTag = entry.getValue().asByteArrayTag();
+                        Byte value = NumberUtils.asByte(this.search);
+                        if (value != null) {
+                            for (byte b : byteArrayTag.getValue()) {
+                                if (b == value) {
+                                    addTag.run();
+                                    break;
+                                }
+                            }
                         }
                     }
+                    case STRING -> {
+                        StringTag stringTag = entry.getValue().asStringTag();
+                        if (stringTag.getValue().toLowerCase().contains(this.search.toLowerCase())) addTag.run();
+                    }
                     case INT_ARRAY -> {
-
+                        IntArrayTag intArrayTag = entry.getValue().asIntArrayTag();
+                        Integer value = NumberUtils.asInt(this.search);
+                        if (value != null) {
+                            for (int i : intArrayTag.getValue()) {
+                                if (i == value) {
+                                    addTag.run();
+                                    break;
+                                }
+                            }
+                        }
                     }
                     case LONG_ARRAY -> {
-
+                        LongArrayTag longArrayTag = entry.getValue().asLongArrayTag();
+                        Long value = NumberUtils.asLong(this.search);
+                        if (value != null) {
+                            for (long l : longArrayTag.getValue()) {
+                                if (l == value) {
+                                    addTag.run();
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
