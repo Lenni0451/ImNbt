@@ -15,6 +15,7 @@ public class SearchProvider {
     private final Set<String> searchPathsSet = new LinkedHashSet<>();
     private final Set<String> expandPaths = new LinkedHashSet<>();
     private String search = "";
+    private INbtTag lastTag = null;
     private int currentScrollIndex = -1;
     private String currentScrollPath = null;
     private boolean doScroll = false;
@@ -23,7 +24,13 @@ public class SearchProvider {
         this.search = search;
     }
 
+    public void refreshSearch() {
+        this.buildSearchPaths(this.lastTag);
+    }
+
     public void buildSearchPaths(@Nullable final INbtTag tag) {
+        this.lastTag = tag;
+
         this.searchPaths.clear();
         this.searchPathsSet.clear();
         this.expandPaths.clear();
@@ -156,7 +163,7 @@ public class SearchProvider {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return;
         this.doScroll = true;
         this.currentScrollIndex += switch (direction) {
-            case BACK -> -1;
+            case PREVIOUS -> -1;
             case NEXT -> 1;
         };
         this.currentScrollIndex %= this.searchPaths.size();
@@ -186,7 +193,7 @@ public class SearchProvider {
 
 
     public enum SearchDirection {
-        BACK, NEXT
+        PREVIOUS, NEXT
     }
 
 }

@@ -42,12 +42,14 @@ public class MainWindow extends Window {
     private final List<Tag> tags = new ArrayList<>();
     private final SearchProvider searchProvider = new SearchProvider();
     private final ImString searchText = new ImString(1024);
+    private boolean searchModified = false;
     private int openTab;
     private INbtTag leftDiff;
     private INbtTag rightDiff;
 
     @Override
     public void render() {
+        boolean searchDeactivated = false;
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
                 if (ImGui.menuItem("Open")) {
@@ -89,12 +91,11 @@ public class MainWindow extends Window {
             if (ImGui.beginMenu("Search")) {
                 if (ImGui.inputText("Search", this.searchText)) {
                     this.searchProvider.setSearch(this.searchText.get());
-
-                    Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
-                    if (tag != null) this.searchProvider.buildSearchPaths(tag.tag);
+                    this.searchModified = true;
                 }
-                if (ImGui.button("Back")) {
-                    this.searchProvider.setDoScroll(SearchProvider.SearchDirection.BACK);
+                searchDeactivated = ImGui.isItemDeactivated();
+                if (ImGui.button("Previous")) {
+                    this.searchProvider.setDoScroll(SearchProvider.SearchDirection.PREVIOUS);
                 }
                 ImGui.sameLine();
                 if (ImGui.button("Next")) {
@@ -161,6 +162,12 @@ public class MainWindow extends Window {
             }
 
             ImGui.endMenuBar();
+        }
+        if (this.searchModified && searchDeactivated) {
+            this.searchModified = false;
+
+            Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
+            if (tag != null) this.searchProvider.buildSearchPaths(tag.tag);
         }
 
         if (this.tags.isEmpty()) {
