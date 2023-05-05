@@ -1,5 +1,6 @@
 package net.lenni0451.imnbt.ui;
 
+import net.lenni0451.imnbt.Main;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.NbtPath;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -15,6 +16,7 @@ public class SearchProvider {
     private final Set<String> expandPaths = new LinkedHashSet<>();
     private String search = "";
     private int currentScrollIndex = -1;
+    private String currentScrollPath = null;
     private boolean doScroll = false;
 
     public void setSearch(final String search) {
@@ -26,6 +28,7 @@ public class SearchProvider {
         this.searchPathsSet.clear();
         this.expandPaths.clear();
         this.currentScrollIndex = -1;
+        this.currentScrollPath = null;
         this.doScroll = false;
         if (this.search.isEmpty() || tag == null) return;
 
@@ -134,9 +137,14 @@ public class SearchProvider {
         }
     }
 
-    public boolean isTargeted(final String path) {
+    public boolean isSearched(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
         return this.searchPathsSet.contains(path);
+    }
+
+    public boolean isTargeted(final String path) {
+        if (this.search.isEmpty() || this.searchPaths.isEmpty() || this.currentScrollPath == null) return false;
+        return this.currentScrollPath.equals(path);
     }
 
     public boolean isExpanded(final String path) {
@@ -153,15 +161,27 @@ public class SearchProvider {
         };
         this.currentScrollIndex %= this.searchPaths.size();
         if (this.currentScrollIndex < 0) this.currentScrollIndex = this.searchPaths.size() - 1;
+        this.currentScrollPath = this.searchPaths.get(this.currentScrollIndex);
     }
 
     public boolean shouldDoScroll(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
-        if (this.doScroll && this.searchPaths.get(this.currentScrollIndex).equals(path)) {
+        if (this.doScroll && this.currentScrollPath.equals(path)) {
             this.doScroll = false;
             return true;
         }
         return false;
+    }
+
+    public int getOpenedPage(final String path) {
+        if (this.search.isEmpty() || this.searchPaths.isEmpty() || this.currentScrollPath == null) return -1;
+        if (this.currentScrollPath.startsWith(path)) {
+            String subPath = this.currentScrollPath.substring(path.length());
+            if (!subPath.startsWith("[")) return -1;
+            int index = Integer.parseInt(subPath.substring(1, subPath.indexOf(']')));
+            return index / Main.LINES_PER_PAGE + 1;
+        }
+        return -1;
     }
 
 

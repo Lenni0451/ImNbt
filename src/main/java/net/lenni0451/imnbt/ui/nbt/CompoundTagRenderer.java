@@ -43,8 +43,10 @@ public class CompoundTagRenderer implements TagRenderer {
             } else {
                 ImGui.text("Page");
                 ImGui.sameLine();
-                ImGui.setNextItemWidth(1 - 2);
+                ImGui.setNextItemWidth(-1);
                 int[] page = this.pageCache.computeIfAbsent(path, p -> new int[]{1});
+                int searchPage = searchProvider.getOpenedPage(path);
+                if (searchPage != -1) page[0] = searchPage;
                 ImGui.sliderInt("##page " + path, page, 1, pages);
 
                 List<String> keys = new ArrayList<>(compoundTag.getValue().keySet());

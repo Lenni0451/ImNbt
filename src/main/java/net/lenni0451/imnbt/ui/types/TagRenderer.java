@@ -49,11 +49,13 @@ public interface TagRenderer {
     }
 
     default void handleSearch(final SearchProvider searchProvider, final String path) {
-        if (searchProvider.isTargeted(path)) {
+        if (searchProvider.isSearched(path)) {
             ImVec2 start = ImGui.getItemRectMin();
             ImVec2 end = ImGui.getItemRectMax();
+            Color color = new Color(255, 255, 255, 64);
+            if (searchProvider.isTargeted(path)) color = new Color(255, 255, 0, 64);
 
-            if (start.y >= 0 && start.y <= ImGui.getIO().getDisplaySizeY()) ImGui.getWindowDrawList().addRectFilled(start.x, start.y, end.x, end.y, 0x80FFFFFF);
+            if (start.y >= 0 && start.y <= ImGui.getIO().getDisplaySizeY()) ImGui.getWindowDrawList().addRectFilled(start.x, start.y, end.x, end.y, color.getABGR());
 
             if (searchProvider.shouldDoScroll(path)) ImGui.setScrollHereY();
         }
