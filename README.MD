@@ -16,6 +16,7 @@ The latest dev build can be found on my [Jenkins Server](https://build.lenni0451
  - SNbt parsing and serialization
  - Diff viewer for two tags
  - Drag and drop support
+ - Search tag names and values
 
 <details>
     <summary>Images of the GUI</summary>
@@ -60,3 +61,7 @@ The output jar is in the `build/libs` directory.
 # You have to be in the same directory as the gradle wrapper
 gradlew.bat build
 `````
+
+## Licenses
+The licenses of the libraries used by ImNbt can be found in the [assets/licenses directory](src/main/resources/assets/licenses).\
+The license of ImNbt itself can be found in the [LICENSE file](LICENSE).
