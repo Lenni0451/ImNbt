@@ -91,12 +91,12 @@ public class ImGuiImpl extends Application {
         try {
             ImFont[] fonts = Main.getInstance().getConfig().getFonts();
 
-            byte[] segoeui = ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/segoeui.ttf").readAllBytes();
+            byte[] opensans_regular = ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/OpenSans-Regular.ttf").readAllBytes();
             imFontAtlas.addFontDefault(imFontConfig);
             for (int i = 0; i < fonts.length; i++) {
                 int size = 15 + (5 * i);
-                imFontConfig.setName("SegoeUI " + i + "px");
-                fonts[i] = imFontAtlas.addFontFromMemoryTTF(segoeui, size, imFontConfig, imFontAtlas.getGlyphRangesDefault());
+                imFontConfig.setName("OpenSans Regular " + i + "px");
+                fonts[i] = imFontAtlas.addFontFromMemoryTTF(opensans_regular, size, imFontConfig, imFontAtlas.getGlyphRangesDefault());
             }
             imFontAtlas.build();
         } catch (Throwable t) {

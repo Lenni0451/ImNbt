@@ -62,6 +62,10 @@ public class AboutWindow extends Window {
             ImGui.text(Licenses.MCSTRUCTS_BEDROCK);
             ImGui.treePop();
         }
+        if (ImGui.treeNodeEx("OpenSans Regular", ImGuiTreeNodeFlags.SpanAvailWidth)) {
+            ImGui.text(Licenses.OPENSANS);
+            ImGui.treePop();
+        }
         if (ImGui.treeNodeEx("PNGDecoder", ImGuiTreeNodeFlags.SpanAvailWidth)) {
             ImGui.text(Licenses.PNGDECODER);
             ImGui.treePop();

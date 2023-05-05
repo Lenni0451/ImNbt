@@ -12,6 +12,7 @@ public class Licenses {
     public static final String LWJGL;
     public static final String MCSTRUCTS;
     public static final String MCSTRUCTS_BEDROCK;
+    public static final String OPENSANS;
     public static final String PNGDECODER;
 
     static {
@@ -22,6 +23,7 @@ public class Licenses {
         LWJGL = read("lwjgl");
         MCSTRUCTS = read("mcstructs");
         MCSTRUCTS_BEDROCK = read("mcstructs-bedrock");
+        OPENSANS = read("opensans");
         PNGDECODER = read("pngdecoder");
     }
 
