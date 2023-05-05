@@ -23,7 +23,10 @@ public class ByteTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + this.format.format(byteTag.getValue()), path, () -> {
             this.renderIcon(0);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> byteTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu.start().edit(name, byteTag, nameEditConsumer, t -> {
+                    byteTag.setValue(t.getValue());
+                    searchProvider.refreshSearch();
+                }).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

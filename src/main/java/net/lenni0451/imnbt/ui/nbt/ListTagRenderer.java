@@ -29,8 +29,14 @@ public class ListTagRenderer implements TagRenderer {
             this.renderIcon(8);
             if (openContextMenu) {
                 ContextMenu contextMenu = ContextMenu.start().edit(name, listTag, nameEditConsumer, t -> {});
-                if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> listTag.add(newTag));
-                else contextMenu.singleType(listTag.getType(), (newName, newTag) -> listTag.add(newTag));
+                if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> {
+                    listTag.add(newTag);
+                    searchProvider.refreshSearch();
+                });
+                else contextMenu.singleType(listTag.getType(), (newName, newTag) -> {
+                    listTag.add(newTag);
+                    searchProvider.refreshSearch();
+                });
                 contextMenu.delete(deleteListener).sNbtParser(() -> tag).render();
             }
             this.handleSearch(searchProvider, path);
@@ -56,7 +62,10 @@ public class ListTagRenderer implements TagRenderer {
                     this.renderEntry(listTag, listTag.get(i), i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
-            if (removed[0] != -1) listTag.getValue().remove(removed[0]);
+            if (removed[0] != -1) {
+                listTag.getValue().remove(removed[0]);
+                searchProvider.refreshSearch();
+            }
         }, colorProvider, searchProvider);
     }
 
@@ -68,6 +77,7 @@ public class ListTagRenderer implements TagRenderer {
                 if (newIndex < 0 || newIndex >= listTag.size() || newIndex == i) return;
                 INbtTag oldTag = listTag.getValue().remove(i);
                 listTag.getValue().add(newIndex, oldTag);
+                searchProvider.refreshSearch();
             } catch (Throwable ignored) {
             }
         }, () -> removed[0] = i, colorProvider, searchProvider, openContextMenu, get(path, i), String.valueOf(i), entry);

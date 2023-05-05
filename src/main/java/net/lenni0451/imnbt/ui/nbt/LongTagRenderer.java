@@ -25,7 +25,10 @@ public class LongTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + this.format.format(longTag.getValue()), path, () -> {
             this.renderIcon(3);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, longTag, nameEditConsumer, t -> longTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu.start().edit(name, longTag, nameEditConsumer, t -> {
+                    longTag.setValue(t.getValue());
+                    searchProvider.refreshSearch();
+                }).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

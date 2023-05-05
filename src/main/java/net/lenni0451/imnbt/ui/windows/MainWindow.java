@@ -191,6 +191,7 @@ public class MainWindow extends Window {
                                 tag.settings.rootName = "";
                                 tag.tag = null;
                                 tag.fileName = null;
+                                this.searchProvider.buildSearchPaths(null);
                             }, p -> null, this.searchProvider, true, "", tag.settings.rootName, tag.tag);
                             ImGui.endChild();
                         }

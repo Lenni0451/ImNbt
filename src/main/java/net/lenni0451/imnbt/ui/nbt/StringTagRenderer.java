@@ -23,7 +23,10 @@ public class StringTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + stringTag.getValue(), path, () -> {
             this.renderIcon(7);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> stringTag.setValue(t.getValue())).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> {
+                    stringTag.setValue(t.getValue());
+                    searchProvider.refreshSearch();
+                }).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

@@ -31,7 +31,10 @@ public class CompoundTagRenderer implements TagRenderer {
             this.renderIcon(9);
             this.handleSearch(searchProvider, path);
             if (openContextMenu) {
-                ContextMenu.start().allTypes(compoundTag::add).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu.start().allTypes((newKey, newTag) -> {
+                    compoundTag.add(newKey, newTag);
+                    searchProvider.refreshSearch();
+                }).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             String[] removed = new String[1];
@@ -57,7 +60,10 @@ public class CompoundTagRenderer implements TagRenderer {
                     this.renderEntry(compoundTag, key, compoundTag.get(key), removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
-            if (removed[0] != null) compoundTag.remove(removed[0]);
+            if (removed[0] != null) {
+                compoundTag.remove(removed[0]);
+                searchProvider.refreshSearch();
+            }
         }, colorProvider, searchProvider);
     }
 
@@ -66,6 +72,7 @@ public class CompoundTagRenderer implements TagRenderer {
             //This gets executed multiple frames after the user clicked save in the popup
             INbtTag oldTag = compoundTag.remove(key);
             compoundTag.add(newName, oldTag);
+            searchProvider.refreshSearch();
         }, () -> removed[0] = key, colorProvider, searchProvider, openContextMenu, get(path, key), key, value);
     }
 

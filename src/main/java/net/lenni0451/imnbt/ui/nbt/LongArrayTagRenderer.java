@@ -41,6 +41,7 @@ public class LongArrayTagRenderer implements TagRenderer {
                     }
                     if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
                     else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
+                    searchProvider.refreshSearch();
                 }).edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
@@ -65,7 +66,10 @@ public class LongArrayTagRenderer implements TagRenderer {
                     this.renderLong(longArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
-            if (removed[0] != -1) longArrayTag.setValue(ArrayUtils.remove(longArrayTag.getValue(), removed[0]));
+            if (removed[0] != -1) {
+                longArrayTag.setValue(ArrayUtils.remove(longArrayTag.getValue(), removed[0]));
+                searchProvider.refreshSearch();
+            }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);
     }
@@ -83,9 +87,13 @@ public class LongArrayTagRenderer implements TagRenderer {
                         long[] newValue = ArrayUtils.remove(longArrayTag.getValue(), index);
                         newValue = ArrayUtils.insert(newValue, newIndex, val);
                         longArrayTag.setValue(newValue);
+                        searchProvider.refreshSearch();
                     } catch (Throwable ignored) {
                     }
-                }, newTag -> longArrayTag.set(index, newTag.getValue())).delete(() -> removed[0] = index).render();
+                }, newTag -> {
+                    longArrayTag.set(index, newTag.getValue());
+                    searchProvider.refreshSearch();
+                }).delete(() -> removed[0] = index).render();
             }
         }, colorProvider, searchProvider);
     }
