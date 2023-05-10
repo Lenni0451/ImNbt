@@ -14,6 +14,9 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * The renderer for string tags.
+ */
 public class StringTagRenderer implements TagRenderer {
 
     private final ImString valueEditor = new ImString(32767);

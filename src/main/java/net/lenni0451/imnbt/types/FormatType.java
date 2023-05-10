@@ -3,6 +3,9 @@ package net.lenni0451.imnbt.types;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.mcstructs.nbt.io.NbtIO;
 
+/**
+ * The format type of the Nbt tag.
+ */
 public enum FormatType {
 
     JAVA(NbtIO.JAVA),

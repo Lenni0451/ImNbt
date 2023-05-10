@@ -21,6 +21,9 @@ import java.util.function.Function;
 
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
+/**
+ * The renderer for long array tags.
+ */
 public class LongArrayTagRenderer implements TagRenderer {
 
     private final Map<String, int[]> pageCache = new HashMap<>();

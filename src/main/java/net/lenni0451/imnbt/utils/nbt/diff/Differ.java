@@ -5,8 +5,18 @@ import net.lenni0451.mcstructs.nbt.tags.*;
 
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
+/**
+ * A diff tool to generate a map of differences between two tags.
+ */
 public class Differ {
 
+    /**
+     * Diff the two given tags.
+     *
+     * @param left  The left tag
+     * @param right The right tag
+     * @return The diff map
+     */
     public static DiffMap diff(final INbtTag left, final INbtTag right) {
         DiffMap map = new DiffMap();
         diff(map, "", left, right);

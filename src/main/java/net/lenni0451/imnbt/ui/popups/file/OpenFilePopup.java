@@ -10,6 +10,9 @@ import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.utils.nbt.FormatDetector;
 
+/**
+ * A popup to choose the settings when opening a tag.
+ */
 public class OpenFilePopup extends Popup<OpenFilePopup> {
 
     private final TagSettings tagSettings;

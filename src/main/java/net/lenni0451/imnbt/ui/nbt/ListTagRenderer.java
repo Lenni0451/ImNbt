@@ -18,6 +18,9 @@ import java.util.function.Function;
 
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
+/**
+ * The renderer for list tags.
+ */
 public class ListTagRenderer implements TagRenderer {
 
     private final Map<String, int[]> pageCache = new HashMap<>();

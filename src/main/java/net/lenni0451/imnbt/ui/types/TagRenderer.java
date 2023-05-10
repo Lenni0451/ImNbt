@@ -15,12 +15,45 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * The renderer for a tag type.
+ */
 public interface TagRenderer {
 
+    /**
+     * Render the tree node for the tag.
+     *
+     * @param drawer           The drawer instance
+     * @param nameEditConsumer The listener for when the name of a tag is edited
+     * @param deleteListener   The listener for when the tag is deleted
+     * @param colorProvider    The provider for the color of the tag
+     * @param searchProvider   The provider for the search
+     * @param openContextMenu  Whether the context menu should be opened
+     * @param path             The path of the tag
+     * @param name             The name of the tag
+     * @param tag              The tag to render
+     */
     void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
 
+    /**
+     * Render the value editor for the tag.
+     *
+     * @param tag The tag to render
+     */
     void renderValueEditor(final INbtTag tag);
 
+    /**
+     * Render a branch in the tree.<br>
+     * Used for array/list/compound tags.
+     *
+     * @param text              The text to display
+     * @param suffix            The suffix to display
+     * @param path              The path of the tag
+     * @param renderContextMenu The runnable to render the context menu
+     * @param renderChildren    The runnable to render the children
+     * @param colorProvider     The provider for the color of the tag
+     * @param searchProvider    The provider for the search
+     */
     default void renderBranch(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Runnable renderChildren, final Function<String, Color> colorProvider, final SearchProvider searchProvider) {
         ImGui.pushID(path);
         Color color = colorProvider.apply(path);
@@ -36,6 +69,17 @@ public interface TagRenderer {
         ImGui.popID();
     }
 
+    /**
+     * Render a leaf in the tree.<br>
+     * Used for primitive tags.
+     *
+     * @param text              The text to display
+     * @param suffix            The suffix to display
+     * @param path              The path of the tag
+     * @param renderContextMenu The runnable to render the context menu
+     * @param colorProvider     The provider for the color of the tag
+     * @param searchProvider    The provider for the search
+     */
     default void renderLeaf(final String text, final String suffix, final String path, final Runnable renderContextMenu, final Function<String, Color> colorProvider, final SearchProvider searchProvider) {
         ImGui.pushID(path);
         Color color = colorProvider.apply(path);
@@ -48,6 +92,12 @@ public interface TagRenderer {
         ImGui.popID();
     }
 
+    /**
+     * Render the search overlay for the tag and handle the scrolling.
+     *
+     * @param searchProvider The provider for the search
+     * @param path           The path of the tag
+     */
     default void handleSearch(final SearchProvider searchProvider, final String path) {
         if (searchProvider.isSearched(path)) {
             ImVec2 start = ImGui.getItemRectMin();
@@ -61,6 +111,12 @@ public interface TagRenderer {
         }
     }
 
+    /**
+     * Render the icon for the tag.
+     *
+     * @param drawer The drawer instance
+     * @param index  The index of the icon
+     */
     default void renderIcon(final ImNbtDrawer drawer, final int index) {
         ImVec2 xy = ImGui.getItemRectMin();
         xy.x += ImGui.getFontSize();

@@ -3,6 +3,9 @@ package net.lenni0451.imnbt.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+/**
+ * A class holding all licenses for the libraries used in ImNbt.
+ */
 public class Licenses {
 
     public static final String GUAVA;

@@ -13,6 +13,9 @@ import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.imnbt.utils.nbt.diff.Differ;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
+/**
+ * The window to display the diff of two tags.
+ */
 public class DiffWindow extends Window {
 
     private final SearchProvider searchProvider = new SearchProvider(this.drawer); //Unused here as there is no search (yet?)

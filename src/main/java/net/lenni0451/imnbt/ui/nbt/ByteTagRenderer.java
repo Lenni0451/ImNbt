@@ -14,6 +14,9 @@ import java.text.DecimalFormat;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * The renderer for byte tags.
+ */
 public class ByteTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();

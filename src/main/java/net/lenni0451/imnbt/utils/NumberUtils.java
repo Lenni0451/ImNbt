@@ -4,6 +4,12 @@ import javax.annotation.Nullable;
 
 public class NumberUtils {
 
+    /**
+     * Try to parse a string to a byte.
+     *
+     * @param s The string to parse
+     * @return The parsed byte or {@code null} if the string is not a byte
+     */
     @Nullable
     public static Byte asByte(final String s) {
         try {
@@ -13,6 +19,12 @@ public class NumberUtils {
         return null;
     }
 
+    /**
+     * Try to parse a string to a short.
+     *
+     * @param s The string to parse
+     * @return The parsed short or {@code null} if the string is not a short
+     */
     @Nullable
     public static Short asShort(final String s) {
         try {
@@ -22,6 +34,12 @@ public class NumberUtils {
         return null;
     }
 
+    /**
+     * Try to parse a string to an integer.
+     *
+     * @param s The string to parse
+     * @return The parsed integer or {@code null} if the string is not an integer
+     */
     @Nullable
     public static Integer asInt(final String s) {
         try {
@@ -31,6 +49,12 @@ public class NumberUtils {
         return null;
     }
 
+    /**
+     * Try to parse a string to a long.
+     *
+     * @param s The string to parse
+     * @return The parsed long or {@code null} if the string is not a long
+     */
     @Nullable
     public static Long asLong(final String s) {
         try {
@@ -40,6 +64,12 @@ public class NumberUtils {
         return null;
     }
 
+    /**
+     * Try to parse a string to a float.
+     *
+     * @param s The string to parse
+     * @return The parsed float or {@code null} if the string is not a float
+     */
     @Nullable
     public static Float asFloat(final String s) {
         try {
@@ -49,6 +79,12 @@ public class NumberUtils {
         return null;
     }
 
+    /**
+     * Try to parse a string to a double.
+     *
+     * @param s The string to parse
+     * @return The parsed double or {@code null} if the string is not a double
+     */
     @Nullable
     public static Double asDouble(final String s) {
         try {

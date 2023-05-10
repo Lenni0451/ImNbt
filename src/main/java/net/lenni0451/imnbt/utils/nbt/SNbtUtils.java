@@ -12,6 +12,11 @@ public class SNbtUtils {
     public static final Map<String, SNbtSerializer<?>> SERIALIZERS = getVersions();
     public static final String[] SERIALIZER_NAMES = getVersionNames();
 
+    /**
+     * Get all available {@link SNbtSerializer} versions.
+     *
+     * @return A map with the name to the serializer
+     */
     private static Map<String, SNbtSerializer<?>> getVersions() {
         Map<String, SNbtSerializer<?>> versions = new LinkedHashMap<>();
         try {
@@ -25,6 +30,13 @@ public class SNbtUtils {
         return versions;
     }
 
+    /**
+     * Get all version names of the available {@link SNbtSerializer} versions.<br>
+     * The names are formatted like this:<br>
+     * "V1_14" -> "1.14"
+     *
+     * @return An array with all version names
+     */
     private static String[] getVersionNames() {
         String[] names = new String[SERIALIZERS.size()];
         int i = 0;

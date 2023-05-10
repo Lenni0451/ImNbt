@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * The renderer for the Nbt tree.
+ */
 public class NbtTreeRenderer {
 
     private static final Map<NbtType, TagRenderer> TAG_RENDERER = new EnumMap<>(NbtType.class);
@@ -33,10 +36,29 @@ public class NbtTreeRenderer {
         TAG_RENDERER.put(NbtType.LONG_ARRAY, new LongArrayTagRenderer());
     }
 
+    /**
+     * Get the renderer for a tag type.
+     *
+     * @param type The type of the tag
+     * @return The renderer for the tag type
+     */
     public static TagRenderer getTagRenderer(@Nonnull final NbtType type) {
         return TAG_RENDERER.get(type);
     }
 
+    /**
+     * Render the tag tree.
+     *
+     * @param drawer           The drawer instance
+     * @param nameEditConsumer The listener for when the name of a tag is edited
+     * @param deleteListener   The listener for when the tag is deleted
+     * @param colorProvider    The provider for the color of the tag
+     * @param searchProvider   The provider for the search
+     * @param openContextMenu  Whether the context menu should be opened
+     * @param path             The path of the tag
+     * @param name             The name of the tag
+     * @param tag              The tag to render
+     */
     public static void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, final INbtTag tag) {
         TagRenderer renderer = TAG_RENDERER.get(tag.getNbtType());
         if (renderer == null) ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());

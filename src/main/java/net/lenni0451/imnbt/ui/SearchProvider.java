@@ -9,6 +9,9 @@ import net.lenni0451.mcstructs.nbt.tags.*;
 import javax.annotation.Nullable;
 import java.util.*;
 
+/**
+ * A provider to search for tag names and content.
+ */
 public class SearchProvider {
 
     private final ImNbtDrawer drawer;
@@ -25,14 +28,28 @@ public class SearchProvider {
         this.drawer = drawer;
     }
 
+    /**
+     * Set the current search string.<br>
+     * This does not refresh the search, use {@link #refreshSearch()} for that.
+     *
+     * @param search The search string
+     */
     public void setSearch(final String search) {
         this.search = search;
     }
 
+    /**
+     * Refresh the search with the last used tag.
+     */
     public void refreshSearch() {
         this.buildSearchPaths(this.lastTag);
     }
 
+    /**
+     * Refresh the search with the given tag.
+     *
+     * @param tag The tag to search in
+     */
     public void buildSearchPaths(@Nullable final INbtTag tag) {
         this.lastTag = tag;
 
@@ -134,6 +151,11 @@ public class SearchProvider {
         }
     }
 
+    /**
+     * Build all paths of parent tags which should be expanded.
+     *
+     * @param paths The path nodes of the tag
+     */
     private void expandParents(final NbtPath.IPathNode[] paths) {
         String path = null;
         for (int i = 0; i < paths.length - 1; i++) {
@@ -149,21 +171,45 @@ public class SearchProvider {
         }
     }
 
+    /**
+     * Check if the given path is searched.
+     *
+     * @param path The path to check
+     * @return If the path is searched
+     */
     public boolean isSearched(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
         return this.searchPathsSet.contains(path);
     }
 
+    /**
+     * Check if the given path is targeted.<br>
+     * The targeted path is the path which should be scrolled to.
+     *
+     * @param path The path to check
+     * @return If the path is targeted
+     */
     public boolean isTargeted(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty() || this.currentScrollPath == null) return false;
         return this.currentScrollPath.equals(path);
     }
 
+    /**
+     * Check if the given path is expanded.
+     *
+     * @param path The path to check
+     * @return If the path is expanded
+     */
     public boolean isExpanded(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
         return this.expandPaths.contains(path);
     }
 
+    /**
+     * Set the scroll position to the next or previous searched path.
+     *
+     * @param direction The direction to scroll
+     */
     public void setDoScroll(final SearchDirection direction) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return;
         this.doScroll = true;
@@ -176,6 +222,12 @@ public class SearchProvider {
         this.currentScrollPath = this.searchPaths.get(this.currentScrollIndex);
     }
 
+    /**
+     * Check if the given path should be scrolled to.
+     *
+     * @param path The path to check
+     * @return If the path should be scrolled to
+     */
     public boolean shouldDoScroll(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty()) return false;
         if (this.doScroll && this.currentScrollPath.equals(path)) {
@@ -185,6 +237,12 @@ public class SearchProvider {
         return false;
     }
 
+    /**
+     * Get the page which is required to show the scroll path.
+     *
+     * @param path The path to check
+     * @return The page
+     */
     public int getOpenedPage(final String path) {
         if (this.search.isEmpty() || this.searchPaths.isEmpty() || this.currentScrollPath == null) return -1;
         if (this.currentScrollPath.startsWith(path)) {

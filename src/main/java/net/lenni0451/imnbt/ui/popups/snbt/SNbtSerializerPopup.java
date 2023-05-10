@@ -11,6 +11,9 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZERS;
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZER_NAMES;
 
+/**
+ * A popup to serialize a tag to SNbt.
+ */
 public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
 
     private final ImString output = new ImString(32767);

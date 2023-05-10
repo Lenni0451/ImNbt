@@ -8,6 +8,9 @@ import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
+/**
+ * A popup that allows the user to edit a tag.
+ */
 public class EditTagPopup extends Popup<EditTagPopup> {
 
     private final String okText;

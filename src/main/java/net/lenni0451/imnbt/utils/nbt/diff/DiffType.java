@@ -4,6 +4,9 @@ import net.lenni0451.imnbt.utils.Color;
 
 import javax.annotation.Nullable;
 
+/**
+ * The types a tag node can have when being diffed.
+ */
 public enum DiffType {
 
     ADDED(new Color(0, 150, 0)),

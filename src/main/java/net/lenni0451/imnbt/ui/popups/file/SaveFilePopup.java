@@ -10,6 +10,9 @@ import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
 
+/**
+ * A popup to choose the settings when saving a tag.
+ */
 public class SaveFilePopup extends Popup<SaveFilePopup> {
 
     private final TagSettings tagSettings;

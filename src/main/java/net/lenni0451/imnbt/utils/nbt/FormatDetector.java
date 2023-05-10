@@ -8,6 +8,10 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 
+/**
+ * A crude format detector for Nbt files.<br>
+ * Only works sometimes but it's better than nothing.
+ */
 public class FormatDetector {
 
     private static final byte[] GZIP_HEADER = new byte[]{0x1F, (byte) 0x8B};
@@ -38,6 +42,9 @@ public class FormatDetector {
         return this.formatType;
     }
 
+    /**
+     * Detect the compression by comparing the first two bytes with the gzip header.
+     */
     private void detectCompression() {
         try {
             if (this.data[0] == GZIP_HEADER[0] && this.data[1] == GZIP_HEADER[1]) {
@@ -48,6 +55,7 @@ public class FormatDetector {
         }
     }
 
+    //Not easily possible because most tags can actually read fine with both endian types
 //    private void detectEndian() {
 //        try {
 //            DataInput littleEndian = EndianType.LITTLE_ENDIAN.wrap(new ByteArrayInputStream(this.data));
@@ -58,6 +66,9 @@ public class FormatDetector {
 //        }
 //    }
 
+    /**
+     * Detect the format by trying to read the header of a java tag.
+     */
     private void detectFormat() {
         try {
             DataInput dataInput = new DataInputStream(new ByteArrayInputStream(this.data));

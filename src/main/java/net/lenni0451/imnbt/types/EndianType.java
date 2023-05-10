@@ -7,6 +7,9 @@ import net.lenni0451.imnbt.utils.ThrowingFunction;
 
 import java.io.*;
 
+/**
+ * The endian type of the Nbt tag.
+ */
 @SuppressWarnings("UnstableApiUsage")
 public enum EndianType {
 

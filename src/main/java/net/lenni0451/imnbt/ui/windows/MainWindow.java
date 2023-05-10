@@ -32,6 +32,9 @@ import java.util.List;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
+/**
+ * The main window of ImNbt.
+ */
 public class MainWindow extends Window {
 
     private static final String ERROR_REQUIRE_TAG = "You need to create or open a Nbt Tag first.";
@@ -49,6 +52,13 @@ public class MainWindow extends Window {
     private INbtTag leftDiff;
     private INbtTag rightDiff;
 
+    /**
+     * Create a new main window.<br>
+     * The font handler is required when using the font size menu. If you don't want to use it you can pass null.
+     *
+     * @param drawer      The drawer instance
+     * @param fontHandler The font handler to use
+     */
     public MainWindow(final ImNbtDrawer drawer, @Nullable final FontHandler fontHandler) {
         super(drawer);
         this.fontHandler = fontHandler;

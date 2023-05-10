@@ -15,6 +15,9 @@ import java.text.DecimalFormat;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * The renderer for int tags.
+ */
 public class IntTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();

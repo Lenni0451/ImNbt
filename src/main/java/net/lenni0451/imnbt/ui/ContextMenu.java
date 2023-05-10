@@ -15,6 +15,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * A builder for the context menu when right clicking on a tag.
+ */
 public class ContextMenu {
 
     public static ContextMenu start(final ImNbtDrawer drawer) {
@@ -33,6 +36,12 @@ public class ContextMenu {
         this.drawer = drawer;
     }
 
+    /**
+     * Allow all types to be created.
+     *
+     * @param newTagAction The action to be executed when a new tag is created
+     * @return The builder instance
+     */
     public ContextMenu allTypes(final BiConsumer<String, INbtTag> newTagAction) {
         Collections.addAll(this.newTypes, NbtType.values());
         this.newTypes.remove(NbtType.END);
@@ -40,12 +49,29 @@ public class ContextMenu {
         return this;
     }
 
+    /**
+     * Allow only a single type to be created.
+     *
+     * @param newType      The type to be created
+     * @param newTagAction The action to be executed when a new tag is created
+     * @return The builder instance
+     */
     public ContextMenu singleType(final NbtType newType, final BiConsumer<String, INbtTag> newTagAction) {
         this.newTypes.add(newType);
         this.newTagAction = newTagAction;
         return this;
     }
 
+    /**
+     * Allow editing the tag.
+     *
+     * @param name             The name of the tag
+     * @param tag              The tag to be edited
+     * @param nameEditConsumer The consumer to be executed when the name is edited
+     * @param tagConsumer      The consumer to be executed when the tag is edited
+     * @param <T>              The type of the tag
+     * @return The builder instance
+     */
     public <T extends INbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
         this.editAction = () -> this.drawer.openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
             if (success) {
@@ -57,16 +83,31 @@ public class ContextMenu {
         return this;
     }
 
+    /**
+     * Allow a tag to be deleted.
+     *
+     * @param deleteListener The listener to be executed when the tag is deleted
+     * @return The builder instance
+     */
     public ContextMenu delete(final Runnable deleteListener) {
         this.deleteListener = deleteListener;
         return this;
     }
 
+    /**
+     * Allow a tag to be serialized to SNbt.
+     *
+     * @param sNbtSerializerListener The listener to be executed when the tag is serialized
+     * @return The builder instance
+     */
     public ContextMenu sNbtParser(final Supplier<INbtTag> sNbtSerializerListener) {
         this.sNbtSerializerListener = sNbtSerializerListener;
         return this;
     }
 
+    /**
+     * Render the context menu and handle the actions.
+     */
     public void render() {
         if (ImGui.beginPopupContextItem()) {
             if (!this.newTypes.isEmpty()) {

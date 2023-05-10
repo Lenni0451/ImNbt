@@ -11,6 +11,9 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZERS;
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZER_NAMES;
 
+/**
+ * A popup to parse SNbt to a tag.
+ */
 public class SNbtParserPopup extends Popup<SNbtParserPopup> {
 
     private final ImString input = new ImString(32767);

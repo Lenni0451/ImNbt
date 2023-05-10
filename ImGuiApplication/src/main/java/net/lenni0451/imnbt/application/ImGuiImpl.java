@@ -51,7 +51,7 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
     }
 
     @Override
-    public void openPopup(final Popup<?> popup) {
+    public void openPopup(final @Nonnull Popup<?> popup) {
         this.popup = popup;
     }
 

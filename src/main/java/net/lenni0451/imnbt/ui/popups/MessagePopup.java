@@ -4,6 +4,9 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
 
+/**
+ * A popup that shows a message and a button to close it.
+ */
 public class MessagePopup extends Popup<MessagePopup> {
 
     private final String message;

@@ -21,6 +21,9 @@ import java.util.function.Function;
 
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
+/**
+ * The renderer for byte array tags.
+ */
 public class ByteArrayTagRenderer implements TagRenderer {
 
     private final Map<String, int[]> pageCache = new HashMap<>();

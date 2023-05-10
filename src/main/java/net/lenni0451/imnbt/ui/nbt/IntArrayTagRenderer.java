@@ -21,6 +21,9 @@ import java.util.function.Function;
 
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
+/**
+ * The renderer for int array tags.
+ */
 public class IntArrayTagRenderer implements TagRenderer {
 
     private final Map<String, int[]> pageCache = new HashMap<>();

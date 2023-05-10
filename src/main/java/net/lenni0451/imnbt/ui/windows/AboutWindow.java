@@ -12,6 +12,9 @@ import java.net.URI;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
+/**
+ * The window to show information about the program.
+ */
 public class AboutWindow extends Window {
 
     public AboutWindow(ImNbtDrawer drawer) {

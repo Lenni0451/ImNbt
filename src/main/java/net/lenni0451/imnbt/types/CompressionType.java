@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * The compression type of the Nbt tag.
+ */
 public enum CompressionType {
 
     NO_COMPRESSION(is -> is, os -> os),
