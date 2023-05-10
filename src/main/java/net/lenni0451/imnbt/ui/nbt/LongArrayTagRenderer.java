@@ -1,7 +1,7 @@
 package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -27,12 +27,12 @@ public class LongArrayTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         LongArrayTag longArrayTag = (LongArrayTag) tag;
         this.renderBranch(name, "(" + longArrayTag.getLength() + ")", path, () -> {
-            this.renderIcon(11);
+            this.renderIcon(drawer, 11);
             if (openContextMenu) {
-                ContextMenu.start().singleType(NbtType.LONG, (newName, newTag) -> {
+                ContextMenu.start(drawer).singleType(NbtType.LONG, (newName, newTag) -> {
                     int index = -1;
                     try {
                         int newIndex = Integer.parseInt(newName);
@@ -46,10 +46,10 @@ public class LongArrayTagRenderer implements TagRenderer {
             }
         }, () -> {
             int[] removed = new int[]{-1};
-            int pages = (int) Math.ceil(longArrayTag.getLength() / (float) Main.LINES_PER_PAGE);
+            int pages = (int) Math.ceil(longArrayTag.getLength() / (float) drawer.getLinesPerPage());
             if (pages <= 1) {
                 for (int i = 0; i < longArrayTag.getLength(); i++) {
-                    this.renderLong(longArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderLong(drawer, longArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
                 ImGui.text("Page");
@@ -60,10 +60,10 @@ public class LongArrayTagRenderer implements TagRenderer {
                 if (searchPage != -1) page[0] = searchPage;
                 ImGui.sliderInt("##page " + path, page, 1, pages);
 
-                int start = (Math.max(1, Math.min(page[0], pages)) - 1) * Main.LINES_PER_PAGE;
-                int end = Math.min(start + Main.LINES_PER_PAGE, longArrayTag.getLength());
+                int start = (Math.max(1, Math.min(page[0], pages)) - 1) * drawer.getLinesPerPage();
+                int end = Math.min(start + drawer.getLinesPerPage(), longArrayTag.getLength());
                 for (int i = start; i < end; i++) {
-                    this.renderLong(longArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderLong(drawer, longArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
             if (removed[0] != -1) {
@@ -74,11 +74,11 @@ public class LongArrayTagRenderer implements TagRenderer {
         this.handleSearch(searchProvider, path);
     }
 
-    private void renderLong(final LongArrayTag longArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
+    private void renderLong(final ImNbtDrawer drawer, final LongArrayTag longArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(longArrayTag.get(index)), get(path, index), () -> {
-            this.renderIcon(3);
+            this.renderIcon(drawer, 3);
             if (openContextMenu) {
-                ContextMenu.start().edit(String.valueOf(index), new LongTag(longArrayTag.get(index)), newName -> {
+                ContextMenu.start(drawer).edit(String.valueOf(index), new LongTag(longArrayTag.get(index)), newName -> {
                     //This gets executed multiple frames after the user clicked save in the popup
                     try {
                         int newIndex = Integer.parseInt(newName);

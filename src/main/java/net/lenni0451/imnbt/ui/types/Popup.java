@@ -2,7 +2,7 @@ package net.lenni0451.imnbt.ui.types;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ImNbtDrawer;
 
 public abstract class Popup<P extends Popup<P>> {
 
@@ -35,23 +35,21 @@ public abstract class Popup<P extends Popup<P>> {
         ImGui.closeCurrentPopup();
     }
 
-    public void render() {
+    public void render(final ImNbtDrawer drawer) {
         if (ImGui.beginPopupModal(this.title, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoSavedSettings)) {
-            this.renderContent();
+            this.renderContent(drawer);
 
             ImGui.endPopup();
         }
     }
 
-    protected abstract void renderContent();
+    protected abstract void renderContent(final ImNbtDrawer drawer);
 
 
     @FunctionalInterface
     public interface PopupCallback<P> {
-        Popup.PopupCallback CLOSE = (p, success) -> Main.getInstance().getImGuiImpl().closePopup();
-
-        static <T> PopupCallback<T> close() {
-            return CLOSE;
+        static <T> PopupCallback<T> close(final ImNbtDrawer drawer) {
+            return (p, success) -> drawer.closePopup();
         }
 
         void onClose(final P popup, final boolean success);

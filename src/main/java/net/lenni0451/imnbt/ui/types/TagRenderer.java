@@ -4,10 +4,10 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiTreeNodeFlags;
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.utils.Color;
-import net.lenni0451.imnbt.utils.imgui.ImageUtils;
+import net.lenni0451.imnbt.utils.ImageUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public interface TagRenderer {
 
-    void render(final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
+    void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
 
     void renderValueEditor(final INbtTag tag);
 
@@ -61,7 +61,7 @@ public interface TagRenderer {
         }
     }
 
-    default void renderIcon(final int index) {
+    default void renderIcon(final ImNbtDrawer drawer, final int index) {
         ImVec2 xy = ImGui.getItemRectMin();
         xy.x += ImGui.getFontSize();
         if (xy.y < 0 || xy.y > ImGui.getIO().getDisplaySizeY()) return;
@@ -69,7 +69,7 @@ public interface TagRenderer {
         int nbtTypes = NbtType.values().length - 1;
         int size = ImGui.getFontSize();
         ImGui.getWindowDrawList().addImage(
-                Main.getInstance().getImGuiImpl().getIconsTexture(),
+                drawer.getIconsTexture(),
                 xy.x,
                 xy.y,
                 xy.x + size,

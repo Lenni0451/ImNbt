@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
 import imgui.type.ImString;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -18,12 +19,12 @@ public class StringTagRenderer implements TagRenderer {
     private final ImString valueEditor = new ImString(32767);
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name, ": " + stringTag.getValue(), path, () -> {
-            this.renderIcon(7);
+            this.renderIcon(drawer, 7);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, stringTag, nameEditConsumer, t -> {
+                ContextMenu.start(drawer).edit(name, stringTag, nameEditConsumer, t -> {
                     stringTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
                 }).delete(deleteListener).sNbtParser(() -> tag).render();

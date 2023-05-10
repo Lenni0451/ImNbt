@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
 import imgui.type.ImInt;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -19,12 +20,12 @@ public class IntTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         IntTag intTag = (IntTag) tag;
         this.renderLeaf(name, ": " + this.format.format(intTag.getValue()), path, () -> {
-            this.renderIcon(2);
+            this.renderIcon(drawer, 2);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, intTag, nameEditConsumer, t -> {
+                ContextMenu.start(drawer).edit(name, intTag, nameEditConsumer, t -> {
                     intTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
                 }).delete(deleteListener).sNbtParser(() -> tag).render();

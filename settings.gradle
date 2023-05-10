@@ -6,3 +6,5 @@ pluginManagement {
 }
 
 rootProject.name = "ImNbt"
+
+include("ImGuiApplication")

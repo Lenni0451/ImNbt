@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.popups.file;
 
 import imgui.ImGui;
 import imgui.type.ImInt;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.EndianType;
@@ -35,7 +36,7 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
     }
 
     @Override
-    protected void renderContent() {
+    protected void renderContent(ImNbtDrawer drawer) {
         if (ImGui.combo("##Format", this.selectedFormat, FormatType.NAMES)) {
             this.tagSettings.formatType = FormatType.values()[this.selectedFormat.get()];
         }

@@ -1,64 +1,95 @@
-package net.lenni0451.imnbt;
+package net.lenni0451.imnbt.application;
 
 import imgui.*;
 import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
+import net.lenni0451.imnbt.ImNbtDrawer;
+import net.lenni0451.imnbt.application.utils.FileDialogs;
+import net.lenni0451.imnbt.application.utils.ImageUtils;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.DiffWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
-import net.lenni0451.imnbt.utils.imgui.ImageUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileInputStream;
 
-public class ImGuiImpl extends Application {
+public class ImGuiImpl extends Application implements ImNbtDrawer {
+
+    private final MainWindow mainWindow;
+    private final AboutWindow aboutWindow;
+    private final DiffWindow diffWindow;
 
     private int iconsTexture;
     private Popup<?> popup;
     private Window window;
 
-    private final MainWindow mainWindow = new MainWindow();
-    private final AboutWindow aboutWindow = new AboutWindow();
-    private final DiffWindow diffWindow = new DiffWindow();
+    public ImGuiImpl(final FontConfig fontConfig) {
+        this.mainWindow = new MainWindow(this, fontConfig);
+        this.aboutWindow = new AboutWindow(this);
+        this.diffWindow = new DiffWindow(this);
 
-    public ImGuiImpl() {
         this.window = this.mainWindow;
     }
 
+    @Override
+    public int getLinesPerPage() {
+        return 500;
+    }
+
+    @Override
     public int getIconsTexture() {
         return this.iconsTexture;
     }
 
+    @Override
     public void openPopup(final Popup<?> popup) {
         this.popup = popup;
     }
 
+    @Override
     public void closePopup() {
         this.popup = null;
     }
 
+    @Override
     public MainWindow getMainWindow() {
         return this.mainWindow;
     }
 
+    @Override
     public AboutWindow getAboutWindow() {
         return this.aboutWindow;
     }
 
+    @Override
     public DiffWindow getDiffWindow() {
         return this.diffWindow;
     }
 
+    @Override
     public void showWindow(@Nonnull final Window window) {
         this.window = window;
+    }
+
+    @Nullable
+    @Override
+    public String showOpenFileDialog(String title) {
+        return FileDialogs.open(title);
+    }
+
+    @Nullable
+    @Override
+    public String showSaveFileDialog(String title) {
+        return FileDialogs.save(title);
     }
 
     @Override
@@ -89,7 +120,7 @@ public class ImGuiImpl extends Application {
         ImFontConfig imFontConfig = new ImFontConfig();
         imFontConfig.setPixelSnapH(true);
         try {
-            ImFont[] fonts = Main.getInstance().getConfig().getFonts();
+            ImFont[] fonts = Main.getInstance().getFontConfig().getFonts();
 
             byte[] opensans_regular = ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/OpenSans-Regular.ttf").readAllBytes();
             imFontAtlas.addFontDefault(imFontConfig);
@@ -126,7 +157,7 @@ public class ImGuiImpl extends Application {
     @Override
     public void process() {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0);
-        ImGui.pushFont(Main.getInstance().getConfig().getFonts()[Main.getInstance().getConfig().getUsedFont()]);
+        ImGui.pushFont(Main.getInstance().getFontConfig().getFont());
 
         ImGui.setNextWindowPos(0, 0);
         ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
@@ -135,7 +166,7 @@ public class ImGuiImpl extends Application {
         ImGui.end();
         if (this.popup != null) {
             this.popup.open();
-            this.popup.render();
+            this.popup.render(this);
         }
 
         ImGui.popFont();

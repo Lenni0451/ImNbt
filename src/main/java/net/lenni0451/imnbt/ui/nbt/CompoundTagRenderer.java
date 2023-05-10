@@ -1,7 +1,7 @@
 package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
@@ -25,23 +25,23 @@ public class CompoundTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
-            this.renderIcon(9);
+            this.renderIcon(drawer, 9);
             this.handleSearch(searchProvider, path);
             if (openContextMenu) {
-                ContextMenu.start().allTypes((newKey, newTag) -> {
+                ContextMenu.start(drawer).allTypes((newKey, newTag) -> {
                     compoundTag.add(newKey, newTag);
                     searchProvider.refreshSearch();
                 }).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             String[] removed = new String[1];
-            int pages = (int) Math.ceil(compoundTag.size() / (float) Main.LINES_PER_PAGE);
+            int pages = (int) Math.ceil(compoundTag.size() / (float) drawer.getLinesPerPage());
             if (pages <= 1) {
                 for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
-                    this.renderEntry(compoundTag, entry.getKey(), entry.getValue(), removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderEntry(drawer, compoundTag, entry.getKey(), entry.getValue(), removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
                 ImGui.text("Page");
@@ -53,11 +53,11 @@ public class CompoundTagRenderer implements TagRenderer {
                 ImGui.sliderInt("##page " + path, page, 1, pages);
 
                 List<String> keys = new ArrayList<>(compoundTag.getValue().keySet());
-                int start = (Math.max(1, Math.min(page[0], pages)) - 1) * Main.LINES_PER_PAGE;
-                int end = Math.min(start + Main.LINES_PER_PAGE, keys.size());
+                int start = (Math.max(1, Math.min(page[0], pages)) - 1) * drawer.getLinesPerPage();
+                int end = Math.min(start + drawer.getLinesPerPage(), keys.size());
                 for (int i = start; i < end; i++) {
                     String key = keys.get(i);
-                    this.renderEntry(compoundTag, key, compoundTag.get(key), removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderEntry(drawer, compoundTag, key, compoundTag.get(key), removed, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
             if (removed[0] != null) {
@@ -67,8 +67,8 @@ public class CompoundTagRenderer implements TagRenderer {
         }, colorProvider, searchProvider);
     }
 
-    private void renderEntry(final CompoundTag compoundTag, final String key, final INbtTag value, final String[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
-        NbtTreeRenderer.render(newName -> {
+    private void renderEntry(final ImNbtDrawer drawer, final CompoundTag compoundTag, final String key, final INbtTag value, final String[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
+        NbtTreeRenderer.render(drawer, newName -> {
             //This gets executed multiple frames after the user clicked save in the popup
             INbtTag oldTag = compoundTag.remove(key);
             compoundTag.add(newName, oldTag);

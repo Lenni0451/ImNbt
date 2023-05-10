@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils.imgui;
+package net.lenni0451.imnbt.application.utils;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 public class ImageUtils {
-
 
     public static int loadTexture(final BufferedImage image) {
         final int[] pixels = new int[image.getWidth() * image.getHeight()];
@@ -54,10 +53,6 @@ public class ImageUtils {
         GLFW.glfwSetWindowIcon(window, images);
         images.free();
         image.free();
-    }
-
-    public static float calculateUV(final int textureSize, final int pos) {
-        return (float) pos / (float) textureSize;
     }
 
 }

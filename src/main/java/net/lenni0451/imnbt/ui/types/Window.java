@@ -1,17 +1,23 @@
 package net.lenni0451.imnbt.ui.types;
 
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ImNbtDrawer;
 
 import java.io.File;
 
 public abstract class Window {
 
+    protected final ImNbtDrawer drawer;
+
+    public Window(final ImNbtDrawer drawer) {
+        this.drawer = drawer;
+    }
+
     public final void show() {
-        Main.getInstance().getImGuiImpl().showWindow(this);
+        this.drawer.showWindow(this);
     }
 
     public final void hide() {
-        Main.getInstance().getImGuiImpl().showWindow(Main.getInstance().getImGuiImpl().getMainWindow());
+        this.drawer.showWindow(this.drawer.getMainWindow());
     }
 
     public abstract void render();

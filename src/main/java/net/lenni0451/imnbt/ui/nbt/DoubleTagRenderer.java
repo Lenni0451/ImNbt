@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
 import imgui.type.ImDouble;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -23,12 +24,12 @@ public class DoubleTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         DoubleTag doubleTag = (DoubleTag) tag;
         this.renderLeaf(name, ": " + this.format.format(doubleTag.getValue()), path, () -> {
-            this.renderIcon(5);
+            this.renderIcon(drawer, 5);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, doubleTag, nameEditConsumer, t -> {
+                ContextMenu.start(drawer).edit(name, doubleTag, nameEditConsumer, t -> {
                     doubleTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
                 }).delete(deleteListener).sNbtParser(() -> tag).render();

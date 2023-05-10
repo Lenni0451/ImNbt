@@ -1,62 +1,30 @@
 plugins {
-    id "java"
+    id "java-library"
     id "net.kyori.blossom" version "1.3.1"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
 
-archivesBaseName = project.maven_name
-group = project.maven_group
-version = project.maven_version
+allprojects {
+    archivesBaseName = project.maven_name
+    group = project.maven_group
+    version = project.maven_version
 
-configurations {
-    include
-
-    implementation.extendsFrom include
-    api.extendsFrom include
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    include "com.google.guava:guava:31.1-jre"
-
-    include "net.lenni0451.mcstructs:nbt:2.2.5"
-    include "net.lenni0451.mcstructs:snbt:2.2.5"
-    include("net.lenni0451.mcstructs-bedrock:nbt:1.1.0") {
-        exclude group: "net.lenni0451.mcstructs", module: "nbt"
-    }
-
-    include "io.github.spair:imgui-java-app:1.86.10"
-    include "org.lwjgl:lwjgl-tinyfd:3.3.1"
-    ["natives-linux", "natives-windows", "natives-macos"].each {
-        include "org.lwjgl:lwjgl-tinyfd:3.3.1:$it"
+    repositories {
+        mavenCentral()
     }
 }
 
 blossom {
-    replaceToken("\${version}", project.version, "src/main/java/net/lenni0451/imnbt/Main.java")
+    replaceToken("\${version}", project.version, "src/main/java/net/lenni0451/imnbt/ui/windows/AboutWindow.java")
 }
 
-jar {
-    dependsOn configurations.include
-    from {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        configurations.include.collect {
-            zipTree(it)
-        }
-    } {
-        exclude "META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA"
-    }
-
-    manifest {
-        attributes(
-                "Main-Class": "net.lenni0451.imnbt.Main",
-                "Multi-Release": "true"
-        )
-    }
+dependencies {
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+    api "io.github.spair:imgui-java-binding:1.86.10"
+    api "com.google.guava:guava:31.1-jre"
+    api "net.lenni0451.mcstructs:nbt:2.2.5"
+    api "net.lenni0451.mcstructs:snbt:2.2.5"
+    api "net.lenni0451.mcstructs-bedrock:nbt:1.1.0"
 }

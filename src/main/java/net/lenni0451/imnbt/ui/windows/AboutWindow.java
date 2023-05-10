@@ -2,7 +2,7 @@ package net.lenni0451.imnbt.ui.windows;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.Licenses;
@@ -13,6 +13,10 @@ import java.net.URI;
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
 public class AboutWindow extends Window {
+
+    public AboutWindow(ImNbtDrawer drawer) {
+        super(drawer);
+    }
 
     @Override
     public void render() {
@@ -31,7 +35,7 @@ public class AboutWindow extends Window {
         }
 
         ImGui.text("ImNbt by Lenni0451");
-        ImGui.text("Version: " + Main.VERSION);
+        ImGui.text("Version: ${version}");
         ImGui.separator();
         ImGui.text("Open Source Licenses");
         if (ImGui.treeNodeEx("Guava", ImGuiTreeNodeFlags.SpanAvailWidth)) {
@@ -77,7 +81,7 @@ public class AboutWindow extends Window {
             Desktop.getDesktop().browse(new URI(url));
         } catch (Throwable t) {
             t.printStackTrace();
-            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", "Failed to open the URL", close()));
+            this.drawer.openPopup(new MessagePopup("Error", "Failed to open the URL", close(this.drawer)));
         }
         this.hide();
     }

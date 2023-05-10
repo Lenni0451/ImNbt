@@ -1,6 +1,7 @@
 package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -18,12 +19,12 @@ public class ShortTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ShortTag shortTag = (ShortTag) tag;
         this.renderLeaf(name, ": " + this.format.format(shortTag.getValue()), path, () -> {
-            this.renderIcon(1);
+            this.renderIcon(drawer, 1);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, shortTag, nameEditConsumer, t -> {
+                ContextMenu.start(drawer).edit(name, shortTag, nameEditConsumer, t -> {
                     shortTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
                 }).delete(deleteListener).sNbtParser(() -> tag).render();

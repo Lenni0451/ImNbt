@@ -1,0 +1,50 @@
+plugins {
+    id "java"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
+
+configurations {
+    include
+
+    implementation.extendsFrom include
+    api.extendsFrom include
+}
+
+dependencies {
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+    include project(":")
+    include "com.google.guava:guava:31.1-jre"
+    include "net.lenni0451.mcstructs:nbt:2.2.5"
+    include "net.lenni0451.mcstructs:snbt:2.2.5"
+    include("net.lenni0451.mcstructs-bedrock:nbt:1.1.0") {
+        exclude group: "net.lenni0451.mcstructs", module: "nbt"
+    }
+
+    include "io.github.spair:imgui-java-app:1.86.10"
+    include "org.lwjgl:lwjgl-tinyfd:3.3.1"
+    ["natives-linux", "natives-windows", "natives-macos"].each {
+        include "org.lwjgl:lwjgl-tinyfd:3.3.1:$it"
+    }
+}
+
+jar {
+    dependsOn configurations.include
+    from {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations.include.collect {
+            zipTree(it)
+        }
+    } {
+        exclude "META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA"
+    }
+
+    manifest {
+        attributes(
+                "Main-Class": "net.lenni0451.imnbt.application.Main",
+                "Multi-Release": "true"
+        )
+    }
+}

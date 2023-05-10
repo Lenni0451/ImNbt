@@ -5,7 +5,8 @@ import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.FontHandler;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
@@ -18,13 +19,13 @@ import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.StringUtils;
-import net.lenni0451.imnbt.utils.imgui.FileDialogs;
 import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +40,19 @@ public class MainWindow extends Window {
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
     private static final String REQUIRE_BOTH_DIFF_TAGS = "You need to select two Nbt Tags to compare them.";
 
+    private final FontHandler fontHandler;
     private final List<Tag> tags = new ArrayList<>();
-    private final SearchProvider searchProvider = new SearchProvider();
+    private final SearchProvider searchProvider = new SearchProvider(this.drawer);
     private final ImString searchText = new ImString(1024);
     private boolean searchModified = false;
     private int openTab;
     private INbtTag leftDiff;
     private INbtTag rightDiff;
+
+    public MainWindow(final ImNbtDrawer drawer, @Nullable final FontHandler fontHandler) {
+        super(drawer);
+        this.fontHandler = fontHandler;
+    }
 
     @Override
     public void render() {
@@ -76,13 +83,13 @@ public class MainWindow extends Window {
 
                 ImGui.endMenu();
             }
-            if (ImGui.beginMenu("Font Size")) {
-                ImFont[] fonts = Main.getInstance().getConfig().getFonts();
-                int usedFont = Main.getInstance().getConfig().getUsedFont();
+            if (this.fontHandler != null && ImGui.beginMenu("Font Size")) {
+                ImFont[] fonts = this.fontHandler.getFonts();
+                int usedFont = this.fontHandler.getSelectedFont();
                 for (int i = 0; i < fonts.length; i++) {
                     ImFont font = fonts[i];
                     if (ImGui.menuItem("Size " + String.format("%.0f", font.getFontSize()), "", i == usedFont)) {
-                        Main.getInstance().getConfig().setUsedFont(i);
+                        this.fontHandler.setSelectedFont(i);
                     }
                 }
 
@@ -107,7 +114,7 @@ public class MainWindow extends Window {
             if (ImGui.beginMenu("SNbt")) {
                 if (ImGui.menuItem("SNbt Parser")) {
                     Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
-                    Main.getInstance().getImGuiImpl().openPopup(new SNbtParserPopup((p, success) -> {
+                    this.drawer.openPopup(new SNbtParserPopup((p, success) -> {
                         if (success) {
                             if (tag != null && tag.tag == null) {
                                 tag.settings.rootName = "";
@@ -117,12 +124,12 @@ public class MainWindow extends Window {
                                 this.tags.add(new Tag(p.getParsedTag()));
                             }
                         }
-                        Main.getInstance().getImGuiImpl().closePopup();
+                        this.drawer.closePopup();
                     }));
                 }
                 if (ImGui.menuItem("SNbt Serializer")) {
-                    if (!this.hasTag()) Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
-                    else Main.getInstance().getImGuiImpl().openPopup(new SNbtSerializerPopup(this.tags.get(this.openTab).tag, close()));
+                    if (!this.hasTag()) this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
+                    else this.drawer.openPopup(new SNbtSerializerPopup(this.tags.get(this.openTab).tag, close(this.drawer)));
                 }
 
                 ImGui.endMenu();
@@ -130,18 +137,18 @@ public class MainWindow extends Window {
             if (ImGui.beginMenu("Diff")) {
                 if (ImGui.menuItem("Select Left", "", this.leftDiff != null)) {
                     if (this.hasTag()) this.leftDiff = this.tags.get(this.openTab).tag;
-                    else Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
+                    else this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
                 }
                 if (ImGui.menuItem("Select Right", "", this.rightDiff != null)) {
                     if (this.hasTag()) this.rightDiff = this.tags.get(this.openTab).tag;
-                    else Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
+                    else this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
                 }
                 if (ImGui.menuItem("Diff")) {
                     if (this.leftDiff == null || this.rightDiff == null) {
-                        Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", REQUIRE_BOTH_DIFF_TAGS, close()));
+                        this.drawer.openPopup(new MessagePopup("Error", REQUIRE_BOTH_DIFF_TAGS, close(this.drawer)));
                     } else {
-                        Main.getInstance().getImGuiImpl().getDiffWindow().diff(this.leftDiff, this.rightDiff);
-                        Main.getInstance().getImGuiImpl().getDiffWindow().show();
+                        this.drawer.getDiffWindow().diff(this.leftDiff, this.rightDiff);
+                        this.drawer.getDiffWindow().show();
                     }
                 }
                 if (ImGui.beginMenu("Legend")) {
@@ -158,7 +165,7 @@ public class MainWindow extends Window {
                 ImGui.endMenu();
             }
             if (ImGui.menuItem("About")) {
-                Main.getInstance().getImGuiImpl().getAboutWindow().show();
+                this.drawer.getAboutWindow().show();
             }
 
             ImGui.endMenuBar();
@@ -187,7 +194,7 @@ public class MainWindow extends Window {
                             ImGui.text("No Nbt Tag present");
                         } else {
                             ImGui.beginChild("##NbtTree");
-                            NbtTreeRenderer.render(newName -> tag.settings.rootName = newName, () -> {
+                            NbtTreeRenderer.render(drawer, newName -> tag.settings.rootName = newName, () -> {
                                 tag.settings.rootName = "";
                                 tag.tag = null;
                                 tag.fileName = null;
@@ -215,7 +222,7 @@ public class MainWindow extends Window {
     }
 
     private void open() {
-        String response = FileDialogs.open("Open Nbt Tag");
+        String response = this.drawer.showOpenFileDialog("Open Nbt Tag");
         if (response == null) return;
         File file = new File(response);
 
@@ -224,7 +231,7 @@ public class MainWindow extends Window {
             data = fis.readAllBytes();
         } catch (Throwable t) {
             t.printStackTrace();
-            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, close()));
+            this.drawer.openPopup(new MessagePopup("Error", ERROR_OPEN, close(this.drawer)));
             return;
         }
         this.open(data, file.getName());
@@ -237,7 +244,7 @@ public class MainWindow extends Window {
 
     private void open(final byte[] data, final String fileName) {
         Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
-        Main.getInstance().getImGuiImpl().openPopup(new OpenFilePopup(data, (p, success) -> {
+        this.drawer.openPopup(new OpenFilePopup(data, (p, success) -> {
             if (success) {
                 try {
                     DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(new ByteArrayInputStream(data)));
@@ -262,27 +269,27 @@ public class MainWindow extends Window {
                         readTag.fileName = fileName;
                         this.tags.add(readTag);
                     }
-                    Main.getInstance().getImGuiImpl().closePopup();
+                    this.drawer.closePopup();
                 } catch (Throwable t) {
                     t.printStackTrace();
-                    Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_OPEN, close()));
+                    this.drawer.openPopup(new MessagePopup("Error", ERROR_OPEN, close(this.drawer)));
                 }
             } else {
-                Main.getInstance().getImGuiImpl().closePopup();
+                this.drawer.closePopup();
             }
         }));
     }
 
     private void save() {
         if (!this.hasTag()) {
-            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close()));
+            this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
             return;
         }
 
-        String response = FileDialogs.save("Save Nbt Tag");
+        String response = this.drawer.showSaveFileDialog("Save Nbt Tag");
         if (response != null) {
             Tag tag = this.tags.get(this.openTab);
-            Main.getInstance().getImGuiImpl().openPopup(new SaveFilePopup(tag.settings, (p, success) -> {
+            this.drawer.openPopup(new SaveFilePopup(tag.settings, (p, success) -> {
                 if (success) {
                     try {
                         FileOutputStream fos = new FileOutputStream(response);
@@ -290,14 +297,14 @@ public class MainWindow extends Window {
                         try (os) {
                             DataOutput dataOutput = tag.settings.endianType.wrap(os);
                             tag.settings.formatType.getNbtIO().write(dataOutput, tag.settings.rootName, tag.tag);
-                            Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Success", SUCCESS_SAVE, close()));
+                            this.drawer.openPopup(new MessagePopup("Success", SUCCESS_SAVE, close(this.drawer)));
                         }
                     } catch (Throwable t) {
                         t.printStackTrace();
-                        Main.getInstance().getImGuiImpl().openPopup(new MessagePopup("Error", ERROR_SAVE, close()));
+                        this.drawer.openPopup(new MessagePopup("Error", ERROR_SAVE, close(this.drawer)));
                     }
                 } else {
-                    Main.getInstance().getImGuiImpl().closePopup();
+                    this.drawer.closePopup();
                 }
             }));
         }
@@ -308,7 +315,7 @@ public class MainWindow extends Window {
         for (NbtType value : NbtType.values()) {
             if (NbtType.END.equals(value)) continue;
             if (ImGui.menuItem(StringUtils.format(value))) {
-                Main.getInstance().getImGuiImpl().openPopup(new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
+                this.drawer.openPopup(new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
                     if (success) {
                         if (tag != null && tag.tag == null) {
                             tag.settings.rootName = p.getName();
@@ -320,7 +327,7 @@ public class MainWindow extends Window {
                             this.tags.add(newTag);
                         }
                     }
-                    Main.getInstance().getImGuiImpl().closePopup();
+                    this.drawer.closePopup();
                 }));
                 break;
             }

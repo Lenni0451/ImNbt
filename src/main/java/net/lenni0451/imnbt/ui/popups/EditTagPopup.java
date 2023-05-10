@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.popups;
 
 import imgui.ImGui;
 import imgui.type.ImString;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -32,7 +33,7 @@ public class EditTagPopup extends Popup<EditTagPopup> {
     }
 
     @Override
-    protected void renderContent() {
+    protected void renderContent(ImNbtDrawer drawer) {
         ImGui.inputText("Name", this.name);
         this.tagRenderer.renderValueEditor(this.tag);
 

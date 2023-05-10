@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.nbt;
 
 import imgui.ImGui;
 import imgui.type.ImFloat;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
@@ -23,12 +24,12 @@ public class FloatTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void render(Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
         this.renderLeaf(name, ": " + this.format.format(floatTag.getValue()), path, () -> {
-            this.renderIcon(4);
+            this.renderIcon(drawer, 4);
             if (openContextMenu) {
-                ContextMenu.start().edit(name, floatTag, nameEditConsumer, t -> {
+                ContextMenu.start(drawer).edit(name, floatTag, nameEditConsumer, t -> {
                     floatTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
                 }).delete(deleteListener).sNbtParser(() -> tag).render();

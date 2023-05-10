@@ -1,11 +1,9 @@
-package net.lenni0451.imnbt;
+package net.lenni0451.imnbt.application;
 
 import imgui.app.Application;
 
 public class Main {
 
-    public static final String VERSION = "${version}";
-    public static final int LINES_PER_PAGE = 500;
     private static Main instance;
 
     public static void main(String[] args) {
@@ -18,8 +16,8 @@ public class Main {
     }
 
 
-    private final ImGuiImpl imGuiImpl = new ImGuiImpl();
-    private final Config config = new Config();
+    private final FontConfig fontConfig = new FontConfig();
+    private final ImGuiImpl imGuiImpl = new ImGuiImpl(this.fontConfig);
 
     private void init() {
         Application.launch(this.imGuiImpl);
@@ -29,8 +27,8 @@ public class Main {
         return this.imGuiImpl;
     }
 
-    public Config getConfig() {
-        return this.config;
+    public FontConfig getFontConfig() {
+        return this.fontConfig;
     }
 
 }

@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.ui.popups.file;
 import imgui.ImGui;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.EndianType;
@@ -32,7 +33,7 @@ public class SaveFilePopup extends Popup<SaveFilePopup> {
     }
 
     @Override
-    protected void renderContent() {
+    protected void renderContent(ImNbtDrawer drawer) {
         if (ImGui.inputText("Root name", this.rootName)) {
             this.tagSettings.rootName = this.rootName.get();
         }

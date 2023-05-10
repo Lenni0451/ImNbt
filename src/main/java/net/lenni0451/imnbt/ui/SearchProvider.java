@@ -1,6 +1,6 @@
 package net.lenni0451.imnbt.ui;
 
-import net.lenni0451.imnbt.Main;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.NbtPath;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -11,6 +11,7 @@ import java.util.*;
 
 public class SearchProvider {
 
+    private final ImNbtDrawer drawer;
     private final List<String> searchPaths = new ArrayList<>();
     private final Set<String> searchPathsSet = new LinkedHashSet<>();
     private final Set<String> expandPaths = new LinkedHashSet<>();
@@ -19,6 +20,10 @@ public class SearchProvider {
     private int currentScrollIndex = -1;
     private String currentScrollPath = null;
     private boolean doScroll = false;
+
+    public SearchProvider(final ImNbtDrawer drawer) {
+        this.drawer = drawer;
+    }
 
     public void setSearch(final String search) {
         this.search = search;
@@ -186,7 +191,7 @@ public class SearchProvider {
             String subPath = this.currentScrollPath.substring(path.length());
             if (!subPath.startsWith("[")) return -1;
             int index = Integer.parseInt(subPath.substring(1, subPath.indexOf(']')));
-            return index / Main.LINES_PER_PAGE + 1;
+            return index / this.drawer.getLinesPerPage() + 1;
         }
         return -1;
     }

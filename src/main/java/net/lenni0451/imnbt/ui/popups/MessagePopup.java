@@ -1,6 +1,7 @@
 package net.lenni0451.imnbt.ui.popups;
 
 import imgui.ImGui;
+import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
 
 public class MessagePopup extends Popup<MessagePopup> {
@@ -14,7 +15,7 @@ public class MessagePopup extends Popup<MessagePopup> {
     }
 
     @Override
-    protected void renderContent() {
+    protected void renderContent(ImNbtDrawer drawer) {
         ImGui.text(this.message);
         ImGui.separator();
         if (ImGui.button("Ok")) {

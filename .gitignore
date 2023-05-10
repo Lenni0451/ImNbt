@@ -2,7 +2,7 @@
 /.idea/
 /.vscode/
 /bin/
-/build/
-/out/
+build/
+out/
 /run/
 *.iml
