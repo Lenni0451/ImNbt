@@ -3,8 +3,10 @@ package net.lenni0451.imnbt.ui;
 import imgui.ImGui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
+import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
+import net.lenni0451.imnbt.utils.clipboard.NbtClipboardContent;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
@@ -27,6 +29,8 @@ public class ContextMenu {
 
     private final ImNbtDrawer drawer;
     private final Set<NbtType> newTypes = new LinkedHashSet<>();
+    private INbtTag copyTag;
+    private Consumer<INbtTag> pasteAction;
     private Runnable editAction;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
@@ -59,6 +63,29 @@ public class ContextMenu {
     public ContextMenu singleType(final NbtType newType, final BiConsumer<String, INbtTag> newTagAction) {
         this.newTypes.add(newType);
         this.newTagAction = newTagAction;
+        return this;
+    }
+
+    /**
+     * Allow the tag to be copied.<br>
+     * The tag is cloned before it is copied.
+     *
+     * @param tag The tag to be copied
+     * @return The builder instance
+     */
+    public ContextMenu copy(final INbtTag tag) {
+        this.copyTag = tag;
+        return this;
+    }
+
+    /**
+     * Allow the clipboard to be pasted.
+     *
+     * @param pasteAction The action to be executed when the tag is pasted
+     * @return The builder instance
+     */
+    public ContextMenu paste(final Consumer<INbtTag> pasteAction) {
+        this.pasteAction = pasteAction;
         return this;
     }
 
@@ -122,6 +149,21 @@ public class ContextMenu {
                     }
 
                     ImGui.endMenu();
+                }
+            }
+            if (this.copyTag != null) {
+                if (ImGui.menuItem("Copy Tag")) {
+                    new NbtClipboardContent(this.copyTag.copy()).setSystemClipboard();
+                }
+            }
+            if (this.pasteAction != null) {
+                if (ImGui.menuItem("Paste Tag")) {
+                    try {
+                        this.pasteAction.accept(NbtClipboardContent.getFromSystemClipboard());
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                        this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", (p, success) -> this.drawer.closePopup()));
+                    }
                 }
             }
             if (this.editAction != null) {
