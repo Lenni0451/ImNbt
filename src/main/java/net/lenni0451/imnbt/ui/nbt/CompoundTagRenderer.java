@@ -37,7 +37,7 @@ public class CompoundTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).allTypes((newKey, newTag) -> {
                     compoundTag.add(newKey, newTag);
                     searchProvider.refreshSearch();
-                }).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(compoundTag).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             String[] removed = new String[1];

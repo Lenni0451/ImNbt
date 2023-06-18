@@ -45,7 +45,7 @@ public class LongArrayTagRenderer implements TagRenderer {
                     if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
                     else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
                     searchProvider.refreshSearch();
-                }).edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(longArrayTag).edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             int[] removed = new int[]{-1};
@@ -96,7 +96,7 @@ public class LongArrayTagRenderer implements TagRenderer {
                 }, newTag -> {
                     longArrayTag.set(index, newTag.getValue());
                     searchProvider.refreshSearch();
-                }).delete(() -> removed[0] = index).render();
+                }).copy(new LongTag(longArrayTag.get(index))).delete(() -> removed[0] = index).render();
             }
         }, colorProvider, searchProvider);
     }

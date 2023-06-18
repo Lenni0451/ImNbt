@@ -45,7 +45,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
                     if (index == -1) byteArrayTag.add(((ByteTag) newTag).getValue());
                     else byteArrayTag.setValue(ArrayUtils.insert(byteArrayTag.getValue(), index, ((ByteTag) newTag).getValue()));
                     searchProvider.refreshSearch();
-                }).edit(name, byteArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(byteArrayTag).edit(name, byteArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             int[] removed = new int[]{-1};
@@ -96,7 +96,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
                 }, newTag -> {
                     byteArrayTag.set(index, newTag.getValue());
                     searchProvider.refreshSearch();
-                }).delete(() -> removed[0] = index).render();
+                }).copy(new ByteTag(byteArrayTag.get(index))).delete(() -> removed[0] = index).render();
             }
         }, colorProvider, searchProvider);
     }

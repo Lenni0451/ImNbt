@@ -30,7 +30,7 @@ public class ByteTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).edit(name, byteTag, nameEditConsumer, t -> {
                     byteTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
-                }).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(byteTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

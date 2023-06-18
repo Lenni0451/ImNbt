@@ -32,15 +32,18 @@ public class ListTagRenderer implements TagRenderer {
             this.renderIcon(drawer, 8);
             if (openContextMenu) {
                 ContextMenu contextMenu = ContextMenu.start(drawer).edit(name, listTag, nameEditConsumer, t -> {});
-                if (listTag.isEmpty()) contextMenu.allTypes((newName, newTag) -> {
-                    listTag.add(newTag);
-                    searchProvider.refreshSearch();
-                });
-                else contextMenu.singleType(listTag.getType(), (newName, newTag) -> {
-                    listTag.add(newTag);
-                    searchProvider.refreshSearch();
-                });
-                contextMenu.delete(deleteListener).sNbtParser(() -> tag).render();
+                if (listTag.isEmpty()) {
+                    contextMenu.allTypes((newName, newTag) -> {
+                        listTag.add(newTag);
+                        searchProvider.refreshSearch();
+                    });
+                } else {
+                    contextMenu.singleType(listTag.getType(), (newName, newTag) -> {
+                        listTag.add(newTag);
+                        searchProvider.refreshSearch();
+                    });
+                }
+                contextMenu.copy(listTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
             this.handleSearch(searchProvider, path);
         }, () -> {

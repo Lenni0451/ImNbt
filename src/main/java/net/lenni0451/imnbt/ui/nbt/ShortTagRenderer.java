@@ -30,7 +30,7 @@ public class ShortTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).edit(name, shortTag, nameEditConsumer, t -> {
                     shortTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
-                }).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(shortTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

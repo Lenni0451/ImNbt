@@ -35,7 +35,7 @@ public class FloatTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).edit(name, floatTag, nameEditConsumer, t -> {
                     floatTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
-                }).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(floatTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);
