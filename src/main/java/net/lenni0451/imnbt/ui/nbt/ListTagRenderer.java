@@ -5,6 +5,7 @@ import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
+import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
 /**
@@ -43,7 +45,14 @@ public class ListTagRenderer implements TagRenderer {
                         searchProvider.refreshSearch();
                     });
                 }
-                contextMenu.copy(name, listTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                contextMenu.copy(name, listTag).paste((copiedName, copiedTag) -> {
+                    if (!listTag.canAdd(copiedTag)) {
+                        drawer.openPopup(new MessagePopup("Paste Tag", "This tag is not supported in this list tag.\n" + listTag.getNbtType().name() + " != " + copiedTag.getNbtType().name(), close(drawer)));
+                    } else {
+                        listTag.add(copiedTag);
+                        searchProvider.refreshSearch();
+                    }
+                }).delete(deleteListener).sNbtParser(() -> tag).render();
             }
             this.handleSearch(searchProvider, path);
         }, () -> {
