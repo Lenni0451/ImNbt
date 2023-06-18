@@ -1,6 +1,7 @@
 package net.lenni0451.imnbt.utils.clipboard;
 
 import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -20,8 +21,8 @@ public class NbtClipboardContent implements Transferable, ClipboardOwner {
      * @throws UnsupportedFlavorException If the clipboard does not contain a nbt tag
      * @throws IOException                If a serialization error occurs
      */
-    public static INbtTag getFromClipboard(final Clipboard clipboard) throws UnsupportedFlavorException, IOException {
-        return (INbtTag) clipboard.getData(NbtDataFlavor.INSTANCE);
+    public static NamedTag getFromClipboard(final Clipboard clipboard) throws UnsupportedFlavorException, IOException {
+        return (NamedTag) clipboard.getData(NbtDataFlavor.INSTANCE);
     }
 
     /**
@@ -31,15 +32,15 @@ public class NbtClipboardContent implements Transferable, ClipboardOwner {
      * @throws UnsupportedFlavorException If the clipboard does not contain a nbt tag
      * @throws IOException                If a serialization error occurs
      */
-    public static INbtTag getFromSystemClipboard() throws UnsupportedFlavorException, IOException {
+    public static NamedTag getFromSystemClipboard() throws UnsupportedFlavorException, IOException {
         return getFromClipboard(Toolkit.getDefaultToolkit().getSystemClipboard());
     }
 
 
-    private final INbtTag tag;
+    private final NamedTag tag;
 
-    public NbtClipboardContent(final INbtTag tag) {
-        this.tag = tag;
+    public NbtClipboardContent(final String name, final INbtTag tag) {
+        this.tag = new NamedTag(name, tag.getNbtType(), tag);
     }
 
     /**

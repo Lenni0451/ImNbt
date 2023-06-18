@@ -31,7 +31,7 @@ public class IntTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).edit(name, intTag, nameEditConsumer, t -> {
                     intTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
-                }).copy(intTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(name, intTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

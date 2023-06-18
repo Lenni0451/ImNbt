@@ -48,7 +48,7 @@ public class LongArrayTagRenderer implements TagRenderer {
                     if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
                     else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
                     searchProvider.refreshSearch();
-                }).copy(longArrayTag).paste(pastedTag -> {
+                }).copy(name, longArrayTag).paste((pastedName, pastedTag) -> {
                     if (pastedTag instanceof INbtNumber num) {
                         longArrayTag.add(num.longValue());
                         searchProvider.refreshSearch();
@@ -109,7 +109,7 @@ public class LongArrayTagRenderer implements TagRenderer {
                 }, newTag -> {
                     longArrayTag.set(index, newTag.getValue());
                     searchProvider.refreshSearch();
-                }).copy(new LongTag(longArrayTag.get(index))).delete(() -> removed[0] = index).render();
+                }).copy(String.valueOf(index), new LongTag(longArrayTag.get(index))).delete(() -> removed[0] = index).render();
             }
         }, colorProvider, searchProvider);
     }

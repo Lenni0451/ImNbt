@@ -30,7 +30,7 @@ public class StringTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).edit(name, stringTag, nameEditConsumer, t -> {
                     stringTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
-                }).copy(stringTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(name, stringTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

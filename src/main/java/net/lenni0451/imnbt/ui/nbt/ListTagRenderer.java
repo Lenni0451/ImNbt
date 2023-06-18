@@ -43,7 +43,7 @@ public class ListTagRenderer implements TagRenderer {
                         searchProvider.refreshSearch();
                     });
                 }
-                contextMenu.copy(listTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                contextMenu.copy(name, listTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
             this.handleSearch(searchProvider, path);
         }, () -> {

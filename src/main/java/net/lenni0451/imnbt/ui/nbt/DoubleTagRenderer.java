@@ -35,7 +35,7 @@ public class DoubleTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).edit(name, doubleTag, nameEditConsumer, t -> {
                     doubleTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
-                }).copy(doubleTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(name, doubleTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

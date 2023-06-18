@@ -32,7 +32,7 @@ public class LongTagRenderer implements TagRenderer {
                 ContextMenu.start(drawer).edit(name, longTag, nameEditConsumer, t -> {
                     longTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
-                }).copy(longTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(name, longTag).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

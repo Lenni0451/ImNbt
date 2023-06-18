@@ -9,6 +9,7 @@ import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.clipboard.NbtClipboardContent;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
+import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -31,8 +32,9 @@ public class ContextMenu {
 
     private final ImNbtDrawer drawer;
     private final Set<NbtType> newTypes = new LinkedHashSet<>();
+    private String copyName;
     private INbtTag copyTag;
-    private Consumer<INbtTag> pasteAction;
+    private BiConsumer<String, INbtTag> pasteAction;
     private Runnable editAction;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
@@ -75,7 +77,8 @@ public class ContextMenu {
      * @param tag The tag to be copied
      * @return The builder instance
      */
-    public ContextMenu copy(final INbtTag tag) {
+    public ContextMenu copy(final String name, final INbtTag tag) {
+        this.copyName = name;
         this.copyTag = tag;
         return this;
     }
@@ -86,7 +89,7 @@ public class ContextMenu {
      * @param pasteAction The action to be executed when the tag is pasted
      * @return The builder instance
      */
-    public ContextMenu paste(final Consumer<INbtTag> pasteAction) {
+    public ContextMenu paste(final BiConsumer<String, INbtTag> pasteAction) {
         this.pasteAction = pasteAction;
         return this;
     }
@@ -155,13 +158,14 @@ public class ContextMenu {
             }
             if (this.copyTag != null) {
                 if (ImGui.menuItem("Copy Tag")) {
-                    new NbtClipboardContent(this.copyTag.copy()).setSystemClipboard();
+                    new NbtClipboardContent(this.copyName, this.copyTag.copy()).setSystemClipboard();
                 }
             }
             if (this.pasteAction != null) {
                 if (ImGui.menuItem("Paste Tag")) {
                     try {
-                        this.pasteAction.accept(NbtClipboardContent.getFromSystemClipboard());
+                        NamedTag tag = NbtClipboardContent.getFromSystemClipboard();
+                        this.pasteAction.accept(tag.getName(), tag.getTag());
                     } catch (Throwable t) {
                         t.printStackTrace();
                         this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", close(drawer)));

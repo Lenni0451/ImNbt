@@ -48,7 +48,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
                     if (index == -1) byteArrayTag.add(((ByteTag) newTag).getValue());
                     else byteArrayTag.setValue(ArrayUtils.insert(byteArrayTag.getValue(), index, ((ByteTag) newTag).getValue()));
                     searchProvider.refreshSearch();
-                }).copy(byteArrayTag).paste(pastedTag -> {
+                }).copy(name, byteArrayTag).paste((pastedName, pastedTag) -> {
                     if (pastedTag instanceof INbtNumber num) {
                         byteArrayTag.add(num.byteValue());
                         searchProvider.refreshSearch();
@@ -109,7 +109,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
                 }, newTag -> {
                     byteArrayTag.set(index, newTag.getValue());
                     searchProvider.refreshSearch();
-                }).copy(new ByteTag(byteArrayTag.get(index))).delete(() -> removed[0] = index).render();
+                }).copy(String.valueOf(index), new ByteTag(byteArrayTag.get(index))).delete(() -> removed[0] = index).render();
             }
         }, colorProvider, searchProvider);
     }
