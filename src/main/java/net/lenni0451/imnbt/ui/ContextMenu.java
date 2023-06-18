@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.clipboard.NbtClipboardContent;
+import net.lenni0451.imnbt.utils.clipboard.NbtDataFlavor;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
@@ -162,7 +163,7 @@ public class ContextMenu {
                 }
             }
             if (this.pasteAction != null) {
-                if (ImGui.menuItem("Paste Tag")) {
+                if (NbtDataFlavor.isInSystemClipboard() && ImGui.menuItem("Paste Tag")) {
                     try {
                         NamedTag tag = NbtClipboardContent.getFromSystemClipboard();
                         this.pasteAction.accept(tag.getName(), tag.getTag());
