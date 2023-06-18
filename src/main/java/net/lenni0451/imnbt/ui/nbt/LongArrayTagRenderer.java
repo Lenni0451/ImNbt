@@ -4,9 +4,11 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
+import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.ArrayUtils;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.mcstructs.nbt.INbtNumber;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.LongArrayTag;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
 /**
@@ -45,7 +48,17 @@ public class LongArrayTagRenderer implements TagRenderer {
                     if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
                     else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
                     searchProvider.refreshSearch();
-                }).copy(longArrayTag).edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(longArrayTag).paste(pastedTag -> {
+                    if (pastedTag instanceof INbtNumber num) {
+                        longArrayTag.add(num.longValue());
+                        searchProvider.refreshSearch();
+                    } else if (pastedTag instanceof LongArrayTag iat) {
+                        for (long l : iat.getValue()) longArrayTag.add(l);
+                        searchProvider.refreshSearch();
+                    } else {
+                        drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into a long array.", close(drawer)));
+                    }
+                }).edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             int[] removed = new int[]{-1};

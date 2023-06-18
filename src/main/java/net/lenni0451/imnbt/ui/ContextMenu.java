@@ -17,6 +17,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
+
 /**
  * A builder for the context menu when right clicking on a tag.
  */
@@ -162,7 +164,7 @@ public class ContextMenu {
                         this.pasteAction.accept(NbtClipboardContent.getFromSystemClipboard());
                     } catch (Throwable t) {
                         t.printStackTrace();
-                        this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", (p, success) -> this.drawer.closePopup()));
+                        this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", close(drawer)));
                     }
                 }
             }
@@ -178,7 +180,7 @@ public class ContextMenu {
             }
             if (this.sNbtSerializerListener != null) {
                 if (ImGui.menuItem("SNbt Serializer")) {
-                    this.drawer.openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), (p, success) -> this.drawer.closePopup()));
+                    this.drawer.openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), close(drawer)));
                 }
             }
 

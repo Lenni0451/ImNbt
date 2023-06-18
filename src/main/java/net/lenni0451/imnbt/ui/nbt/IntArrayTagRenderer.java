@@ -4,9 +4,11 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
+import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.ArrayUtils;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.mcstructs.nbt.INbtNumber;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.IntArrayTag;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
 /**
@@ -45,7 +48,17 @@ public class IntArrayTagRenderer implements TagRenderer {
                     if (index == -1) intArrayTag.add(((IntTag) newTag).getValue());
                     else intArrayTag.setValue(ArrayUtils.insert(intArrayTag.getValue(), index, ((IntTag) newTag).getValue()));
                     searchProvider.refreshSearch();
-                }).copy(intArrayTag).edit(name, intArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).copy(intArrayTag).paste(pastedTag -> {
+                    if (pastedTag instanceof INbtNumber num) {
+                        intArrayTag.add(num.intValue());
+                        searchProvider.refreshSearch();
+                    } else if (pastedTag instanceof IntArrayTag iat) {
+                        for (int i : iat.getValue()) intArrayTag.add(i);
+                        searchProvider.refreshSearch();
+                    } else {
+                        drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into an int array.", close(drawer)));
+                    }
+                }).edit(name, intArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             int[] removed = new int[]{-1};
