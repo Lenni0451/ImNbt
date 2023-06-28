@@ -2,6 +2,7 @@ package net.lenni0451.imnbt.ui.windows;
 
 import imgui.ImFont;
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
@@ -324,7 +325,7 @@ public class MainWindow extends Window {
         Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
         for (NbtType value : NbtType.values()) {
             if (NbtType.END.equals(value)) continue;
-            if (ImGui.menuItem(StringUtils.format(value))) {
+            if (ImGui.menuItem("     " + StringUtils.format(value))) {
                 this.drawer.openPopup(new EditTagPopup("New " + StringUtils.format(value) + " Tag", "Create", "", value.newInstance(), (p, success) -> {
                     if (success) {
                         if (tag != null && tag.tag == null) {
@@ -340,6 +341,12 @@ public class MainWindow extends Window {
                     this.drawer.closePopup();
                 }));
                 break;
+            }
+            { //Render icon
+                ImVec2 xy = ImGui.getItemRectMin();
+                xy.x++;
+                xy.y += 2;
+                NbtTreeRenderer.renderIcon(this.drawer, xy, value);
             }
         }
     }
