@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.ShortTag;
 
 import javax.annotation.Nonnull;
@@ -25,7 +26,7 @@ public class ShortTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ShortTag shortTag = (ShortTag) tag;
         this.renderLeaf(name, ": " + this.format.format(shortTag.getValue()), path, () -> {
-            this.renderIcon(drawer, 1);
+            this.renderIcon(drawer, NbtType.SHORT);
             if (openContextMenu) {
                 ContextMenu.start(drawer).edit(name, shortTag, nameEditConsumer, t -> {
                     shortTag.setValue(t.getValue());

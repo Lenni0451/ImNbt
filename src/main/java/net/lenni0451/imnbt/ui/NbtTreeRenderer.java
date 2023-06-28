@@ -1,10 +1,12 @@
 package net.lenni0451.imnbt.ui;
 
 import imgui.ImGui;
+import imgui.ImVec2;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.nbt.*;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.ImageUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
@@ -63,6 +65,31 @@ public class NbtTreeRenderer {
         TagRenderer renderer = TAG_RENDERER.get(tag.getNbtType());
         if (renderer == null) ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
         else renderer.render(drawer, nameEditConsumer, deleteListener, colorProvider, searchProvider, openContextMenu, path, name, tag);
+    }
+
+    /**
+     * Render the icon for a tag type.<br>
+     * The size is based on the font size.
+     *
+     * @param drawer The drawer instance
+     * @param xy     The position of the icon
+     * @param type   The type of the tag
+     */
+    public static void renderIcon(final ImNbtDrawer drawer, final ImVec2 xy, final NbtType type) {
+        int index = type.ordinal() - 1;
+        int nbtTypes = NbtType.values().length - 1;
+        int size = ImGui.getFontSize();
+        ImGui.getWindowDrawList().addImage(
+                drawer.getIconsTexture(),
+                xy.x,
+                xy.y,
+                xy.x + size,
+                xy.y + size,
+                ImageUtils.calculateUV(16 * nbtTypes, 16 * index),
+                0,
+                ImageUtils.calculateUV(16 * nbtTypes, 16 * (index + 1)),
+                1
+        );
     }
 
 }

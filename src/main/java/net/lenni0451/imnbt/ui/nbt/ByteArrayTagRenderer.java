@@ -36,7 +36,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ByteArrayTag byteArrayTag = (ByteArrayTag) tag;
         this.renderBranch(name, "(" + byteArrayTag.getLength() + ")", path, () -> {
-            this.renderIcon(drawer, 6);
+            this.renderIcon(drawer, NbtType.BYTE_ARRAY);
             if (openContextMenu) {
                 ContextMenu.start(drawer).singleType(NbtType.BYTE, (newName, newTag) -> {
                     int index = -1;
@@ -92,7 +92,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
 
     private void renderByte(final ImNbtDrawer drawer, final ByteArrayTag byteArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(byteArrayTag.get(index)), get(path, index), () -> {
-            this.renderIcon(drawer, 0);
+            this.renderIcon(drawer, NbtType.BYTE);
             if (openContextMenu) {
                 ContextMenu.start(drawer).edit(String.valueOf(index), new ByteTag(byteArrayTag.get(index)), newName -> {
                     //This gets executed multiple frames after the user clicked save in the popup

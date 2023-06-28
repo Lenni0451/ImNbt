@@ -8,6 +8,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.DoubleTag;
 
 import javax.annotation.Nonnull;
@@ -30,7 +31,7 @@ public class DoubleTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         DoubleTag doubleTag = (DoubleTag) tag;
         this.renderLeaf(name, ": " + this.format.format(doubleTag.getValue()), path, () -> {
-            this.renderIcon(drawer, 5);
+            this.renderIcon(drawer, NbtType.DOUBLE);
             if (openContextMenu) {
                 ContextMenu.start(drawer).edit(name, doubleTag, nameEditConsumer, t -> {
                     doubleTag.setValue(t.getValue());

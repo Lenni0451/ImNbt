@@ -9,6 +9,7 @@ import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,7 @@ public class ListTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
         this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
-            this.renderIcon(drawer, 8);
+            this.renderIcon(drawer, NbtType.LIST);
             if (openContextMenu) {
                 ContextMenu contextMenu = ContextMenu.start(drawer).edit(name, listTag, nameEditConsumer, t -> {});
                 if (listTag.isEmpty()) {

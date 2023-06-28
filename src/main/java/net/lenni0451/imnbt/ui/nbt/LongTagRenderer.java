@@ -8,6 +8,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.LongTag;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,7 @@ public class LongTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         LongTag longTag = (LongTag) tag;
         this.renderLeaf(name, ": " + this.format.format(longTag.getValue()), path, () -> {
-            this.renderIcon(drawer, 3);
+            this.renderIcon(drawer, NbtType.LONG);
             if (openContextMenu) {
                 ContextMenu.start(drawer).edit(name, longTag, nameEditConsumer, t -> {
                     longTag.setValue(t.getValue());

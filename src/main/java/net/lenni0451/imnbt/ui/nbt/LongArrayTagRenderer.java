@@ -36,7 +36,7 @@ public class LongArrayTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         LongArrayTag longArrayTag = (LongArrayTag) tag;
         this.renderBranch(name, "(" + longArrayTag.getLength() + ")", path, () -> {
-            this.renderIcon(drawer, 11);
+            this.renderIcon(drawer, NbtType.LONG_ARRAY);
             if (openContextMenu) {
                 ContextMenu.start(drawer).singleType(NbtType.LONG, (newName, newTag) -> {
                     int index = -1;
@@ -92,7 +92,7 @@ public class LongArrayTagRenderer implements TagRenderer {
 
     private void renderLong(final ImNbtDrawer drawer, final LongArrayTag longArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(longArrayTag.get(index)), get(path, index), () -> {
-            this.renderIcon(drawer, 3);
+            this.renderIcon(drawer, NbtType.LONG);
             if (openContextMenu) {
                 ContextMenu.start(drawer).edit(String.valueOf(index), new LongTag(longArrayTag.get(index)), newName -> {
                     //This gets executed multiple frames after the user clicked save in the popup

@@ -36,7 +36,7 @@ public class IntArrayTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         IntArrayTag intArrayTag = (IntArrayTag) tag;
         this.renderBranch(name, "(" + intArrayTag.getLength() + ")", path, () -> {
-            this.renderIcon(drawer, 10);
+            this.renderIcon(drawer, NbtType.INT_ARRAY);
             if (openContextMenu) {
                 ContextMenu.start(drawer).singleType(NbtType.INT, (newName, newTag) -> {
                     int index = -1;
@@ -92,7 +92,7 @@ public class IntArrayTagRenderer implements TagRenderer {
 
     private void renderInt(final ImNbtDrawer drawer, final IntArrayTag intArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(intArrayTag.get(index)), get(path, index), () -> {
-            this.renderIcon(drawer, 2);
+            this.renderIcon(drawer, NbtType.INT);
             if (openContextMenu) {
                 ContextMenu.start(drawer).edit(String.valueOf(index), new IntTag(intArrayTag.get(index)), newName -> {
                     //This gets executed multiple frames after the user clicked save in the popup

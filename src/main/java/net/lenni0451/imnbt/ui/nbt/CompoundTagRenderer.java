@@ -8,6 +8,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,7 @@ public class CompoundTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
-            this.renderIcon(drawer, 9);
+            this.renderIcon(drawer, NbtType.COMPOUND);
             this.handleSearch(searchProvider, path);
             if (openContextMenu) {
                 ContextMenu.start(drawer).allTypes((newKey, newTag) -> {

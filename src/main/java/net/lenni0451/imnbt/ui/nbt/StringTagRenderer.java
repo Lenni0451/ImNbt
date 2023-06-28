@@ -8,6 +8,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.StringTag;
 
 import javax.annotation.Nonnull;
@@ -25,7 +26,7 @@ public class StringTagRenderer implements TagRenderer {
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name, ": " + stringTag.getValue(), path, () -> {
-            this.renderIcon(drawer, 7);
+            this.renderIcon(drawer, NbtType.STRING);
             if (openContextMenu) {
                 ContextMenu.start(drawer).edit(name, stringTag, nameEditConsumer, t -> {
                     stringTag.setValue(t.getValue());

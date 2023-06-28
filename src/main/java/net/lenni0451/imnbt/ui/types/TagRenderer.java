@@ -5,9 +5,9 @@ import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiTreeNodeFlags;
 import net.lenni0451.imnbt.ImNbtDrawer;
+import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.utils.Color;
-import net.lenni0451.imnbt.utils.ImageUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
@@ -115,26 +115,12 @@ public interface TagRenderer {
      * Render the icon for the tag.
      *
      * @param drawer The drawer instance
-     * @param index  The index of the icon
+     * @param type   The type of the icon
      */
-    default void renderIcon(final ImNbtDrawer drawer, final int index) {
+    default void renderIcon(final ImNbtDrawer drawer, final NbtType type) {
         ImVec2 xy = ImGui.getItemRectMin();
         xy.x += ImGui.getFontSize();
-        if (xy.y < 0 || xy.y > ImGui.getIO().getDisplaySizeY()) return;
-
-        int nbtTypes = NbtType.values().length - 1;
-        int size = ImGui.getFontSize();
-        ImGui.getWindowDrawList().addImage(
-                drawer.getIconsTexture(),
-                xy.x,
-                xy.y,
-                xy.x + size,
-                xy.y + size,
-                ImageUtils.calculateUV(16 * nbtTypes, 16 * index),
-                0,
-                ImageUtils.calculateUV(16 * nbtTypes, 16 * (index + 1)),
-                1
-        );
+        if (xy.y >= 0 && xy.y <= ImGui.getIO().getDisplaySizeY()) NbtTreeRenderer.renderIcon(drawer, xy, type);
     }
 
 }
