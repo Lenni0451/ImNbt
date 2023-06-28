@@ -1,6 +1,7 @@
 package net.lenni0451.imnbt.ui;
 
 import imgui.ImGui;
+import imgui.ImVec2;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
@@ -146,12 +147,16 @@ public class ContextMenu {
             if (!this.newTypes.isEmpty()) {
                 if (ImGui.beginMenu("New")) {
                     for (NbtType newType : this.newTypes) {
-                        if (ImGui.menuItem(StringUtils.format(newType))) {
+                        if (ImGui.menuItem("     " + StringUtils.format(newType))) {
                             this.drawer.openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
                                 if (success) this.newTagAction.accept(p.getName(), p.getTag());
                                 this.drawer.closePopup();
                             }));
                         }
+                        ImVec2 xy = ImGui.getItemRectMin();
+                        xy.x++;
+                        xy.y += 2;
+                        NbtTreeRenderer.renderIcon(this.drawer, xy, newType);
                     }
 
                     ImGui.endMenu();
