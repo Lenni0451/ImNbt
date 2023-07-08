@@ -124,13 +124,13 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
     protected void initImGui(Configuration config) {
         super.initImGui(config);
         try {
-            ImageUtils.setIcon(handle, Main.class.getClassLoader().getResourceAsStream("assets/logo.png"));
+            ImageUtils.setIcon(handle, Main.class.getClassLoader().getResourceAsStream("imnbt/logo.png"));
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(-1);
         }
         try {
-            this.iconsTexture = ImageUtils.loadTexture(ImageIO.read(Main.class.getClassLoader().getResourceAsStream("assets/icons.png")));
+            this.iconsTexture = ImageUtils.loadTexture(ImageIO.read(Main.class.getClassLoader().getResourceAsStream("imnbt/icons.png")));
             if (this.iconsTexture < 0) throw new IllegalStateException("Failed to load icons texture");
         } catch (Throwable t) {
             t.printStackTrace();
@@ -145,7 +145,7 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
         try {
             ImFont[] fonts = Main.getInstance().getFontConfig().getFonts();
 
-            byte[] opensans_regular = ImGuiImpl.class.getClassLoader().getResourceAsStream("assets/OpenSans-Regular.ttf").readAllBytes();
+            byte[] opensans_regular = ImGuiImpl.class.getClassLoader().getResourceAsStream("imnbt/OpenSans-Regular.ttf").readAllBytes();
             imFontAtlas.addFontDefault(imFontConfig);
             for (int i = 0; i < fonts.length; i++) {
                 int size = 15 + (5 * i);

@@ -66,5 +66,5 @@ gradlew.bat build
 To implement ImNbt into your own project see [IMPLEMENT](IMPLEMENT.MD) readme.
 
 ## Licenses
-The licenses of the libraries used by ImNbt can be found in the [assets/licenses directory](src/main/resources/assets/licenses).\
+The licenses of the libraries used by ImNbt can be found in the [imnbt/licenses directory](src/main/resources/imnbt/licenses).\
 The license of ImNbt itself can be found in the [LICENSE file](LICENSE).

@@ -32,7 +32,7 @@ public class Licenses {
 
     private static String read(final String name) {
         StringBuilder out = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(Licenses.class.getClassLoader().getResourceAsStream("assets/licenses/" + name + ".txt")));
+        BufferedReader br = new BufferedReader(new InputStreamReader(Licenses.class.getClassLoader().getResourceAsStream("imnbt/licenses/" + name + ".txt")));
         br.lines().forEach(line -> out.append(line).append("\n"));
         return out.toString();
     }
