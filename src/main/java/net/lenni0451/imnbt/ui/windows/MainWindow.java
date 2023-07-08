@@ -65,16 +65,33 @@ public class MainWindow extends Window {
         this.fontHandler = fontHandler;
     }
 
+    /**
+     * @return The tag of the currently open tab
+     */
+    @Nullable
+    public INbtTag getOpenTab() {
+        if (this.tags.isEmpty()) return null;
+        return this.tags.get(this.openTab).tag;
+    }
+
+    /**
+     * @return The tags of all tabs
+     */
+    public INbtTag[] getTabs() {
+        if (this.tags.isEmpty()) return new INbtTag[0];
+        return this.tags.stream().map(tag -> tag.tag).toArray(INbtTag[]::new);
+    }
+
     @Override
     public void render() {
         boolean searchDeactivated = false;
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
                 if (ImGui.menuItem("Open")) {
-                    this.open();
+                    this.chooseFile();
                 }
                 if (ImGui.menuItem("Save")) {
-                    this.save();
+                    this.saveFile();
                 }
                 if (ImGui.menuItem("Close")) {
                     if (!this.tags.isEmpty()) {
@@ -232,7 +249,7 @@ public class MainWindow extends Window {
         return this.tags.size() > 0 && this.tags.get(this.openTab).tag != null;
     }
 
-    private void open() {
+    public void chooseFile() {
         String response = this.drawer.showOpenFileDialog("Open Nbt Tag");
         if (response == null) return;
         File file = new File(response);
@@ -253,7 +270,7 @@ public class MainWindow extends Window {
         this.open(data, file.getName());
     }
 
-    private void open(final byte[] data, final String fileName) {
+    public void open(final byte[] data, final String fileName) {
         Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
         this.drawer.openPopup(new OpenFilePopup(data, (p, success) -> {
             if (success) {
@@ -291,7 +308,7 @@ public class MainWindow extends Window {
         }));
     }
 
-    private void save() {
+    public void saveFile() {
         if (!this.hasTag()) {
             this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
             return;
@@ -354,6 +371,7 @@ public class MainWindow extends Window {
 
     private static class Tag {
         private TagSettings settings;
+        @Nullable
         private INbtTag tag;
         private String fileName;
 
@@ -361,7 +379,7 @@ public class MainWindow extends Window {
             this(new TagSettings(), tag);
         }
 
-        private Tag(final TagSettings settings, final INbtTag tag) {
+        private Tag(final TagSettings settings, @Nullable final INbtTag tag) {
             this.settings = settings;
             this.tag = tag;
         }
