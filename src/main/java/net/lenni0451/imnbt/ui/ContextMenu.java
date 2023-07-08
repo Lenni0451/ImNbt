@@ -7,8 +7,6 @@ import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
-import net.lenni0451.imnbt.utils.clipboard.NbtClipboardContent;
-import net.lenni0451.imnbt.utils.clipboard.NbtDataFlavor;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
@@ -164,17 +162,16 @@ public class ContextMenu {
             }
             if (this.copyTag != null) {
                 if (ImGui.menuItem("Copy Tag")) {
-                    new NbtClipboardContent(this.copyName, this.copyTag.copy()).setSystemClipboard();
+                    this.drawer.setClipboard(new NamedTag(this.copyName, this.copyTag.getNbtType(), this.copyTag.copy()));
                 }
             }
             if (this.pasteAction != null) {
-                if (NbtDataFlavor.isInSystemClipboard() && ImGui.menuItem("Paste Tag")) {
-                    try {
-                        NamedTag tag = NbtClipboardContent.getFromSystemClipboard();
+                if (this.drawer.hasClipboard() && ImGui.menuItem("Paste Tag")) {
+                    NamedTag tag = this.drawer.getClipboard();
+                    if (tag == null) {
+                        this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", close(this.drawer)));
+                    } else {
                         this.pasteAction.accept(tag.getName(), tag.getTag());
-                    } catch (Throwable t) {
-                        t.printStackTrace();
-                        this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", close(drawer)));
                     }
                 }
             }
@@ -190,7 +187,7 @@ public class ContextMenu {
             }
             if (this.sNbtSerializerListener != null) {
                 if (ImGui.menuItem("SNbt Serializer")) {
-                    this.drawer.openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), close(drawer)));
+                    this.drawer.openPopup(new SNbtSerializerPopup(this.sNbtSerializerListener.get(), close(this.drawer)));
                 }
             }
 

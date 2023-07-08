@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils.clipboard;
+package net.lenni0451.imnbt.application.clipboard;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;

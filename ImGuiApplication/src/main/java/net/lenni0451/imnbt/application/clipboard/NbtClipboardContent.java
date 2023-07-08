@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils.clipboard;
+package net.lenni0451.imnbt.application.clipboard;
 
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
@@ -40,7 +40,11 @@ public class NbtClipboardContent implements Transferable, ClipboardOwner {
     private final NamedTag tag;
 
     public NbtClipboardContent(final String name, final INbtTag tag) {
-        this.tag = new NamedTag(name, tag.getNbtType(), tag);
+        this(new NamedTag(name, tag.getNbtType(), tag));
+    }
+
+    public NbtClipboardContent(final NamedTag tag) {
+        this.tag = tag;
     }
 
     /**

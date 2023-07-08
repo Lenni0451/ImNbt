@@ -5,6 +5,7 @@ import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.DiffWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
+import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -89,5 +90,23 @@ public interface ImNbtDrawer {
      */
     @Nullable
     String showSaveFileDialog(final String title);
+
+    /**
+     * @return If the clipboard contains a tag
+     */
+    boolean hasClipboard();
+
+    /**
+     * Set the clipboard to the given tag.
+     *
+     * @param tag The tag to copy
+     */
+    void setClipboard(@Nonnull final NamedTag tag);
+
+    /**
+     * @return The clipboard tag
+     */
+    @Nullable
+    NamedTag getClipboard();
 
 }

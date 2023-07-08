@@ -6,6 +6,8 @@ import imgui.app.Configuration;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ImNbtDrawer;
+import net.lenni0451.imnbt.application.clipboard.NbtClipboardContent;
+import net.lenni0451.imnbt.application.clipboard.NbtDataFlavor;
 import net.lenni0451.imnbt.application.utils.FileDialogs;
 import net.lenni0451.imnbt.application.utils.ImageUtils;
 import net.lenni0451.imnbt.ui.types.Popup;
@@ -13,6 +15,7 @@ import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.DiffWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
+import net.lenni0451.mcstructs.nbt.io.NamedTag;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
 
@@ -90,6 +93,26 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
     @Override
     public String showSaveFileDialog(String title) {
         return FileDialogs.save(title);
+    }
+
+    @Override
+    public boolean hasClipboard() {
+        return NbtDataFlavor.isInSystemClipboard();
+    }
+
+    @Override
+    public void setClipboard(@Nonnull NamedTag tag) {
+        new NbtClipboardContent(tag).setSystemClipboard();
+    }
+
+    @Override
+    public NamedTag getClipboard() {
+        try {
+            return NbtClipboardContent.getFromSystemClipboard();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return null;
+        }
     }
 
     @Override
