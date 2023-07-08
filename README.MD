@@ -62,6 +62,9 @@ The output jar is in the `build/libs` directory.
 gradlew.bat build
 `````
 
+## Implementing ImNbt into your own project
+To implement ImNbt into your own project see [IMPLEMENT](IMPLEMENT.MD) readme.
+
 ## Licenses
 The licenses of the libraries used by ImNbt can be found in the [assets/licenses directory](src/main/resources/assets/licenses).\
 The license of ImNbt itself can be found in the [LICENSE file](LICENSE).
