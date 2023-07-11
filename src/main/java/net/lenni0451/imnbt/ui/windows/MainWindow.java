@@ -228,7 +228,10 @@ public class MainWindow extends Window {
                             ImGui.text("No Nbt Tag present");
                         } else {
                             ImGui.beginChild("##NbtTree");
-                            NbtTreeRenderer.render(drawer, newName -> tag.settings.rootName = newName, () -> {
+                            NbtTreeRenderer.render(drawer, newName -> tag.settings.rootName = newName, (tranformedName, transformedTag) -> {
+                                tag.tag = transformedTag;
+                                this.searchProvider.buildSearchPaths(transformedTag);
+                            }, () -> {
                                 tag.settings.rootName = "";
                                 tag.tag = null;
                                 tag.fileName = null;

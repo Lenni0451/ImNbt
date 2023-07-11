@@ -36,6 +36,8 @@ public class ContextMenu {
     private INbtTag copyTag;
     private BiConsumer<String, INbtTag> pasteAction;
     private Runnable editAction;
+    private Consumer<NbtType> transformAction;
+    private NbtType[] transformTypes;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
     private Supplier<INbtTag> sNbtSerializerListener;
@@ -91,6 +93,19 @@ public class ContextMenu {
      */
     public ContextMenu paste(final BiConsumer<String, INbtTag> pasteAction) {
         this.pasteAction = pasteAction;
+        return this;
+    }
+
+    /**
+     * Allow transforming the tag into another type.
+     *
+     * @param typeConsumer  The consumer to be executed when the tag is transformed
+     * @param possibleTypes The possible types the tag can be transformed into
+     * @return The builder instance
+     */
+    public ContextMenu transform(final Consumer<NbtType> typeConsumer, final NbtType... possibleTypes) {
+        this.transformAction = typeConsumer;
+        this.transformTypes = possibleTypes;
         return this;
     }
 
@@ -173,6 +188,21 @@ public class ContextMenu {
                     } else {
                         this.pasteAction.accept(tag.getName(), tag.getTag());
                     }
+                }
+            }
+            if (this.transformAction != null && this.transformTypes.length > 0) {
+                if (ImGui.beginMenu("Transform")) {
+                    for (NbtType type : this.transformTypes) {
+                        if (ImGui.menuItem("     " + StringUtils.format(type))) {
+                            this.transformAction.accept(type);
+                        }
+                        ImVec2 xy = ImGui.getItemRectMin();
+                        xy.x++;
+                        xy.y += 2;
+                        NbtTreeRenderer.renderIcon(this.drawer, xy, type);
+                    }
+
+                    ImGui.endMenu();
                 }
             }
             if (this.editAction != null) {

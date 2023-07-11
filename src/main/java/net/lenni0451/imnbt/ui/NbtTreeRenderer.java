@@ -13,6 +13,7 @@ import net.lenni0451.mcstructs.nbt.NbtType;
 import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -61,10 +62,10 @@ public class NbtTreeRenderer {
      * @param name             The name of the tag
      * @param tag              The tag to render
      */
-    public static void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, final INbtTag tag) {
+    public static void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final BiConsumer<String, INbtTag> transformListener, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, final INbtTag tag) {
         TagRenderer renderer = TAG_RENDERER.get(tag.getNbtType());
         if (renderer == null) ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
-        else renderer.render(drawer, nameEditConsumer, deleteListener, colorProvider, searchProvider, openContextMenu, path, name, tag);
+        else renderer.render(drawer, nameEditConsumer, transformListener, deleteListener, colorProvider, searchProvider, openContextMenu, path, name, tag);
     }
 
     /**

@@ -8,6 +8,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
@@ -15,6 +16,7 @@ import net.lenni0451.mcstructs.nbt.tags.ListTag;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -29,7 +31,7 @@ public class ListTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
         this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.LIST);
@@ -53,7 +55,7 @@ public class ListTagRenderer implements TagRenderer {
                         listTag.add(copiedTag);
                         searchProvider.refreshSearch();
                     }
-                }).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).transform(TagTransformer.transform(drawer, name, listTag, transformListener), TagTransformer.LIST_TRANSFORMS).delete(deleteListener).sNbtParser(() -> tag).render();
             }
             this.handleSearch(searchProvider, path);
         }, () -> {
@@ -96,6 +98,11 @@ public class ListTagRenderer implements TagRenderer {
                 searchProvider.refreshSearch();
             } catch (Throwable ignored) {
             }
+        }, (transformedName, transformedTag) -> {
+            int index = Integer.parseInt(transformedName);
+            if (index < 0 || index >= listTag.size()) return;
+            listTag.getValue().set(index, transformedTag);
+            searchProvider.refreshSearch();
         }, () -> removed[0] = i, colorProvider, searchProvider, openContextMenu, get(path, i), String.valueOf(i), entry);
     }
 

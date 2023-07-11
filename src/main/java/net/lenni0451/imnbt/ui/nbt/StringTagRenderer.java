@@ -7,11 +7,13 @@ import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.StringTag;
 
 import javax.annotation.Nonnull;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -23,12 +25,12 @@ public class StringTagRenderer implements TagRenderer {
     private final ImString valueEditor = new ImString(32767);
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name, ": " + stringTag.getValue(), path, () -> {
             this.renderIcon(drawer, NbtType.STRING);
             if (openContextMenu) {
-                ContextMenu.start(drawer).edit(name, stringTag, nameEditConsumer, t -> {
+                ContextMenu.start(drawer).transform(TagTransformer.transform(drawer, name, stringTag, transformListener), TagTransformer.STRING_TRANSFORMS).edit(name, stringTag, nameEditConsumer, t -> {
                     stringTag.setValue(t.getValue());
                     searchProvider.refreshSearch();
                 }).copy(name, stringTag).delete(deleteListener).sNbtParser(() -> tag).render();

@@ -12,6 +12,7 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
 import javax.annotation.Nonnull;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -23,17 +24,18 @@ public interface TagRenderer {
     /**
      * Render the tree node for the tag.
      *
-     * @param drawer           The drawer instance
-     * @param nameEditConsumer The listener for when the name of a tag is edited
-     * @param deleteListener   The listener for when the tag is deleted
-     * @param colorProvider    The provider for the color of the tag
-     * @param searchProvider   The provider for the search
-     * @param openContextMenu  Whether the context menu should be opened
-     * @param path             The path of the tag
-     * @param name             The name of the tag
-     * @param tag              The tag to render
+     * @param drawer            The drawer instance
+     * @param nameEditConsumer  The listener for when the name of a tag is edited
+     * @param transformListener The listener for when the tag is transformed
+     * @param deleteListener    The listener for when the tag is deleted
+     * @param colorProvider     The provider for the color of the tag
+     * @param searchProvider    The provider for the search
+     * @param openContextMenu   Whether the context menu should be opened
+     * @param path              The path of the tag
+     * @param name              The name of the tag
+     * @param tag               The tag to render
      */
-    void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
+    void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final BiConsumer<String, INbtTag> transformListener, final Runnable deleteListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
 
     /**
      * Render the value editor for the tag.

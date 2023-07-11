@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -30,7 +32,7 @@ public class CompoundTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.COMPOUND);
@@ -42,7 +44,7 @@ public class CompoundTagRenderer implements TagRenderer {
                 }).copy(name, compoundTag).paste((copiedName, copiedTag) -> {
                     compoundTag.add(TagUtils.findUniqueName(compoundTag, copiedName), copiedTag);
                     searchProvider.refreshSearch();
-                }).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                }).transform(TagTransformer.transform(drawer, name, compoundTag, transformListener), TagTransformer.COMPOUND_TRANSFORMS).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }
         }, () -> {
             String[] removed = new String[1];
@@ -80,6 +82,9 @@ public class CompoundTagRenderer implements TagRenderer {
             //This gets executed multiple frames after the user clicked save in the popup
             INbtTag oldTag = compoundTag.remove(key);
             compoundTag.add(newName, oldTag);
+            searchProvider.refreshSearch();
+        }, (transformedName,transformedTag) -> {
+            compoundTag.add(transformedName, transformedTag);
             searchProvider.refreshSearch();
         }, () -> removed[0] = key, colorProvider, searchProvider, openContextMenu, get(path, key), key, value);
     }
