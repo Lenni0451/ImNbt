@@ -78,14 +78,15 @@ If `null` is passed the menu will not be displayed.
 If you only need the tag tree view you can call the `NbtTreeRenderer#render` directly.
 
 The following arguments are required:
-| Argument           | Type                      | Description                                                                        |
-| ------------------ | ------------------------- | ---------------------------------------------------------------------------------- |
-| `drawer`           | `ImNbtDrawer`             | The drawer instance                                                                |
-| `nameEditConsumer` | `Consumer<String>`        | A handler for root tag name changes                                                |
-| `deleteListener`   | `Runnable`                | A handler for root tag deletion                                                    |
-| `colorProvider`    | `Function<String, Color>` | A supplier for the text color of a tag. Can return `null` to use the default color |
-| `searchProvider`   | `SearchProvider`          | A provider for the search functionality                                            |
-| `openContextMenu`  | `boolean`                 | If the context menu should be available                                            |
-| `path`             | `String`                  | The current path (Should be empty for the root tag)                                |
-| `name`             | `String`                  | The name of the root tag                                                           |
-| `tag`              | `INbtTag`                 | The root tag                                                                       |
+| Argument            | Type                          | Description                                                                                             |
+| ------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `drawer`            | `ImNbtDrawer`                 | The drawer instance                                                                                     |
+| `nameEditConsumer`  | `Consumer<String>`            | A handler for root tag name changes                                                                     |
+| `transformListener` | `BiConsumer<String, INbtTag>` | The listener for tag transformations. The first argument is the name, the second is the transformed tag |
+| `deleteListener`    | `Runnable`                    | A handler for root tag deletion                                                                         |
+| `colorProvider`     | `Function<String, Color>`     | A supplier for the text color of a tag. Can return `null` to use the default color                      |
+| `searchProvider`    | `SearchProvider`              | A provider for the search functionality                                                                 |
+| `openContextMenu`   | `boolean`                     | If the context menu should be available                                                                 |
+| `path`              | `String`                      | The current path (Should be empty for the root tag)                                                     |
+| `name`              | `String`                      | The name of the root tag                                                                                |
+| `tag`               | `INbtTag`                     | The root tag                                                                                            |
