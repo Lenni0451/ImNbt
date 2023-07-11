@@ -20,16 +20,19 @@ import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.StringUtils;
+import net.lenni0451.imnbt.utils.nbt.TagUtils;
 import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
+import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
 import javax.annotation.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
@@ -45,7 +48,7 @@ public class MainWindow extends Window {
     private static final String ERROR_OPEN = "An unknown error occurred while opening the Nbt Tag.";
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
     private static final String REQUIRE_BOTH_DIFF_TAGS = "You need to select two Nbt Tags to compare them.";
-    private static final String WARNING_UNREAD_BYTES = "After reading the Nbt Tag there are still %s unread bytes left.";
+    private static final String WARNING_UNREAD_BYTES = "After reading the Nbt Tag there are still %s unread bytes left.\nTry enabling 'Read extra data' if there are more tags in the file.";
 
     private final FontHandler fontHandler;
     private final List<Tag> tags = new ArrayList<>();
@@ -281,6 +284,18 @@ public class MainWindow extends Window {
                     ByteArrayInputStream bais = new ByteArrayInputStream(data);
                     DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(bais));
                     NamedTag namedTag = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
+                    if (bais.available() > 0 && p.getTagSettings().readExtraData) {
+                        CompoundTag extraCompound = new CompoundTag(new LinkedHashMap<>());
+                        NamedTag extraRoot = new NamedTag("extra data", NbtType.COMPOUND, extraCompound);
+                        if (namedTag != null) extraCompound.add(namedTag.getName(), namedTag.getTag());
+                        namedTag = extraRoot;
+
+                        while (bais.available() > 0) {
+                            NamedTag extra = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
+                            if (extra == null) continue;
+                            extraCompound.add(TagUtils.findUniqueName(extraCompound, extra.getName()), extra.getTag());
+                        }
+                    }
                     if (tag != null && tag.tag == null) {
                         tag.settings = p.getTagSettings();
                         if (namedTag == null) {

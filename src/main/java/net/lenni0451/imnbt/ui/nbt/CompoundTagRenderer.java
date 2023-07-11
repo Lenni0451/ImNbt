@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.nbt.TagUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
@@ -39,9 +40,7 @@ public class CompoundTagRenderer implements TagRenderer {
                     compoundTag.add(newKey, newTag);
                     searchProvider.refreshSearch();
                 }).copy(name, compoundTag).paste((copiedName, copiedTag) -> {
-                    String newName = copiedName;
-                    for (int i = 1; compoundTag.contains(newName); i++) newName = copiedName + "_" + i;
-                    compoundTag.add(newName, copiedTag);
+                    compoundTag.add(TagUtils.findUniqueName(compoundTag, copiedName), copiedTag);
                     searchProvider.refreshSearch();
                 }).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
             }

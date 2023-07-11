@@ -26,5 +26,10 @@ public class TagSettings {
      * The current compression type of the tag.
      */
     public CompressionType compressionType = CompressionType.NO_COMPRESSION;
+    /**
+     * If extra data after the root tag should be read.<br>
+     * This is only used when reading a tag.
+     */
+    public boolean readExtraData = false;
 
 }
