@@ -29,6 +29,20 @@ public class SearchProvider {
     }
 
     /**
+     * @return The amount of matches
+     */
+    public int getPathCount() {
+        return this.searchPaths.size();
+    }
+
+    /**
+     * @return The current scrolled index
+     */
+    public int getCurrentScrollIndex() {
+        return this.currentScrollIndex;
+    }
+
+    /**
      * Set the current search string.<br>
      * This does not refresh the search, use {@link #refreshSearch()} for that.
      *

@@ -142,6 +142,16 @@ public class MainWindow extends Window {
                 if (ImGui.button("Next")) {
                     this.searchProvider.setDoScroll(SearchProvider.SearchDirection.NEXT);
                 }
+                ImGui.sameLine();
+                {
+                    String s = "Results: ";
+                    if (this.searchProvider.getCurrentScrollIndex() >= 0) {
+                        s += this.searchProvider.getCurrentScrollIndex() + 1;
+                        s += "/";
+                    }
+                    s += this.searchProvider.getPathCount();
+                    ImGui.text(s);
+                }
 
                 ImGui.endMenu();
             }
