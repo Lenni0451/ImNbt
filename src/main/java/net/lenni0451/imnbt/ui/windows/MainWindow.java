@@ -28,6 +28,7 @@ import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +39,13 @@ import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
  */
 public class MainWindow extends Window {
 
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
     private static final String ERROR_REQUIRE_TAG = "You need to create or open a Nbt Tag first.";
     private static final String SUCCESS_SAVE = "Successfully saved the Nbt Tag.";
     private static final String ERROR_OPEN = "An unknown error occurred while opening the Nbt Tag.";
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
     private static final String REQUIRE_BOTH_DIFF_TAGS = "You need to select two Nbt Tags to compare them.";
+    private static final String WARNING_UNREAD_BYTES = "After reading the Nbt Tag there are still %s unread bytes left.";
 
     private final FontHandler fontHandler;
     private final List<Tag> tags = new ArrayList<>();
@@ -275,7 +278,8 @@ public class MainWindow extends Window {
         this.drawer.openPopup(new OpenFilePopup(data, (p, success) -> {
             if (success) {
                 try {
-                    DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(new ByteArrayInputStream(data)));
+                    ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                    DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(bais));
                     NamedTag namedTag = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
                     if (tag != null && tag.tag == null) {
                         tag.settings = p.getTagSettings();
@@ -297,7 +301,11 @@ public class MainWindow extends Window {
                         readTag.fileName = fileName;
                         this.tags.add(readTag);
                     }
-                    this.drawer.closePopup();
+                    if (bais.available() > 0) {
+                        this.drawer.openPopup(new MessagePopup("Warning", String.format(WARNING_UNREAD_BYTES, DECIMAL_FORMAT.format(bais.available())), close(this.drawer)));
+                    } else {
+                        this.drawer.closePopup();
+                    }
                 } catch (Throwable t) {
                     t.printStackTrace();
                     this.drawer.openPopup(new MessagePopup("Error", ERROR_OPEN, close(this.drawer)));
