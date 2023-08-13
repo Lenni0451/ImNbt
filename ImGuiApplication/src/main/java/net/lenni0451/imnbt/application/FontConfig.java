@@ -9,9 +9,19 @@ public class FontConfig implements FontHandler {
 
     private static final String KEY_NAME = "selectedFont";
 
-    private final Preferences preferences = Preferences.userNodeForPackage(this.getClass());
+    private Preferences preferences;
     private final ImFont[] fonts = new ImFont[5];
-    private int selectedFont = Math.max(0, Math.min(this.preferences.getInt(KEY_NAME, 3), this.fonts.length - 1));
+    private int selectedFont;
+
+    public FontConfig() {
+        try {
+            this.preferences = Preferences.userNodeForPackage(this.getClass());
+            this.selectedFont = Math.max(0, Math.min(this.preferences.getInt(KEY_NAME, 3), this.fonts.length - 1));
+        } catch (Throwable t) {
+            this.preferences = null;
+            this.selectedFont = fonts.length - 1;
+        }
+    }
 
     @Override
     public ImFont[] getFonts() {
@@ -30,7 +40,13 @@ public class FontConfig implements FontHandler {
     @Override
     public void setSelectedFont(int selectedFont) {
         this.selectedFont = selectedFont;
-        this.preferences.putInt(KEY_NAME, selectedFont);
+        if (this.preferences != null) {
+            try {
+                this.preferences.putInt(KEY_NAME, selectedFont);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
     }
 
 }
