@@ -296,7 +296,14 @@ public class MainWindow extends Window {
                 try {
                     ByteArrayInputStream bais = new ByteArrayInputStream(data);
                     DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(bais));
-                    NamedTag namedTag = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
+                    NamedTag namedTag;
+                    if (p.getTagSettings().namelessRoot) {
+                        INbtTag namelessTag = p.getTagSettings().formatType.getNbtIO().readUnnamed(dataInput, UnlimitedReadTracker.INSTANCE);
+                        if (namelessTag == null) namedTag = null;
+                        else namedTag = new NamedTag("", namelessTag.getNbtType(), namelessTag);
+                    } else {
+                        namedTag = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
+                    }
                     if (bais.available() > 0 && p.getTagSettings().readExtraData) {
                         CompoundTag extraCompound = new CompoundTag(new LinkedHashMap<>());
                         NamedTag extraRoot = new NamedTag("extra data", NbtType.COMPOUND, extraCompound);
@@ -304,9 +311,15 @@ public class MainWindow extends Window {
                         namedTag = extraRoot;
 
                         while (bais.available() > 0) {
-                            NamedTag extra = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
-                            if (extra == null) continue;
-                            extraCompound.add(TagUtils.findUniqueName(extraCompound, extra.getName()), extra.getTag());
+                            if (p.getTagSettings().namelessRoot) {
+                                INbtTag extra = p.getTagSettings().formatType.getNbtIO().readUnnamed(dataInput, UnlimitedReadTracker.INSTANCE);
+                                if (extra == null) continue;
+                                extraCompound.add(TagUtils.findUniqueName(extraCompound, ""), extra);
+                            } else {
+                                NamedTag extra = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
+                                if (extra == null) continue;
+                                extraCompound.add(TagUtils.findUniqueName(extraCompound, extra.getName()), extra.getTag());
+                            }
                         }
                     }
                     if (tag != null && tag.tag == null) {
@@ -360,7 +373,11 @@ public class MainWindow extends Window {
                         OutputStream os = tag.settings.compressionType.wrap(fos);
                         try (os) {
                             DataOutput dataOutput = tag.settings.endianType.wrap(os);
-                            tag.settings.formatType.getNbtIO().write(dataOutput, tag.settings.rootName, tag.tag);
+                            if (tag.settings.namelessRoot) {
+                                tag.settings.formatType.getNbtIO().writeUnnamed(dataOutput, tag.tag);
+                            } else {
+                                tag.settings.formatType.getNbtIO().write(dataOutput, tag.settings.rootName, tag.tag);
+                            }
                             this.drawer.openPopup(new MessagePopup("Success", SUCCESS_SAVE, close(this.drawer)));
                         }
                     } catch (Throwable t) {

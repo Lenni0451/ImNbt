@@ -27,6 +27,11 @@ public class TagSettings {
      */
     public CompressionType compressionType = CompressionType.NO_COMPRESSION;
     /**
+     * Minecraft 1.20.2 introduced a new tag type without a name.<br>
+     * This is only used in networking.
+     */
+    public boolean namelessRoot = false;
+    /**
      * If extra data after the root tag should be read.<br>
      * This is only used when reading a tag.
      */

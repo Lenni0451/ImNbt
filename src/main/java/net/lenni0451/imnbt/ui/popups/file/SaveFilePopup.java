@@ -1,6 +1,7 @@
 package net.lenni0451.imnbt.ui.popups.file;
 
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.imnbt.ImNbtDrawer;
@@ -20,6 +21,7 @@ public class SaveFilePopup extends Popup<SaveFilePopup> {
     private final ImInt selectedFormat;
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
+    private final ImBoolean namelessRoot;
 
     public SaveFilePopup(final TagSettings tagSettings, final PopupCallback<SaveFilePopup> callback) {
         super("Save Nbt Tag", callback);
@@ -29,6 +31,7 @@ public class SaveFilePopup extends Popup<SaveFilePopup> {
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
         this.selectedEndian = new ImInt(this.tagSettings.endianType.ordinal());
         this.selectedCompression = new ImInt(this.tagSettings.compressionType.ordinal());
+        this.namelessRoot = new ImBoolean(this.tagSettings.namelessRoot);
     }
 
     public TagSettings getTagSettings() {
@@ -37,7 +40,7 @@ public class SaveFilePopup extends Popup<SaveFilePopup> {
 
     @Override
     protected void renderContent(ImNbtDrawer drawer) {
-        if (ImGui.inputText("Root name", this.rootName)) {
+        if (!this.namelessRoot.get() && ImGui.inputText("Root name", this.rootName)) {
             this.tagSettings.rootName = this.rootName.get();
         }
         if (ImGui.combo("##Format", this.selectedFormat, FormatType.NAMES)) {
@@ -48,6 +51,9 @@ public class SaveFilePopup extends Popup<SaveFilePopup> {
         }
         if (ImGui.combo("##Compression", this.selectedCompression, CompressionType.NAMES)) {
             this.tagSettings.compressionType = CompressionType.values()[this.selectedCompression.get()];
+        }
+        if (ImGui.checkbox("Nameless root tag", this.namelessRoot)) {
+            this.tagSettings.namelessRoot = this.namelessRoot.get();
         }
 
         ImGui.separator();
