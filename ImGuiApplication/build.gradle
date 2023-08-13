@@ -17,9 +17,9 @@ dependencies {
 
     include project(":")
     include "com.google.guava:guava:31.1-jre"
-    include "net.lenni0451.mcstructs:nbt:2.2.5"
-    include "net.lenni0451.mcstructs:snbt:2.2.5"
-    include("net.lenni0451.mcstructs-bedrock:nbt:1.1.0") {
+    include "net.lenni0451.mcstructs:nbt:2.3.1"
+    include "net.lenni0451.mcstructs:snbt:2.3.1"
+    include("net.lenni0451.mcstructs-bedrock:nbt:1.2.0") {
         exclude group: "net.lenni0451.mcstructs", module: "nbt"
     }
 
