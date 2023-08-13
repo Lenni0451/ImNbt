@@ -18,6 +18,7 @@ public class FontConfig implements FontHandler {
             this.preferences = Preferences.userNodeForPackage(this.getClass());
             this.selectedFont = Math.max(0, Math.min(this.preferences.getInt(KEY_NAME, 3), this.fonts.length - 1));
         } catch (Throwable t) {
+            t.printStackTrace();
             this.preferences = null;
             this.selectedFont = fonts.length - 1;
         }
