@@ -4,7 +4,7 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
 
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 /**
  * A popup that allows the user to input an integer.
@@ -14,10 +14,10 @@ public class IntegerInputPopup extends Popup<IntegerInputPopup> {
     private final String message;
     private final int minValue;
     private final int maxValue;
-    private final Consumer<Integer> intCallback;
+    private final IntConsumer intCallback;
     private final int[] value;
 
-    public IntegerInputPopup(final String title, final String message, final int minValue, final int maxValue, final Consumer<Integer> intCallback, final PopupCallback<IntegerInputPopup> callback) {
+    public IntegerInputPopup(final String title, final String message, final int minValue, final int maxValue, final IntConsumer intCallback, final PopupCallback<IntegerInputPopup> callback) {
         super(title, callback);
 
         this.message = message;

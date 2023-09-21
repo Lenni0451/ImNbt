@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
@@ -38,7 +39,7 @@ public class ContextMenu {
     private BiConsumer<String, INbtTag> pasteAction;
     private Runnable editAction;
     private Consumer<NbtType> transformAction;
-    private Consumer<Integer> roundAction;
+    private IntConsumer roundAction;
     private NbtType[] transformTypes;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
@@ -117,7 +118,7 @@ public class ContextMenu {
      * @param roundAction The action to be executed when the tag is rounded
      * @return The builder instance
      */
-    public ContextMenu round(final Consumer<Integer> roundAction) {
+    public ContextMenu round(final IntConsumer roundAction) {
         this.roundAction = roundAction;
         return this;
     }

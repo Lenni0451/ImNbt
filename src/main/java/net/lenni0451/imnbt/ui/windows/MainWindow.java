@@ -12,6 +12,7 @@ import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
+import net.lenni0451.imnbt.ui.popups.IntegerInputPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.file.OpenFilePopup;
 import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
@@ -19,14 +20,18 @@ import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
+import net.lenni0451.imnbt.utils.nbt.TagVisitor;
 import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
+import net.lenni0451.mcstructs.nbt.tags.DoubleTag;
+import net.lenni0451.mcstructs.nbt.tags.FloatTag;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -174,6 +179,22 @@ public class MainWindow extends Window {
                 if (ImGui.menuItem("SNbt Serializer")) {
                     if (!this.hasTag()) this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
                     else this.drawer.openPopup(new SNbtSerializerPopup(this.tags.get(this.openTab).tag, close(this.drawer)));
+                }
+
+                ImGui.endMenu();
+            }
+            if (ImGui.beginMenu("Batch")) {
+                if (ImGui.menuItem("Round Numbers")) {
+                    if (!this.hasTag()) {
+                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
+                    } else {
+                        this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, decimalPlaces -> {
+                            TagVisitor.visit(this.tags.get(this.openTab).tag, tag -> {
+                                if (tag instanceof FloatTag floatTag) floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces));
+                                else if (tag instanceof DoubleTag doubleTag) doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces));
+                            });
+                        }, close(this.drawer)));
+                    }
                 }
 
                 ImGui.endMenu();
