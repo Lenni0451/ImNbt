@@ -32,10 +32,17 @@ public class LongTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + this.format.format(longTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.LONG);
             if (openContextMenu) {
-                ContextMenu.start(drawer).transform(TagTransformer.transform(drawer, name, longTag, transformListener), TagTransformer.LONG_TRANSFORMS).edit(name, longTag, nameEditConsumer, t -> {
-                    longTag.setValue(t.getValue());
-                    searchProvider.refreshSearch();
-                }).copy(name, longTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .transform(TagTransformer.transform(drawer, name, longTag, transformListener), TagTransformer.LONG_TRANSFORMS)
+                        .edit(name, longTag, nameEditConsumer, t -> {
+                            longTag.setValue(t.getValue());
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, longTag)
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

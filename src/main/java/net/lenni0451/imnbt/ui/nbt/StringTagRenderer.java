@@ -30,10 +30,17 @@ public class StringTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + stringTag.getValue(), path, () -> {
             this.renderIcon(drawer, NbtType.STRING);
             if (openContextMenu) {
-                ContextMenu.start(drawer).transform(TagTransformer.transform(drawer, name, stringTag, transformListener), TagTransformer.STRING_TRANSFORMS).edit(name, stringTag, nameEditConsumer, t -> {
-                    stringTag.setValue(t.getValue());
-                    searchProvider.refreshSearch();
-                }).copy(name, stringTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .transform(TagTransformer.transform(drawer, name, stringTag, transformListener), TagTransformer.STRING_TRANSFORMS)
+                        .edit(name, stringTag, nameEditConsumer, t -> {
+                            stringTag.setValue(t.getValue());
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, stringTag)
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

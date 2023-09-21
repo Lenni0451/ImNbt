@@ -30,10 +30,17 @@ public class ShortTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + this.format.format(shortTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.SHORT);
             if (openContextMenu) {
-                ContextMenu.start(drawer).transform(TagTransformer.transform(drawer, name, shortTag, transformListener), TagTransformer.SHORT_TRANSFORMS).edit(name, shortTag, nameEditConsumer, t -> {
-                    shortTag.setValue(t.getValue());
-                    searchProvider.refreshSearch();
-                }).copy(name, shortTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .transform(TagTransformer.transform(drawer, name, shortTag, transformListener), TagTransformer.SHORT_TRANSFORMS)
+                        .edit(name, shortTag, nameEditConsumer, t -> {
+                            shortTag.setValue(t.getValue());
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, shortTag)
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

@@ -31,10 +31,17 @@ public class IntTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + this.format.format(intTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.INT);
             if (openContextMenu) {
-                ContextMenu.start(drawer).transform(TagTransformer.transform(drawer, name, intTag, transformListener), TagTransformer.INT_TRANSFORMS).edit(name, intTag, nameEditConsumer, t -> {
-                    intTag.setValue(t.getValue());
-                    searchProvider.refreshSearch();
-                }).copy(name, intTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .transform(TagTransformer.transform(drawer, name, intTag, transformListener), TagTransformer.INT_TRANSFORMS)
+                        .edit(name, intTag, nameEditConsumer, t -> {
+                            intTag.setValue(t.getValue());
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, intTag)
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

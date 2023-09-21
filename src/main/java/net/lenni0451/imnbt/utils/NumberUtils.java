@@ -94,4 +94,26 @@ public class NumberUtils {
         return null;
     }
 
+    /**
+     * Round a float to a given number of decimal places.
+     *
+     * @param value         The value to round
+     * @param decimalPlaces The number of decimal places
+     * @return The rounded value
+     */
+    public static float round(final float value, final int decimalPlaces) {
+        return (float) Math.round(value * Math.pow(10, decimalPlaces)) / (float) Math.pow(10, decimalPlaces);
+    }
+
+    /**
+     * Round a double to a given number of decimal places.
+     *
+     * @param value         The value to round
+     * @param decimalPlaces The number of decimal places
+     * @return The rounded value
+     */
+    public static double round(final double value, final int decimalPlaces) {
+        return Math.round(value * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+    }
+
 }

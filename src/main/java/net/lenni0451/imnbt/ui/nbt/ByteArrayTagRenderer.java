@@ -40,27 +40,35 @@ public class ByteArrayTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + byteArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.BYTE_ARRAY);
             if (openContextMenu) {
-                ContextMenu.start(drawer).singleType(NbtType.BYTE, (newName, newTag) -> {
-                    int index = -1;
-                    try {
-                        int newIndex = Integer.parseInt(newName);
-                        if (newIndex >= 0 && newIndex <= byteArrayTag.getLength()) index = newIndex;
-                    } catch (Throwable ignored) {
-                    }
-                    if (index == -1) byteArrayTag.add(((ByteTag) newTag).getValue());
-                    else byteArrayTag.setValue(ArrayUtils.insert(byteArrayTag.getValue(), index, ((ByteTag) newTag).getValue()));
-                    searchProvider.refreshSearch();
-                }).copy(name, byteArrayTag).paste((pastedName, pastedTag) -> {
-                    if (pastedTag instanceof INbtNumber num) {
-                        byteArrayTag.add(num.byteValue());
-                        searchProvider.refreshSearch();
-                    } else if (pastedTag instanceof ByteArrayTag bat) {
-                        for (byte b : bat.getValue()) byteArrayTag.add(b);
-                        searchProvider.refreshSearch();
-                    } else {
-                        drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into a byte array.", close(drawer)));
-                    }
-                }).transform(TagTransformer.transform(drawer, name, byteArrayTag, transformListener), TagTransformer.BYTE_ARRAY_TRANSFORMS).edit(name, byteArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .singleType(NbtType.BYTE, (newName, newTag) -> {
+                            int index = -1;
+                            try {
+                                int newIndex = Integer.parseInt(newName);
+                                if (newIndex >= 0 && newIndex <= byteArrayTag.getLength()) index = newIndex;
+                            } catch (Throwable ignored) {
+                            }
+                            if (index == -1) byteArrayTag.add(((ByteTag) newTag).getValue());
+                            else byteArrayTag.setValue(ArrayUtils.insert(byteArrayTag.getValue(), index, ((ByteTag) newTag).getValue()));
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, byteArrayTag).paste((pastedName, pastedTag) -> {
+                            if (pastedTag instanceof INbtNumber num) {
+                                byteArrayTag.add(num.byteValue());
+                                searchProvider.refreshSearch();
+                            } else if (pastedTag instanceof ByteArrayTag bat) {
+                                for (byte b : bat.getValue()) byteArrayTag.add(b);
+                                searchProvider.refreshSearch();
+                            } else {
+                                drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into a byte array.", close(drawer)));
+                            }
+                        })
+                        .transform(TagTransformer.transform(drawer, name, byteArrayTag, transformListener), TagTransformer.BYTE_ARRAY_TRANSFORMS)
+                        .edit(name, byteArrayTag, nameEditConsumer, t -> {})
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, () -> {
             int[] removed = new int[]{-1};

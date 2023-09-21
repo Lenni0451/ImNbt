@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -35,10 +36,18 @@ public class FloatTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + this.format.format(floatTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.FLOAT);
             if (openContextMenu) {
-                ContextMenu.start(drawer).transform(TagTransformer.transform(drawer, name, floatTag, transformListener), TagTransformer.FLOAT_TRANSFORMS).edit(name, floatTag, nameEditConsumer, t -> {
-                    floatTag.setValue(t.getValue());
-                    searchProvider.refreshSearch();
-                }).copy(name, floatTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .transform(TagTransformer.transform(drawer, name, floatTag, transformListener), TagTransformer.FLOAT_TRANSFORMS)
+                        .round(decimalPlaces -> floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces)))
+                        .edit(name, floatTag, nameEditConsumer, t -> {
+                            floatTag.setValue(t.getValue());
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, floatTag)
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

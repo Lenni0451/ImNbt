@@ -4,6 +4,7 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
+import net.lenni0451.imnbt.ui.popups.IntegerInputPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
@@ -37,6 +38,7 @@ public class ContextMenu {
     private BiConsumer<String, INbtTag> pasteAction;
     private Runnable editAction;
     private Consumer<NbtType> transformAction;
+    private Consumer<Integer> roundAction;
     private NbtType[] transformTypes;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
@@ -106,6 +108,17 @@ public class ContextMenu {
     public ContextMenu transform(final Consumer<NbtType> typeConsumer, final NbtType... possibleTypes) {
         this.transformAction = typeConsumer;
         this.transformTypes = possibleTypes;
+        return this;
+    }
+
+    /**
+     * Allow rounding the tag to a specific amount of decimals.
+     *
+     * @param roundAction The action to be executed when the tag is rounded
+     * @return The builder instance
+     */
+    public ContextMenu round(final Consumer<Integer> roundAction) {
+        this.roundAction = roundAction;
         return this;
     }
 
@@ -203,6 +216,11 @@ public class ContextMenu {
                     }
 
                     ImGui.endMenu();
+                }
+            }
+            if (this.roundAction != null) {
+                if (ImGui.menuItem("Round")) {
+                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, this.roundAction, close(this.drawer)));
                 }
             }
             if (this.editAction != null) {

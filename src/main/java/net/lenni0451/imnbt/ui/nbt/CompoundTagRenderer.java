@@ -38,13 +38,21 @@ public class CompoundTagRenderer implements TagRenderer {
             this.renderIcon(drawer, NbtType.COMPOUND);
             this.handleSearch(searchProvider, path);
             if (openContextMenu) {
-                ContextMenu.start(drawer).allTypes((newKey, newTag) -> {
-                    compoundTag.add(newKey, newTag);
-                    searchProvider.refreshSearch();
-                }).copy(name, compoundTag).paste((copiedName, copiedTag) -> {
-                    compoundTag.add(TagUtils.findUniqueName(compoundTag, copiedName), copiedTag);
-                    searchProvider.refreshSearch();
-                }).transform(TagTransformer.transform(drawer, name, compoundTag, transformListener), TagTransformer.COMPOUND_TRANSFORMS).edit(name, compoundTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .allTypes((newKey, newTag) -> {
+                            compoundTag.add(newKey, newTag);
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, compoundTag).paste((copiedName, copiedTag) -> {
+                            compoundTag.add(TagUtils.findUniqueName(compoundTag, copiedName), copiedTag);
+                            searchProvider.refreshSearch();
+                        })
+                        .transform(TagTransformer.transform(drawer, name, compoundTag, transformListener), TagTransformer.COMPOUND_TRANSFORMS)
+                        .edit(name, compoundTag, nameEditConsumer, t -> {})
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, () -> {
             String[] removed = new String[1];
@@ -83,7 +91,7 @@ public class CompoundTagRenderer implements TagRenderer {
             INbtTag oldTag = compoundTag.remove(key);
             compoundTag.add(newName, oldTag);
             searchProvider.refreshSearch();
-        }, (transformedName,transformedTag) -> {
+        }, (transformedName, transformedTag) -> {
             compoundTag.add(transformedName, transformedTag);
             searchProvider.refreshSearch();
         }, () -> removed[0] = key, colorProvider, searchProvider, openContextMenu, get(path, key), key, value);

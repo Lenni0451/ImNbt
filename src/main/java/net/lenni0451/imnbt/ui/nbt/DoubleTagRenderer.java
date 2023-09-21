@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -35,10 +36,18 @@ public class DoubleTagRenderer implements TagRenderer {
         this.renderLeaf(name, ": " + this.format.format(doubleTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.DOUBLE);
             if (openContextMenu) {
-                ContextMenu.start(drawer).transform(TagTransformer.transform(drawer, name, doubleTag, transformListener), TagTransformer.DOUBLE_TRANSFORMS).edit(name, doubleTag, nameEditConsumer, t -> {
-                    doubleTag.setValue(t.getValue());
-                    searchProvider.refreshSearch();
-                }).copy(name, doubleTag).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .transform(TagTransformer.transform(drawer, name, doubleTag, transformListener), TagTransformer.DOUBLE_TRANSFORMS)
+                        .round(decimalPlaces -> doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces)))
+                        .edit(name, doubleTag, nameEditConsumer, t -> {
+                            doubleTag.setValue(t.getValue());
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, doubleTag)
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, colorProvider, searchProvider);
         this.handleSearch(searchProvider, path);

@@ -40,27 +40,35 @@ public class LongArrayTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + longArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.LONG_ARRAY);
             if (openContextMenu) {
-                ContextMenu.start(drawer).singleType(NbtType.LONG, (newName, newTag) -> {
-                    int index = -1;
-                    try {
-                        int newIndex = Integer.parseInt(newName);
-                        if (newIndex >= 0 && newIndex <= longArrayTag.getLength()) index = newIndex;
-                    } catch (Throwable ignored) {
-                    }
-                    if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
-                    else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
-                    searchProvider.refreshSearch();
-                }).copy(name, longArrayTag).paste((pastedName, pastedTag) -> {
-                    if (pastedTag instanceof INbtNumber num) {
-                        longArrayTag.add(num.longValue());
-                        searchProvider.refreshSearch();
-                    } else if (pastedTag instanceof LongArrayTag iat) {
-                        for (long l : iat.getValue()) longArrayTag.add(l);
-                        searchProvider.refreshSearch();
-                    } else {
-                        drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into a long array.", close(drawer)));
-                    }
-                }).transform(TagTransformer.transform(drawer, name, longArrayTag, transformListener), TagTransformer.LONG_ARRAY_TRANSFORMS).edit(name, longArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .singleType(NbtType.LONG, (newName, newTag) -> {
+                            int index = -1;
+                            try {
+                                int newIndex = Integer.parseInt(newName);
+                                if (newIndex >= 0 && newIndex <= longArrayTag.getLength()) index = newIndex;
+                            } catch (Throwable ignored) {
+                            }
+                            if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
+                            else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, longArrayTag).paste((pastedName, pastedTag) -> {
+                            if (pastedTag instanceof INbtNumber num) {
+                                longArrayTag.add(num.longValue());
+                                searchProvider.refreshSearch();
+                            } else if (pastedTag instanceof LongArrayTag iat) {
+                                for (long l : iat.getValue()) longArrayTag.add(l);
+                                searchProvider.refreshSearch();
+                            } else {
+                                drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into a long array.", close(drawer)));
+                            }
+                        })
+                        .transform(TagTransformer.transform(drawer, name, longArrayTag, transformListener), TagTransformer.LONG_ARRAY_TRANSFORMS)
+                        .edit(name, longArrayTag, nameEditConsumer, t -> {})
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, () -> {
             int[] removed = new int[]{-1};

@@ -40,27 +40,35 @@ public class IntArrayTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + intArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.INT_ARRAY);
             if (openContextMenu) {
-                ContextMenu.start(drawer).singleType(NbtType.INT, (newName, newTag) -> {
-                    int index = -1;
-                    try {
-                        int newIndex = Integer.parseInt(newName);
-                        if (newIndex >= 0 && newIndex <= intArrayTag.getLength()) index = newIndex;
-                    } catch (Throwable ignored) {
-                    }
-                    if (index == -1) intArrayTag.add(((IntTag) newTag).getValue());
-                    else intArrayTag.setValue(ArrayUtils.insert(intArrayTag.getValue(), index, ((IntTag) newTag).getValue()));
-                    searchProvider.refreshSearch();
-                }).copy(name, intArrayTag).paste((pastedName, pastedTag) -> {
-                    if (pastedTag instanceof INbtNumber num) {
-                        intArrayTag.add(num.intValue());
-                        searchProvider.refreshSearch();
-                    } else if (pastedTag instanceof IntArrayTag iat) {
-                        for (int i : iat.getValue()) intArrayTag.add(i);
-                        searchProvider.refreshSearch();
-                    } else {
-                        drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into an int array.", close(drawer)));
-                    }
-                }).transform(TagTransformer.transform(drawer, name, intArrayTag, transformListener), TagTransformer.INT_ARRAY_TRANSFORMS).edit(name, intArrayTag, nameEditConsumer, t -> {}).delete(deleteListener).sNbtParser(() -> tag).render();
+                ContextMenu
+                        .start(drawer)
+                        .singleType(NbtType.INT, (newName, newTag) -> {
+                            int index = -1;
+                            try {
+                                int newIndex = Integer.parseInt(newName);
+                                if (newIndex >= 0 && newIndex <= intArrayTag.getLength()) index = newIndex;
+                            } catch (Throwable ignored) {
+                            }
+                            if (index == -1) intArrayTag.add(((IntTag) newTag).getValue());
+                            else intArrayTag.setValue(ArrayUtils.insert(intArrayTag.getValue(), index, ((IntTag) newTag).getValue()));
+                            searchProvider.refreshSearch();
+                        })
+                        .copy(name, intArrayTag).paste((pastedName, pastedTag) -> {
+                            if (pastedTag instanceof INbtNumber num) {
+                                intArrayTag.add(num.intValue());
+                                searchProvider.refreshSearch();
+                            } else if (pastedTag instanceof IntArrayTag iat) {
+                                for (int i : iat.getValue()) intArrayTag.add(i);
+                                searchProvider.refreshSearch();
+                            } else {
+                                drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into an int array.", close(drawer)));
+                            }
+                        })
+                        .transform(TagTransformer.transform(drawer, name, intArrayTag, transformListener), TagTransformer.INT_ARRAY_TRANSFORMS)
+                        .edit(name, intArrayTag, nameEditConsumer, t -> {})
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
         }, () -> {
             int[] removed = new int[]{-1};
