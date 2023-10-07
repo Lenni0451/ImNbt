@@ -19,6 +19,7 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
+import net.lenni0451.imnbt.utils.CollectionUtils;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.StringUtils;
@@ -39,6 +40,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
@@ -194,6 +196,18 @@ public class MainWindow extends Window {
                                 else if (tag instanceof DoubleTag doubleTag) doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces));
                             });
                         }, close(this.drawer)));
+                    }
+                }
+                if (ImGui.menuItem("Sort Compound Tags")) {
+                    if (!this.hasTag()) {
+                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
+                    } else {
+                        TagVisitor.visit(this.tags.get(this.openTab).tag, tag -> {
+                            if (tag instanceof CompoundTag compound) {
+                                Map<String, INbtTag> entries = compound.getValue();
+                                compound.setValue(CollectionUtils.sort(entries, Map.Entry.comparingByKey(String::compareToIgnoreCase)));
+                            }
+                        });
                     }
                 }
 

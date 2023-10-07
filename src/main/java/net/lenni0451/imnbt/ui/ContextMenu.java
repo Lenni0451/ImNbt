@@ -40,6 +40,7 @@ public class ContextMenu {
     private Runnable editAction;
     private Consumer<NbtType> transformAction;
     private IntConsumer roundAction;
+    private Runnable sortAction;
     private NbtType[] transformTypes;
     private BiConsumer<String, INbtTag> newTagAction;
     private Runnable deleteListener;
@@ -120,6 +121,17 @@ public class ContextMenu {
      */
     public ContextMenu round(final IntConsumer roundAction) {
         this.roundAction = roundAction;
+        return this;
+    }
+
+    /**
+     * Allow sorting the tag.
+     *
+     * @param sortAction The action to be executed when the tag is sorted
+     * @return The builder instance
+     */
+    public ContextMenu sort(final Runnable sortAction) {
+        this.sortAction = sortAction;
         return this;
     }
 
@@ -222,6 +234,11 @@ public class ContextMenu {
             if (this.roundAction != null) {
                 if (ImGui.menuItem("Round")) {
                     this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, this.roundAction, close(this.drawer)));
+                }
+            }
+            if (this.sortAction != null) {
+                if (ImGui.menuItem("Sort")) {
+                    this.sortAction.run();
                 }
             }
             if (this.editAction != null) {

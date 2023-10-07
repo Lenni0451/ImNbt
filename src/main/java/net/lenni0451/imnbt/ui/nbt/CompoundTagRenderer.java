@@ -6,6 +6,7 @@ import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
+import net.lenni0451.imnbt.utils.CollectionUtils;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
@@ -49,6 +50,10 @@ public class CompoundTagRenderer implements TagRenderer {
                             searchProvider.refreshSearch();
                         })
                         .transform(TagTransformer.transform(drawer, name, compoundTag, transformListener), TagTransformer.COMPOUND_TRANSFORMS)
+                        .sort(() -> {
+                            Map<String, INbtTag> entries = compoundTag.getValue();
+                            compoundTag.setValue(CollectionUtils.sort(entries, Map.Entry.comparingByKey(String::compareToIgnoreCase)));
+                        })
                         .edit(name, compoundTag, nameEditConsumer, t -> {})
                         .delete(deleteListener)
                         .sNbtParser(() -> tag)
