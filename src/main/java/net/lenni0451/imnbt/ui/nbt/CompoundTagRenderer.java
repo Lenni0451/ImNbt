@@ -44,7 +44,7 @@ public class CompoundTagRenderer implements TagRenderer {
                         .allTypes((newKey, newTag) -> {
                             compoundTag.add(newKey, newTag);
                             searchProvider.refreshSearch();
-                        })
+                        }, compoundTag::contains)
                         .copy(name, compoundTag).paste((copiedName, copiedTag) -> {
                             compoundTag.add(TagUtils.findUniqueName(compoundTag, copiedName), copiedTag);
                             searchProvider.refreshSearch();

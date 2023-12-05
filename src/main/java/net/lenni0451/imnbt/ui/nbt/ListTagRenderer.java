@@ -41,7 +41,7 @@ public class ListTagRenderer implements TagRenderer {
                     contextMenu.allTypes((newName, newTag) -> {
                         listTag.add(newTag);
                         searchProvider.refreshSearch();
-                    });
+                    }, n -> false);
                 } else {
                     contextMenu.singleType(listTag.getType(), (newName, newTag) -> {
                         listTag.add(newTag);

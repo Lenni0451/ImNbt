@@ -6,6 +6,7 @@ import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.IntegerInputPopup;
 import net.lenni0451.imnbt.ui.popups.MessagePopup;
+import net.lenni0451.imnbt.ui.popups.YesNoPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -15,10 +16,7 @@ import net.lenni0451.mcstructs.nbt.io.NamedTag;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
@@ -44,6 +42,7 @@ public class ContextMenu {
     private Runnable sortAction;
     private NbtType[] transformTypes;
     private BiConsumer<String, INbtTag> newTagAction;
+    private Predicate<String> overwriteCheck;
     private Runnable deleteListener;
     private Supplier<INbtTag> sNbtSerializerListener;
 
@@ -58,10 +57,11 @@ public class ContextMenu {
      * @param newTagAction The action to be executed when a new tag is created
      * @return The builder instance
      */
-    public ContextMenu allTypes(final BiConsumer<String, INbtTag> newTagAction) {
+    public ContextMenu allTypes(final BiConsumer<String, INbtTag> newTagAction, final Predicate<String> overwriteCheck) {
         Collections.addAll(this.newTypes, NbtType.values());
         this.newTypes.remove(NbtType.END);
         this.newTagAction = newTagAction;
+        this.overwriteCheck = overwriteCheck;
         return this;
     }
 
@@ -191,11 +191,21 @@ public class ContextMenu {
                     for (NbtType newType : this.newTypes) {
                         if (ImGui.menuItem("     " + StringUtils.format(newType))) {
                             this.drawer.openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
-                                if (success) {
-                                    this.modificationListener.run();
-                                    this.newTagAction.accept(p.getName(), p.getTag());
-                                }
                                 this.drawer.closePopup();
+                                if (success) {
+                                    if (this.overwriteCheck != null && this.overwriteCheck.test(p.getName())) {
+                                        this.drawer.openPopup(new YesNoPopup("Overwrite existing tag?", "A tag with this name already exists.\nDo you want to overwrite it?", (p2, success2) -> {
+                                            if (success2) {
+                                                this.modificationListener.run();
+                                                this.newTagAction.accept(p.getName(), p.getTag());
+                                            }
+                                            this.drawer.closePopup();
+                                        }));
+                                    } else {
+                                        this.modificationListener.run();
+                                        this.newTagAction.accept(p.getName(), p.getTag());
+                                    }
+                                }
                             }));
                         }
                         ImVec2 xy = ImGui.getItemRectMin();
