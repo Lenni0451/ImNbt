@@ -42,14 +42,8 @@ public class ByteArrayTagRenderer implements TagRenderer {
             if (openContextMenu) {
                 ContextMenu
                         .start(drawer, modificationListener)
-                        .singleType(NbtType.BYTE, (newName, newTag) -> {
-                            int index = -1;
-                            try {
-                                int newIndex = Integer.parseInt(newName);
-                                if (newIndex >= 0 && newIndex <= byteArrayTag.getLength()) index = newIndex;
-                            } catch (Throwable ignored) {
-                            }
-                            if (index == -1) byteArrayTag.add(((ByteTag) newTag).getValue());
+                        .singleType(NbtType.BYTE, byteArrayTag.getLength(), (index, newTag) -> {
+                            if (index == byteArrayTag.getLength()) byteArrayTag.add(((ByteTag) newTag).getValue());
                             else byteArrayTag.setValue(ArrayUtils.insert(byteArrayTag.getValue(), index, ((ByteTag) newTag).getValue()));
                             searchProvider.refreshSearch();
                         })

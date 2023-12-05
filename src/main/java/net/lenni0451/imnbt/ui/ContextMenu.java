@@ -39,7 +39,9 @@ public class ContextMenu {
     private Runnable sortAction;
     private NbtType[] transformTypes;
     private BiConsumer<String, INbtTag> newTagAction;
+    private BiConsumer<Integer, INbtTag> intNewTagAction;
     private Predicate<String> overwriteCheck;
+    private int newIndex;
     private Runnable deleteListener;
     private Supplier<INbtTag> sNbtSerializerListener;
 
@@ -51,7 +53,8 @@ public class ContextMenu {
     /**
      * Allow all types to be created.
      *
-     * @param newTagAction The action to be executed when a new tag is created
+     * @param newTagAction   The action to be executed when a new tag is created
+     * @param overwriteCheck Check if a tag with the name already exists
      * @return The builder instance
      */
     public ContextMenu allTypes(final BiConsumer<String, INbtTag> newTagAction, final Predicate<String> overwriteCheck) {
@@ -72,6 +75,36 @@ public class ContextMenu {
     public ContextMenu singleType(final NbtType newType, final BiConsumer<String, INbtTag> newTagAction) {
         this.newTypes.add(newType);
         this.newTagAction = newTagAction;
+        return this;
+    }
+
+    /**
+     * Allow all types to be created.
+     *
+     * @param newIndex     The index of the new tag
+     * @param newTagAction The action to be executed when a new tag is created
+     * @return The builder instance
+     */
+    public ContextMenu allTypes(final int newIndex, final BiConsumer<Integer, INbtTag> newTagAction) {
+        Collections.addAll(this.newTypes, NbtType.values());
+        this.newTypes.remove(NbtType.END);
+        this.intNewTagAction = newTagAction;
+        this.newIndex = newIndex;
+        return this;
+    }
+
+    /**
+     * Allow only a single type to be created.
+     *
+     * @param newType      The type to be created
+     * @param newIndex     The index of the new tag
+     * @param newTagAction The action to be executed when a new tag is created
+     * @return The builder instance
+     */
+    public ContextMenu singleType(final NbtType newType, final int newIndex, final BiConsumer<Integer, INbtTag> newTagAction) {
+        this.newTypes.add(newType);
+        this.intNewTagAction = newTagAction;
+        this.newIndex = newIndex;
         return this;
     }
 
@@ -210,23 +243,33 @@ public class ContextMenu {
                 if (ImGui.beginMenu("New")) {
                     for (NbtType newType : this.newTypes) {
                         if (ImGui.menuItem("     " + StringUtils.format(newType))) {
-                            this.drawer.openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
-                                this.drawer.closePopup();
-                                if (success) {
-                                    if (this.overwriteCheck != null && this.overwriteCheck.test(p.getName())) {
-                                        this.drawer.openPopup(new YesNoPopup("Overwrite existing tag?", "A tag with this name already exists.\nDo you want to overwrite it?", (p2, success2) -> {
-                                            if (success2) {
-                                                this.modificationListener.run();
-                                                this.newTagAction.accept(p.getName(), p.getTag());
-                                            }
-                                            this.drawer.closePopup();
-                                        }));
-                                    } else {
-                                        this.modificationListener.run();
-                                        this.newTagAction.accept(p.getName(), p.getTag());
+                            if (this.intNewTagAction == null) {
+                                this.drawer.openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
+                                    this.drawer.closePopup();
+                                    if (success) {
+                                        if (this.overwriteCheck != null && this.overwriteCheck.test(p.getName())) {
+                                            this.drawer.openPopup(new YesNoPopup("Overwrite existing tag?", "A tag with this name already exists.\nDo you want to overwrite it?", (p2, success2) -> {
+                                                if (success2) {
+                                                    this.modificationListener.run();
+                                                    this.newTagAction.accept(p.getName(), p.getTag());
+                                                }
+                                                this.drawer.closePopup();
+                                            }));
+                                        } else {
+                                            this.modificationListener.run();
+                                            this.newTagAction.accept(p.getName(), p.getTag());
+                                        }
                                     }
-                                }
-                            }));
+                                }));
+                            } else {
+                                this.drawer.openPopup(new EditIndexedTagPopup("Add " + StringUtils.format(newType), "Add", this.newIndex, this.newIndex, newType.newInstance(), (p, success) -> {
+                                    if (success) {
+                                        this.modificationListener.run();
+                                        this.intNewTagAction.accept(p.getIndex(), p.getTag());
+                                    }
+                                    this.drawer.closePopup();
+                                }));
+                            }
                         }
                         ImVec2 xy = ImGui.getItemRectMin();
                         xy.x++;

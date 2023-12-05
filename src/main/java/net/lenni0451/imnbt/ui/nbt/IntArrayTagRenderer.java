@@ -42,14 +42,8 @@ public class IntArrayTagRenderer implements TagRenderer {
             if (openContextMenu) {
                 ContextMenu
                         .start(drawer, modificationListener)
-                        .singleType(NbtType.INT, (newName, newTag) -> {
-                            int index = -1;
-                            try {
-                                int newIndex = Integer.parseInt(newName);
-                                if (newIndex >= 0 && newIndex <= intArrayTag.getLength()) index = newIndex;
-                            } catch (Throwable ignored) {
-                            }
-                            if (index == -1) intArrayTag.add(((IntTag) newTag).getValue());
+                        .singleType(NbtType.INT, intArrayTag.getLength(), (index, newTag) -> {
+                            if (index == intArrayTag.getLength()) intArrayTag.add(((IntTag) newTag).getValue());
                             else intArrayTag.setValue(ArrayUtils.insert(intArrayTag.getValue(), index, ((IntTag) newTag).getValue()));
                             searchProvider.refreshSearch();
                         })

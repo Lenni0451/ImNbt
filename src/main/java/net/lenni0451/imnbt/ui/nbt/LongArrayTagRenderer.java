@@ -42,14 +42,8 @@ public class LongArrayTagRenderer implements TagRenderer {
             if (openContextMenu) {
                 ContextMenu
                         .start(drawer, modificationListener)
-                        .singleType(NbtType.LONG, (newName, newTag) -> {
-                            int index = -1;
-                            try {
-                                int newIndex = Integer.parseInt(newName);
-                                if (newIndex >= 0 && newIndex <= longArrayTag.getLength()) index = newIndex;
-                            } catch (Throwable ignored) {
-                            }
-                            if (index == -1) longArrayTag.add(((LongTag) newTag).getValue());
+                        .singleType(NbtType.LONG, longArrayTag.getLength(), (index, newTag) -> {
+                            if (index == longArrayTag.getLength()) longArrayTag.add(((LongTag) newTag).getValue());
                             else longArrayTag.setValue(ArrayUtils.insert(longArrayTag.getValue(), index, ((LongTag) newTag).getValue()));
                             searchProvider.refreshSearch();
                         })

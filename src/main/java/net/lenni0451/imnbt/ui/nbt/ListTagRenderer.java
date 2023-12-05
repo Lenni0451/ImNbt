@@ -38,14 +38,18 @@ public class ListTagRenderer implements TagRenderer {
             if (openContextMenu) {
                 ContextMenu contextMenu = ContextMenu.start(drawer, modificationListener).edit(name, listTag, nameEditConsumer, t -> {});
                 if (listTag.isEmpty()) {
-                    contextMenu.allTypes((newName, newTag) -> {
+                    contextMenu.allTypes(0, (index, newTag) -> {
                         listTag.add(newTag);
                         searchProvider.refreshSearch();
-                    }, n -> false);
+                    });
                 } else {
-                    contextMenu.singleType(listTag.getType(), (newName, newTag) -> {
-                        listTag.add(newTag);
-                        searchProvider.refreshSearch();
+                    contextMenu.singleType(listTag.getType(), listTag.size(), (index, newTag) -> {
+                        if (listTag.canAdd(newTag)) {
+                            listTag.getValue().add(index, newTag);
+                            searchProvider.refreshSearch();
+                        } else {
+                            throw new IllegalStateException("Invalid tag type: " + newTag.getNbtType().name());
+                        }
                     });
                 }
                 contextMenu.copy(name, listTag).paste((copiedName, copiedTag) -> {
