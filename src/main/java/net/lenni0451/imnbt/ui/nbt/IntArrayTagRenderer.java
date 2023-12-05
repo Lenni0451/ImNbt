@@ -104,18 +104,13 @@ public class IntArrayTagRenderer implements TagRenderer {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(intArrayTag.get(index)), get(path, index), () -> {
             this.renderIcon(drawer, NbtType.INT);
             if (openContextMenu) {
-                ContextMenu.start(drawer, modificationListener).edit(String.valueOf(index), new IntTag(intArrayTag.get(index)), newName -> {
+                ContextMenu.start(drawer, modificationListener).edit(new IntTag(intArrayTag.get(index)), index, intArrayTag.getLength() - 1, newIndex -> {
                     //This gets executed multiple frames after the user clicked save in the popup
-                    try {
-                        int newIndex = Integer.parseInt(newName);
-                        if (newIndex < 0 || newIndex >= intArrayTag.getLength() || newIndex == index) return;
-                        int val = intArrayTag.get(index);
-                        int[] newValue = ArrayUtils.remove(intArrayTag.getValue(), index);
-                        newValue = ArrayUtils.insert(newValue, newIndex, val);
-                        intArrayTag.setValue(newValue);
-                        searchProvider.refreshSearch();
-                    } catch (Throwable ignored) {
-                    }
+                    int val = intArrayTag.get(index);
+                    int[] newValue = ArrayUtils.remove(intArrayTag.getValue(), index);
+                    newValue = ArrayUtils.insert(newValue, newIndex, val);
+                    intArrayTag.setValue(newValue);
+                    searchProvider.refreshSearch();
                 }, newTag -> {
                     intArrayTag.set(index, newTag.getValue());
                     searchProvider.refreshSearch();

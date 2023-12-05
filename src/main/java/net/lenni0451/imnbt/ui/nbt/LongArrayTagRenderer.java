@@ -104,18 +104,13 @@ public class LongArrayTagRenderer implements TagRenderer {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(longArrayTag.get(index)), get(path, index), () -> {
             this.renderIcon(drawer, NbtType.LONG);
             if (openContextMenu) {
-                ContextMenu.start(drawer, modificationListener).edit(String.valueOf(index), new LongTag(longArrayTag.get(index)), newName -> {
+                ContextMenu.start(drawer, modificationListener).edit(new LongTag(longArrayTag.get(index)), index, longArrayTag.getLength() - 1, newIndex -> {
                     //This gets executed multiple frames after the user clicked save in the popup
-                    try {
-                        int newIndex = Integer.parseInt(newName);
-                        if (newIndex < 0 || newIndex >= longArrayTag.getLength() || newIndex == index) return;
-                        long val = longArrayTag.get(index);
-                        long[] newValue = ArrayUtils.remove(longArrayTag.getValue(), index);
-                        newValue = ArrayUtils.insert(newValue, newIndex, val);
-                        longArrayTag.setValue(newValue);
-                        searchProvider.refreshSearch();
-                    } catch (Throwable ignored) {
-                    }
+                    long val = longArrayTag.get(index);
+                    long[] newValue = ArrayUtils.remove(longArrayTag.getValue(), index);
+                    newValue = ArrayUtils.insert(newValue, newIndex, val);
+                    longArrayTag.setValue(newValue);
+                    searchProvider.refreshSearch();
                 }, newTag -> {
                     longArrayTag.set(index, newTag.getValue());
                     searchProvider.refreshSearch();

@@ -104,18 +104,13 @@ public class ByteArrayTagRenderer implements TagRenderer {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(byteArrayTag.get(index)), get(path, index), () -> {
             this.renderIcon(drawer, NbtType.BYTE);
             if (openContextMenu) {
-                ContextMenu.start(drawer, modificationListener).edit(String.valueOf(index), new ByteTag(byteArrayTag.get(index)), newName -> {
+                ContextMenu.start(drawer, modificationListener).edit(new ByteTag(byteArrayTag.get(index)), index, byteArrayTag.getLength() - 1, newIndex -> {
                     //This gets executed multiple frames after the user clicked save in the popup
-                    try {
-                        int newIndex = Integer.parseInt(newName);
-                        if (newIndex < 0 || newIndex >= byteArrayTag.getLength() || newIndex == index) return;
-                        byte val = byteArrayTag.get(index);
-                        byte[] newValue = ArrayUtils.remove(byteArrayTag.getValue(), index);
-                        newValue = ArrayUtils.insert(newValue, newIndex, val);
-                        byteArrayTag.setValue(newValue);
-                        searchProvider.refreshSearch();
-                    } catch (Throwable ignored) {
-                    }
+                    byte val = byteArrayTag.get(index);
+                    byte[] newValue = ArrayUtils.remove(byteArrayTag.getValue(), index);
+                    newValue = ArrayUtils.insert(newValue, newIndex, val);
+                    byteArrayTag.setValue(newValue);
+                    searchProvider.refreshSearch();
                 }, newTag -> {
                     byteArrayTag.set(index, newTag.getValue());
                     searchProvider.refreshSearch();

@@ -3,10 +3,7 @@ package net.lenni0451.imnbt.ui;
 import imgui.ImGui;
 import imgui.ImVec2;
 import net.lenni0451.imnbt.ImNbtDrawer;
-import net.lenni0451.imnbt.ui.popups.EditTagPopup;
-import net.lenni0451.imnbt.ui.popups.IntegerInputPopup;
-import net.lenni0451.imnbt.ui.popups.MessagePopup;
-import net.lenni0451.imnbt.ui.popups.YesNoPopup;
+import net.lenni0451.imnbt.ui.popups.*;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -153,6 +150,29 @@ public class ContextMenu {
                 this.modificationListener.run();
                 tagConsumer.accept((T) p.getTag());
                 nameEditConsumer.accept(p.getName());
+            }
+            this.drawer.closePopup();
+        }));
+        return this;
+    }
+
+    /**
+     * Allow editing the tag with an index.
+     *
+     * @param tag               The tag to be edited
+     * @param index             The index of the tag
+     * @param maxIndex          The maximum index of the tag
+     * @param indexEditConsumer The consumer to be executed when the index is edited
+     * @param tagConsumer       The consumer to be executed when the tag is edited
+     * @param <T>               The type of the tag
+     * @return The builder instance
+     */
+    public <T extends INbtTag> ContextMenu edit(final T tag, final int index, final int maxIndex, final IntConsumer indexEditConsumer, final Consumer<T> tagConsumer) {
+        this.editAction = () -> this.drawer.openPopup(new EditIndexedTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", index, maxIndex, tag, (p, success) -> {
+            if (success) {
+                this.modificationListener.run();
+                tagConsumer.accept((T) p.getTag());
+                if (p.getIndex() != index) indexEditConsumer.accept(p.getIndex());
             }
             this.drawer.closePopup();
         }));
