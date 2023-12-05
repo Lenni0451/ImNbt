@@ -35,13 +35,13 @@ public class ByteArrayTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ByteArrayTag byteArrayTag = (ByteArrayTag) tag;
         this.renderBranch(name, "(" + byteArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.BYTE_ARRAY);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .singleType(NbtType.BYTE, (newName, newTag) -> {
                             int index = -1;
                             try {
@@ -75,7 +75,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
             int pages = (int) Math.ceil(byteArrayTag.getLength() / (float) drawer.getLinesPerPage());
             if (pages <= 1) {
                 for (int i = 0; i < byteArrayTag.getLength(); i++) {
-                    this.renderByte(drawer, byteArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderByte(drawer, byteArrayTag, i, removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
                 ImGui.text("Page");
@@ -89,7 +89,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
                 int start = (Math.max(1, Math.min(page[0], pages)) - 1) * drawer.getLinesPerPage();
                 int end = Math.min(start + drawer.getLinesPerPage(), byteArrayTag.getLength());
                 for (int i = start; i < end; i++) {
-                    this.renderByte(drawer, byteArrayTag, i, removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderByte(drawer, byteArrayTag, i, removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
             if (removed[0] != -1) {
@@ -100,11 +100,11 @@ public class ByteArrayTagRenderer implements TagRenderer {
         this.handleSearch(searchProvider, path);
     }
 
-    private void renderByte(final ImNbtDrawer drawer, final ByteArrayTag byteArrayTag, final int index, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
+    private void renderByte(final ImNbtDrawer drawer, final ByteArrayTag byteArrayTag, final int index, final int[] removed, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         this.renderLeaf(String.valueOf(index), ": " + this.format.format(byteArrayTag.get(index)), get(path, index), () -> {
             this.renderIcon(drawer, NbtType.BYTE);
             if (openContextMenu) {
-                ContextMenu.start(drawer).edit(String.valueOf(index), new ByteTag(byteArrayTag.get(index)), newName -> {
+                ContextMenu.start(drawer, modificationListener).edit(String.valueOf(index), new ByteTag(byteArrayTag.get(index)), newName -> {
                     //This gets executed multiple frames after the user clicked save in the popup
                     try {
                         int newIndex = Integer.parseInt(newName);

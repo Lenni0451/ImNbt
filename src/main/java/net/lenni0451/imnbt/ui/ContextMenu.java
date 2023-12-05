@@ -27,12 +27,13 @@ import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
  */
 public class ContextMenu {
 
-    public static ContextMenu start(final ImNbtDrawer drawer) {
-        return new ContextMenu(drawer);
+    public static ContextMenu start(final ImNbtDrawer drawer, final Runnable modificationListener) {
+        return new ContextMenu(drawer, modificationListener);
     }
 
 
     private final ImNbtDrawer drawer;
+    private final Runnable modificationListener;
     private final Set<NbtType> newTypes = new LinkedHashSet<>();
     private String copyName;
     private INbtTag copyTag;
@@ -46,8 +47,9 @@ public class ContextMenu {
     private Runnable deleteListener;
     private Supplier<INbtTag> sNbtSerializerListener;
 
-    private ContextMenu(final ImNbtDrawer drawer) {
+    private ContextMenu(final ImNbtDrawer drawer, final Runnable modificationListener) {
         this.drawer = drawer;
+        this.modificationListener = modificationListener;
     }
 
     /**
@@ -148,6 +150,7 @@ public class ContextMenu {
     public <T extends INbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
         this.editAction = () -> this.drawer.openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
             if (success) {
+                this.modificationListener.run();
                 tagConsumer.accept((T) p.getTag());
                 nameEditConsumer.accept(p.getName());
             }
@@ -188,7 +191,10 @@ public class ContextMenu {
                     for (NbtType newType : this.newTypes) {
                         if (ImGui.menuItem("     " + StringUtils.format(newType))) {
                             this.drawer.openPopup(new EditTagPopup("Add " + StringUtils.format(newType), "Add", "", newType.newInstance(), (p, success) -> {
-                                if (success) this.newTagAction.accept(p.getName(), p.getTag());
+                                if (success) {
+                                    this.modificationListener.run();
+                                    this.newTagAction.accept(p.getName(), p.getTag());
+                                }
                                 this.drawer.closePopup();
                             }));
                         }
@@ -212,6 +218,7 @@ public class ContextMenu {
                     if (tag == null) {
                         this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", close(this.drawer)));
                     } else {
+                        this.modificationListener.run();
                         this.pasteAction.accept(tag.getName(), tag.getTag());
                     }
                 }
@@ -220,6 +227,7 @@ public class ContextMenu {
                 if (ImGui.beginMenu("Transform")) {
                     for (NbtType type : this.transformTypes) {
                         if (ImGui.menuItem("     " + StringUtils.format(type))) {
+                            this.modificationListener.run();
                             this.transformAction.accept(type);
                         }
                         ImVec2 xy = ImGui.getItemRectMin();
@@ -233,11 +241,15 @@ public class ContextMenu {
             }
             if (this.roundAction != null) {
                 if (ImGui.menuItem("Round")) {
-                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, this.roundAction, close(this.drawer)));
+                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, i -> {
+                        this.modificationListener.run();
+                        this.roundAction.accept(i);
+                    }, close(this.drawer)));
                 }
             }
             if (this.sortAction != null) {
                 if (ImGui.menuItem("Sort")) {
+                    this.modificationListener.run();
                     this.sortAction.run();
                 }
             }
@@ -248,6 +260,7 @@ public class ContextMenu {
             }
             if (this.deleteListener != null) {
                 if (ImGui.menuItem("Delete")) {
+                    this.modificationListener.run();
                     this.deleteListener.run();
                 }
             }

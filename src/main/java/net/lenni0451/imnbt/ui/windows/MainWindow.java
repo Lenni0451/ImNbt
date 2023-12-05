@@ -4,6 +4,7 @@ import imgui.ImFont;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiTabItemFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import net.lenni0451.imnbt.FontHandler;
@@ -62,6 +63,7 @@ public class MainWindow extends Window {
     private final SearchProvider searchProvider = new SearchProvider(this.drawer);
     private final ImString searchText = new ImString(1024);
     private boolean searchModified = false;
+    private boolean saveHistory = true;
     private int openTab;
     private INbtTag leftDiff;
     private INbtTag rightDiff;
@@ -124,6 +126,61 @@ public class MainWindow extends Window {
 
                 ImGui.endMenu();
             }
+            if (ImGui.beginMenu("Edit")) {
+                boolean hasTag = this.openTab >= 0 && this.openTab < this.tags.size();
+                List<INbtTag> history = hasTag ? this.tags.get(this.openTab).history : null;
+                List<INbtTag> undoHistory = hasTag ? this.tags.get(this.openTab).undoHistory : null;
+                if (ImGui.menuItem("Undo", hasTag ? String.valueOf(history.size()) : null, false, hasTag && !history.isEmpty())) {
+                    Tag tag = this.tags.get(this.openTab);
+                    undoHistory.add(tag.tag.copy());
+                    tag.tag = history.remove(tag.history.size() - 1);
+                    tag.modified = true;
+                }
+                if (ImGui.menuItem("Redo", hasTag ? String.valueOf(undoHistory.size()) : null, false, hasTag && !undoHistory.isEmpty())) {
+                    Tag tag = this.tags.get(this.openTab);
+                    history.add(tag.tag.copy());
+                    tag.tag = undoHistory.remove(tag.undoHistory.size() - 1);
+                    tag.modified = true;
+                }
+
+                ImGui.endMenu();
+            }
+            if (ImGui.beginMenu("Batch")) {
+                if (ImGui.menuItem("Round Numbers")) {
+                    if (!this.hasTag()) {
+                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
+                    } else {
+                        this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, decimalPlaces -> {
+                            Tag rootTag = this.tags.get(this.openTab);
+                            TagVisitor.visit(rootTag.tag, tag -> {
+                                if (tag instanceof FloatTag floatTag) {
+                                    floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces));
+                                    rootTag.modified = true;
+                                } else if (tag instanceof DoubleTag doubleTag) {
+                                    doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces));
+                                    rootTag.modified = true;
+                                }
+                            });
+                        }, close(this.drawer)));
+                    }
+                }
+                if (ImGui.menuItem("Sort Compound Tags")) {
+                    if (!this.hasTag()) {
+                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
+                    } else {
+                        Tag rootTag = this.tags.get(this.openTab);
+                        TagVisitor.visit(rootTag.tag, tag -> {
+                            if (tag instanceof CompoundTag compound) {
+                                Map<String, INbtTag> entries = compound.getValue();
+                                compound.setValue(CollectionUtils.sort(entries, Map.Entry.comparingByKey(String::compareToIgnoreCase)));
+                                rootTag.modified = true;
+                            }
+                        });
+                    }
+                }
+
+                ImGui.endMenu();
+            }
             if (this.fontHandler != null && ImGui.beginMenu("Font Size")) {
                 ImFont[] fonts = this.fontHandler.getFonts();
                 int usedFont = this.fontHandler.getSelectedFont();
@@ -171,6 +228,7 @@ public class MainWindow extends Window {
                                 tag.settings.rootName = "";
                                 tag.tag = p.getParsedTag();
                                 tag.fileName = null;
+                                tag.modified = true;
                             } else {
                                 this.tags.add(new Tag(p.getParsedTag()));
                             }
@@ -181,34 +239,6 @@ public class MainWindow extends Window {
                 if (ImGui.menuItem("SNbt Serializer")) {
                     if (!this.hasTag()) this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
                     else this.drawer.openPopup(new SNbtSerializerPopup(this.tags.get(this.openTab).tag, close(this.drawer)));
-                }
-
-                ImGui.endMenu();
-            }
-            if (ImGui.beginMenu("Batch")) {
-                if (ImGui.menuItem("Round Numbers")) {
-                    if (!this.hasTag()) {
-                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
-                    } else {
-                        this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, decimalPlaces -> {
-                            TagVisitor.visit(this.tags.get(this.openTab).tag, tag -> {
-                                if (tag instanceof FloatTag floatTag) floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces));
-                                else if (tag instanceof DoubleTag doubleTag) doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces));
-                            });
-                        }, close(this.drawer)));
-                    }
-                }
-                if (ImGui.menuItem("Sort Compound Tags")) {
-                    if (!this.hasTag()) {
-                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
-                    } else {
-                        TagVisitor.visit(this.tags.get(this.openTab).tag, tag -> {
-                            if (tag instanceof CompoundTag compound) {
-                                Map<String, INbtTag> entries = compound.getValue();
-                                compound.setValue(CollectionUtils.sort(entries, Map.Entry.comparingByKey(String::compareToIgnoreCase)));
-                            }
-                        });
-                    }
                 }
 
                 ImGui.endMenu();
@@ -265,22 +295,33 @@ public class MainWindow extends Window {
                     Tag tag = this.tags.get(i);
                     ImBoolean open = new ImBoolean(true);
                     String tabName = tag.settings.rootName;
+                    int tabFlags = ImGuiTabItemFlags.None;
                     if (tabName.isEmpty()) tabName = tag.fileName;
                     if (tabName == null) tabName = "<empty>";
-                    if (ImGui.beginTabItem(tabName, open)) {
+                    if (tag.modified) tabFlags |= ImGuiTabItemFlags.UnsavedDocument;
+                    if (ImGui.beginTabItem(tabName, open, tabFlags)) {
                         this.openTab = i;
                         if (tag.tag == null) {
                             ImGui.text("No Nbt Tag present");
                         } else {
                             ImGui.beginChild("##NbtTree");
-                            NbtTreeRenderer.render(drawer, newName -> tag.settings.rootName = newName, (tranformedName, transformedTag) -> {
+                            NbtTreeRenderer.render(drawer, newName -> {
+                                tag.settings.rootName = newName;
+                                tag.modified = true;
+                            }, (tranformedName, transformedTag) -> {
                                 tag.tag = transformedTag;
                                 this.searchProvider.buildSearchPaths(transformedTag);
+                                tag.modified = true;
                             }, () -> {
                                 tag.settings.rootName = "";
                                 tag.tag = null;
                                 tag.fileName = null;
+                                tag.modified = true;
                                 this.searchProvider.buildSearchPaths(null);
+                            }, () -> {
+                                tag.modified = true;
+                                tag.history.add(tag.tag.copy());
+                                tag.undoHistory.clear();
                             }, p -> null, this.searchProvider, true, "", tag.settings.rootName, tag.tag);
                             ImGui.endChild();
                         }
@@ -300,7 +341,7 @@ public class MainWindow extends Window {
     }
 
     private boolean hasTag() {
-        return this.tags.size() > 0 && this.tags.get(this.openTab).tag != null;
+        return !this.tags.isEmpty() && this.tags.get(this.openTab).tag != null;
     }
 
     public void chooseFile() {
@@ -366,6 +407,7 @@ public class MainWindow extends Window {
                             tag.tag = namedTag.getTag();
                         }
                         tag.fileName = fileName;
+                        tag.modified = false;
                     } else {
                         Tag readTag;
                         if (namedTag == null) {
@@ -375,6 +417,7 @@ public class MainWindow extends Window {
                             readTag.settings.rootName = namedTag.getName();
                         }
                         readTag.fileName = fileName;
+                        readTag.modified = false;
                         this.tags.add(readTag);
                     }
                     if (bais.available() > 0) {
@@ -413,6 +456,7 @@ public class MainWindow extends Window {
                             } else {
                                 tag.settings.formatType.getNbtIO().write(dataOutput, tag.settings.rootName, tag.tag);
                             }
+                            tag.modified = false;
                             this.drawer.openPopup(new MessagePopup("Success", SUCCESS_SAVE, close(this.drawer)));
                         }
                     } catch (Throwable t) {
@@ -437,6 +481,7 @@ public class MainWindow extends Window {
                             tag.settings.rootName = p.getName();
                             tag.tag = p.getTag();
                             tag.fileName = null;
+                            tag.modified = true;
                         } else {
                             Tag newTag = new Tag(p.getTag());
                             newTag.settings.rootName = p.getName();
@@ -462,6 +507,9 @@ public class MainWindow extends Window {
         @Nullable
         private INbtTag tag;
         private String fileName;
+        private boolean modified;
+        private final List<INbtTag> history;
+        private final List<INbtTag> undoHistory;
 
         private Tag(final INbtTag tag) {
             this(new TagSettings(), tag);
@@ -470,6 +518,9 @@ public class MainWindow extends Window {
         private Tag(final TagSettings settings, @Nullable final INbtTag tag) {
             this.settings = settings;
             this.tag = tag;
+            this.modified = true;
+            this.history = new ArrayList<>();
+            this.undoHistory = new ArrayList<>();
         }
     }
 

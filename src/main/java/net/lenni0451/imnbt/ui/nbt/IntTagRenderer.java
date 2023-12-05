@@ -26,13 +26,13 @@ public class IntTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         IntTag intTag = (IntTag) tag;
         this.renderLeaf(name, ": " + this.format.format(intTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.INT);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .transform(TagTransformer.transform(drawer, name, intTag, transformListener), TagTransformer.INT_TRANSFORMS)
                         .edit(name, intTag, nameEditConsumer, t -> {
                             intTag.setValue(t.getValue());

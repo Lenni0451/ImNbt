@@ -31,13 +31,13 @@ public class DoubleTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         DoubleTag doubleTag = (DoubleTag) tag;
         this.renderLeaf(name, ": " + this.format.format(doubleTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.DOUBLE);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .transform(TagTransformer.transform(drawer, name, doubleTag, transformListener), TagTransformer.DOUBLE_TRANSFORMS)
                         .round(decimalPlaces -> doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces)))
                         .edit(name, doubleTag, nameEditConsumer, t -> {

@@ -27,13 +27,13 @@ public class LongTagRenderer implements TagRenderer {
     private final ImString longInput = new ImString(128);
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         LongTag longTag = (LongTag) tag;
         this.renderLeaf(name, ": " + this.format.format(longTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.LONG);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .transform(TagTransformer.transform(drawer, name, longTag, transformListener), TagTransformer.LONG_TRANSFORMS)
                         .edit(name, longTag, nameEditConsumer, t -> {
                             longTag.setValue(t.getValue());

@@ -25,13 +25,13 @@ public class StringTagRenderer implements TagRenderer {
     private final ImString valueEditor = new ImString(32767);
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name, ": " + stringTag.getValue(), path, () -> {
             this.renderIcon(drawer, NbtType.STRING);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .transform(TagTransformer.transform(drawer, name, stringTag, transformListener), TagTransformer.STRING_TRANSFORMS)
                         .edit(name, stringTag, nameEditConsumer, t -> {
                             stringTag.setValue(t.getValue());

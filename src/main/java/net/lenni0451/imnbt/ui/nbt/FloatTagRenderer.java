@@ -31,13 +31,13 @@ public class FloatTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
         this.renderLeaf(name, ": " + this.format.format(floatTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.FLOAT);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .transform(TagTransformer.transform(drawer, name, floatTag, transformListener), TagTransformer.FLOAT_TRANSFORMS)
                         .round(decimalPlaces -> floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces)))
                         .edit(name, floatTag, nameEditConsumer, t -> {

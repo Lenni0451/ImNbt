@@ -31,12 +31,12 @@ public class ListTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
         this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.LIST);
             if (openContextMenu) {
-                ContextMenu contextMenu = ContextMenu.start(drawer).edit(name, listTag, nameEditConsumer, t -> {});
+                ContextMenu contextMenu = ContextMenu.start(drawer, modificationListener).edit(name, listTag, nameEditConsumer, t -> {});
                 if (listTag.isEmpty()) {
                     contextMenu.allTypes((newName, newTag) -> {
                         listTag.add(newTag);
@@ -63,7 +63,7 @@ public class ListTagRenderer implements TagRenderer {
             int pages = (int) Math.ceil(listTag.size() / (float) drawer.getLinesPerPage());
             if (pages <= 1) {
                 for (int i = 0; i < listTag.size(); i++) {
-                    this.renderEntry(drawer, listTag, listTag.get(i), i, removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderEntry(drawer, listTag, listTag.get(i), i, removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
                 ImGui.text("Page");
@@ -77,7 +77,7 @@ public class ListTagRenderer implements TagRenderer {
                 int start = (Math.max(1, Math.min(page[0], pages)) - 1) * drawer.getLinesPerPage();
                 int end = Math.min(start + drawer.getLinesPerPage(), listTag.size());
                 for (int i = start; i < end; i++) {
-                    this.renderEntry(drawer, listTag, listTag.get(i), i, removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderEntry(drawer, listTag, listTag.get(i), i, removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
             if (removed[0] != -1) {
@@ -87,7 +87,7 @@ public class ListTagRenderer implements TagRenderer {
         }, colorProvider, searchProvider);
     }
 
-    private void renderEntry(final ImNbtDrawer drawer, final ListTag<INbtTag> listTag, final INbtTag entry, final int i, final int[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
+    private void renderEntry(final ImNbtDrawer drawer, final ListTag<INbtTag> listTag, final INbtTag entry, final int i, final int[] removed, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         NbtTreeRenderer.render(drawer, newName -> {
             //This gets executed multiple frames after the user clicked save in the popup
             try {
@@ -103,7 +103,7 @@ public class ListTagRenderer implements TagRenderer {
             if (index < 0 || index >= listTag.size()) return;
             listTag.getValue().set(index, transformedTag);
             searchProvider.refreshSearch();
-        }, () -> removed[0] = i, colorProvider, searchProvider, openContextMenu, get(path, i), String.valueOf(i), entry);
+        }, () -> removed[0] = i, modificationListener, colorProvider, searchProvider, openContextMenu, get(path, i), String.valueOf(i), entry);
     }
 
     @Override

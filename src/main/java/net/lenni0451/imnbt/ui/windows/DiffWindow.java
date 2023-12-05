@@ -60,9 +60,9 @@ public class DiffWindow extends Window {
             ImGui.tableSetupColumn("Right");
 
             ImGui.tableNextColumn();
-            NbtTreeRenderer.render(drawer, null, null, null, p -> this.diffMap.getLeft(p).getColor(), this.searchProvider, false, "", "", this.left);
+            NbtTreeRenderer.render(drawer, null, null, null, null, p -> this.diffMap.getLeft(p).getColor(), this.searchProvider, false, "", "", this.left);
             ImGui.tableNextColumn();
-            NbtTreeRenderer.render(drawer, null, null, null, p -> this.diffMap.getRight(p).getColor(), this.searchProvider, false, "", "", this.right);
+            NbtTreeRenderer.render(drawer, null, null, null, null, p -> this.diffMap.getRight(p).getColor(), this.searchProvider, false, "", "", this.right);
 
             ImGui.endTable();
         }

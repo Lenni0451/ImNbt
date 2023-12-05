@@ -33,14 +33,14 @@ public class CompoundTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.COMPOUND);
             this.handleSearch(searchProvider, path);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .allTypes((newKey, newTag) -> {
                             compoundTag.add(newKey, newTag);
                             searchProvider.refreshSearch();
@@ -64,7 +64,7 @@ public class CompoundTagRenderer implements TagRenderer {
             int pages = (int) Math.ceil(compoundTag.size() / (float) drawer.getLinesPerPage());
             if (pages <= 1) {
                 for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
-                    this.renderEntry(drawer, compoundTag, entry.getKey(), entry.getValue(), removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderEntry(drawer, compoundTag, entry.getKey(), entry.getValue(), removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
                 ImGui.text("Page");
@@ -80,7 +80,7 @@ public class CompoundTagRenderer implements TagRenderer {
                 int end = Math.min(start + drawer.getLinesPerPage(), keys.size());
                 for (int i = start; i < end; i++) {
                     String key = keys.get(i);
-                    this.renderEntry(drawer, compoundTag, key, compoundTag.get(key), removed, colorProvider, searchProvider, openContextMenu, path);
+                    this.renderEntry(drawer, compoundTag, key, compoundTag.get(key), removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             }
             if (removed[0] != null) {
@@ -90,7 +90,7 @@ public class CompoundTagRenderer implements TagRenderer {
         }, colorProvider, searchProvider);
     }
 
-    private void renderEntry(final ImNbtDrawer drawer, final CompoundTag compoundTag, final String key, final INbtTag value, final String[] removed, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
+    private void renderEntry(final ImNbtDrawer drawer, final CompoundTag compoundTag, final String key, final INbtTag value, final String[] removed, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         NbtTreeRenderer.render(drawer, newName -> {
             //This gets executed multiple frames after the user clicked save in the popup
             INbtTag oldTag = compoundTag.remove(key);
@@ -99,7 +99,7 @@ public class CompoundTagRenderer implements TagRenderer {
         }, (transformedName, transformedTag) -> {
             compoundTag.add(transformedName, transformedTag);
             searchProvider.refreshSearch();
-        }, () -> removed[0] = key, colorProvider, searchProvider, openContextMenu, get(path, key), key, value);
+        }, () -> removed[0] = key, modificationListener, colorProvider, searchProvider, openContextMenu, get(path, key), key, value);
     }
 
     @Override

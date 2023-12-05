@@ -25,13 +25,13 @@ public class ByteTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ByteTag byteTag = (ByteTag) tag;
         this.renderLeaf(name, ": " + this.format.format(byteTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.BYTE);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .transform(TagTransformer.transform(drawer, name, byteTag, transformListener), TagTransformer.BYTE_TRANSFORMS)
                         .edit(name, byteTag, nameEditConsumer, t -> {
                             byteTag.setValue(t.getValue());

@@ -25,13 +25,13 @@ public class ShortTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
         ShortTag shortTag = (ShortTag) tag;
         this.renderLeaf(name, ": " + this.format.format(shortTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.SHORT);
             if (openContextMenu) {
                 ContextMenu
-                        .start(drawer)
+                        .start(drawer, modificationListener)
                         .transform(TagTransformer.transform(drawer, name, shortTag, transformListener), TagTransformer.SHORT_TRANSFORMS)
                         .edit(name, shortTag, nameEditConsumer, t -> {
                             shortTag.setValue(t.getValue());
