@@ -60,7 +60,6 @@ public class MainWindow extends Window {
     private final SearchProvider searchProvider = new SearchProvider(this.drawer);
     private final ImString searchText = new ImString(1024);
     private boolean searchModified = false;
-    private boolean saveHistory = true;
     private int openTab;
     private INbtTag leftDiff;
     private INbtTag rightDiff;
