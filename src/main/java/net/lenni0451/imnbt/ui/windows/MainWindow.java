@@ -38,10 +38,7 @@ import net.lenni0451.mcstructs.nbt.tags.FloatTag;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
@@ -128,18 +125,56 @@ public class MainWindow extends Window {
             }
             if (ImGui.beginMenu("Edit")) {
                 boolean hasTag = this.openTab >= 0 && this.openTab < this.tags.size();
-                List<INbtTag> history = hasTag ? this.tags.get(this.openTab).history : null;
-                List<INbtTag> undoHistory = hasTag ? this.tags.get(this.openTab).undoHistory : null;
+                List<Object> history = hasTag ? this.tags.get(this.openTab).history : null;
+                List<Object> undoHistory = hasTag ? this.tags.get(this.openTab).undoHistory : null;
                 if (ImGui.menuItem("Undo", hasTag ? String.valueOf(history.size()) : null, false, hasTag && !history.isEmpty())) {
                     Tag tag = this.tags.get(this.openTab);
-                    undoHistory.add(tag.tag.copy());
-                    tag.tag = history.remove(tag.history.size() - 1);
+                    Object last = history.remove(history.size() - 1);
+                    if (last instanceof INbtTag oldTag) {
+                        undoHistory.add(tag.tag.copy());
+                        tag.tag = oldTag;
+                        this.searchProvider.buildSearchPaths(tag.tag);
+                    } else if (last instanceof String oldRootName) {
+                        undoHistory.add(tag.settings.rootName);
+                        tag.settings.rootName = oldRootName;
+                    } else if (last instanceof TagHistory oldTagHistory) {
+                        undoHistory.add(new TagHistory(tag.settings.rootName, Optional.ofNullable(tag.tag).map(INbtTag::copy).orElse(null), tag.fileName));
+                        tag.settings.rootName = oldTagHistory.rootName;
+                        tag.tag = oldTagHistory.tag;
+                        tag.fileName = oldTagHistory.fileName;
+                        this.searchProvider.buildSearchPaths(tag.tag);
+                    } else {
+                        this.drawer.openPopup(new MessagePopup("Error", "Unknown history type: " + last.getClass().getName(), (p, success) -> {
+                            this.drawer.closePopup();
+                            history.clear();
+                            undoHistory.clear();
+                        }));
+                    }
                     tag.modified = true;
                 }
                 if (ImGui.menuItem("Redo", hasTag ? String.valueOf(undoHistory.size()) : null, false, hasTag && !undoHistory.isEmpty())) {
                     Tag tag = this.tags.get(this.openTab);
-                    history.add(tag.tag.copy());
-                    tag.tag = undoHistory.remove(tag.undoHistory.size() - 1);
+                    Object last = undoHistory.remove(undoHistory.size() - 1);
+                    if (last instanceof INbtTag newTag) {
+                        history.add(tag.tag.copy());
+                        tag.tag = newTag;
+                        this.searchProvider.buildSearchPaths(tag.tag);
+                    } else if (last instanceof String newRootName) {
+                        history.add(tag.settings.rootName);
+                        tag.settings.rootName = newRootName;
+                    } else if (last instanceof TagHistory newTagHistory) {
+                        history.add(new TagHistory(tag.settings.rootName, Optional.ofNullable(tag.tag).map(INbtTag::copy).orElse(null), tag.fileName));
+                        tag.settings.rootName = newTagHistory.rootName;
+                        tag.tag = newTagHistory.tag;
+                        tag.fileName = newTagHistory.fileName;
+                        this.searchProvider.buildSearchPaths(tag.tag);
+                    } else {
+                        this.drawer.openPopup(new MessagePopup("Error", "Unknown history type: " + last.getClass().getName(), (p, success) -> {
+                            this.drawer.closePopup();
+                            history.clear();
+                            undoHistory.clear();
+                        }));
+                    }
                     tag.modified = true;
                 }
 
@@ -306,22 +341,31 @@ public class MainWindow extends Window {
                         } else {
                             ImGui.beginChild("##NbtTree");
                             NbtTreeRenderer.render(drawer, newName -> {
+                                tag.history.remove(tag.history.size() - 1); //Added by the modification listener
+                                tag.history.add(tag.settings.rootName);
+
                                 tag.settings.rootName = newName;
                                 tag.modified = true;
                             }, (tranformedName, transformedTag) -> {
+                                tag.history.remove(tag.history.size() - 1); //Added by the modification listener
+                                tag.history.add(tag.tag.copy());
+
                                 tag.tag = transformedTag;
                                 this.searchProvider.buildSearchPaths(transformedTag);
                                 tag.modified = true;
                             }, () -> {
+                                tag.history.remove(tag.history.size() - 1); //Added by the modification listener
+                                tag.history.add(new TagHistory(tag.settings.rootName, tag.tag.copy(), tag.fileName));
                                 tag.settings.rootName = "";
+
                                 tag.tag = null;
                                 tag.fileName = null;
-                                tag.modified = true;
                                 this.searchProvider.buildSearchPaths(null);
-                            }, () -> {
                                 tag.modified = true;
+                            }, () -> {
                                 tag.history.add(tag.tag.copy());
                                 tag.undoHistory.clear();
+                                tag.modified = true;
                             }, p -> null, this.searchProvider, true, "", tag.settings.rootName, tag.tag);
                             ImGui.endChild();
                         }
@@ -508,8 +552,8 @@ public class MainWindow extends Window {
         private INbtTag tag;
         private String fileName;
         private boolean modified;
-        private final List<INbtTag> history;
-        private final List<INbtTag> undoHistory;
+        private final List<Object> history;
+        private final List<Object> undoHistory;
 
         private Tag(final INbtTag tag) {
             this(new TagSettings(), tag);
@@ -522,6 +566,9 @@ public class MainWindow extends Window {
             this.history = new ArrayList<>();
             this.undoHistory = new ArrayList<>();
         }
+    }
+
+    private record TagHistory(String rootName, INbtTag tag, String fileName) {
     }
 
 }
