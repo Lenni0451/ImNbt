@@ -36,7 +36,9 @@ public class ListTagRenderer implements TagRenderer {
         this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.LIST);
             if (openContextMenu) {
-                ContextMenu contextMenu = ContextMenu.start(drawer, modificationListener).edit(name, listTag, nameEditConsumer, t -> {});
+                ContextMenu contextMenu = ContextMenu
+                        .start(drawer, modificationListener)
+                        .edit(name, listTag, nameEditConsumer, t -> {});
                 if (listTag.isEmpty()) {
                     contextMenu.allTypes(0, (index, newTag) -> {
                         listTag.add(newTag);
@@ -52,14 +54,20 @@ public class ListTagRenderer implements TagRenderer {
                         }
                     });
                 }
-                contextMenu.copy(name, listTag).paste((copiedName, copiedTag) -> {
-                    if (!listTag.canAdd(copiedTag)) {
-                        drawer.openPopup(new MessagePopup("Paste Tag", "This tag is not supported in this list tag.\n" + listTag.getNbtType().name() + " != " + copiedTag.getNbtType().name(), close(drawer)));
-                    } else {
-                        listTag.add(copiedTag);
-                        searchProvider.refreshSearch();
-                    }
-                }).transform(TagTransformer.transform(drawer, name, listTag, transformListener), TagTransformer.LIST_TRANSFORMS).delete(deleteListener).sNbtParser(() -> tag).render();
+                contextMenu
+                        .copy(name, listTag)
+                        .paste((copiedName, copiedTag) -> {
+                            if (!listTag.canAdd(copiedTag)) {
+                                drawer.openPopup(new MessagePopup("Paste Tag", "This tag is not supported in this list tag.\n" + listTag.getNbtType().name() + " != " + copiedTag.getNbtType().name(), close(drawer)));
+                            } else {
+                                listTag.add(copiedTag);
+                                searchProvider.refreshSearch();
+                            }
+                        })
+                        .transform(TagTransformer.transform(drawer, name, listTag, transformListener), TagTransformer.LIST_TRANSFORMS)
+                        .delete(deleteListener)
+                        .sNbtParser(() -> tag)
+                        .render();
             }
             this.handleSearch(searchProvider, path);
         }, () -> {
