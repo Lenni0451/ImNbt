@@ -36,5 +36,10 @@ public class TagSettings {
      * This is only used when reading a tag.
      */
     public boolean readExtraData = false;
+    /**
+     * The .dat file format used by Minecraft Bedrock Edition.<br>
+     * Little endian, no compression, 8 byte header (version + length)
+     */
+    public boolean bedrockLevelDat = false;
 
 }

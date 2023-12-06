@@ -22,6 +22,7 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
     private final ImInt selectedCompression;
     private final ImBoolean namelessRoot;
     private final ImBoolean readExtraData;
+    private final ImBoolean bedrockLevelDat;
 
     public OpenFilePopup(final byte[] data, final PopupCallback<OpenFilePopup> callback) {
         super("Open Nbt Tag", callback);
@@ -31,12 +32,14 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         this.tagSettings.compressionType = detector.getCompressionType();
         this.tagSettings.endianType = detector.getEndianType();
         this.tagSettings.formatType = detector.getFormatType();
+        this.tagSettings.bedrockLevelDat = detector.isBedrockLevelDat();
 
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
         this.selectedEndian = new ImInt(this.tagSettings.endianType.ordinal());
         this.selectedCompression = new ImInt(this.tagSettings.compressionType.ordinal());
         this.namelessRoot = new ImBoolean(this.tagSettings.namelessRoot);
         this.readExtraData = new ImBoolean(this.tagSettings.readExtraData);
+        this.bedrockLevelDat = new ImBoolean(this.tagSettings.bedrockLevelDat);
     }
 
     public TagSettings getTagSettings() {
@@ -59,6 +62,9 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         }
         if (ImGui.checkbox("Read Extra Data", this.readExtraData)) {
             this.tagSettings.readExtraData = this.readExtraData.get();
+        }
+        if (ImGui.checkbox("Bedrock Level .dat", this.bedrockLevelDat)) {
+            this.tagSettings.bedrockLevelDat = this.bedrockLevelDat.get();
         }
 
         ImGui.separator();
