@@ -99,7 +99,7 @@ public class MainWindow extends Window {
                 if (ImGui.menuItem("Open")) {
                     this.chooseFile();
                 }
-                if (ImGui.menuItem("Save")) {
+                if (ImGui.menuItem("Save", null, false, this.hasTag())) {
                     this.saveFile();
                 }
                 if (ImGui.menuItem("Close")) {
@@ -178,37 +178,29 @@ public class MainWindow extends Window {
                 ImGui.endMenu();
             }
             if (ImGui.beginMenu("Batch")) {
-                if (ImGui.menuItem("Round Numbers")) {
-                    if (!this.hasTag()) {
-                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
-                    } else {
-                        this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, decimalPlaces -> {
-                            Tag rootTag = this.tags.get(this.openTab);
-                            TagVisitor.visit(rootTag.tag, tag -> {
-                                if (tag instanceof FloatTag floatTag) {
-                                    floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces));
-                                    rootTag.modified = true;
-                                } else if (tag instanceof DoubleTag doubleTag) {
-                                    doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces));
-                                    rootTag.modified = true;
-                                }
-                            });
-                        }, close(this.drawer)));
-                    }
-                }
-                if (ImGui.menuItem("Sort Compound Tags")) {
-                    if (!this.hasTag()) {
-                        this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
-                    } else {
+                if (ImGui.menuItem("Round Numbers", null, false, this.hasTag())) {
+                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, decimalPlaces -> {
                         Tag rootTag = this.tags.get(this.openTab);
                         TagVisitor.visit(rootTag.tag, tag -> {
-                            if (tag instanceof CompoundTag compound) {
-                                Map<String, INbtTag> entries = compound.getValue();
-                                compound.setValue(CollectionUtils.sort(entries, Map.Entry.comparingByKey(String::compareToIgnoreCase)));
+                            if (tag instanceof FloatTag floatTag) {
+                                floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces));
+                                rootTag.modified = true;
+                            } else if (tag instanceof DoubleTag doubleTag) {
+                                doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces));
                                 rootTag.modified = true;
                             }
                         });
-                    }
+                    }, close(this.drawer)));
+                }
+                if (ImGui.menuItem("Sort Compound Tags", null, false, this.hasTag())) {
+                    Tag rootTag = this.tags.get(this.openTab);
+                    TagVisitor.visit(rootTag.tag, tag -> {
+                        if (tag instanceof CompoundTag compound) {
+                            Map<String, INbtTag> entries = compound.getValue();
+                            compound.setValue(CollectionUtils.sort(entries, Map.Entry.comparingByKey(String::compareToIgnoreCase)));
+                            rootTag.modified = true;
+                        }
+                    });
                 }
 
                 ImGui.endMenu();
@@ -268,29 +260,24 @@ public class MainWindow extends Window {
                         this.drawer.closePopup();
                     }));
                 }
-                if (ImGui.menuItem("SNbt Serializer")) {
-                    if (!this.hasTag()) this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
-                    else this.drawer.openPopup(new SNbtSerializerPopup(this.tags.get(this.openTab).tag, close(this.drawer)));
+                if (ImGui.menuItem("SNbt Serializer", null, false, this.hasTag())) {
+                    this.drawer.openPopup(new SNbtSerializerPopup(this.tags.get(this.openTab).tag, close(this.drawer)));
                 }
 
                 ImGui.endMenu();
             }
             if (ImGui.beginMenu("Diff")) {
-                if (ImGui.menuItem("Select Left", "", this.leftDiff != null)) {
+                if (ImGui.menuItem("Select Left", "", this.leftDiff != null, this.hasTag())) {
                     if (this.hasTag()) this.leftDiff = this.tags.get(this.openTab).tag;
                     else this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
                 }
-                if (ImGui.menuItem("Select Right", "", this.rightDiff != null)) {
+                if (ImGui.menuItem("Select Right", "", this.rightDiff != null, this.hasTag())) {
                     if (this.hasTag()) this.rightDiff = this.tags.get(this.openTab).tag;
                     else this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
                 }
-                if (ImGui.menuItem("Diff")) {
-                    if (this.leftDiff == null || this.rightDiff == null) {
-                        this.drawer.openPopup(new MessagePopup("Error", REQUIRE_BOTH_DIFF_TAGS, close(this.drawer)));
-                    } else {
-                        this.drawer.getDiffWindow().diff(this.leftDiff, this.rightDiff);
-                        this.drawer.getDiffWindow().show();
-                    }
+                if (ImGui.menuItem("Diff", null, false, this.leftDiff != null && this.rightDiff != null)) {
+                    this.drawer.getDiffWindow().diff(this.leftDiff, this.rightDiff);
+                    this.drawer.getDiffWindow().show();
                 }
                 if (ImGui.beginMenu("Legend")) {
                     for (DiffType value : DiffType.values()) {
@@ -486,11 +473,6 @@ public class MainWindow extends Window {
     }
 
     public void saveFile() {
-        if (!this.hasTag()) {
-            this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
-            return;
-        }
-
         String response = this.drawer.showSaveFileDialog("Save Nbt Tag");
         if (response != null) {
             Tag tag = this.tags.get(this.openTab);
