@@ -186,6 +186,17 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
         ImGui.setNextWindowSize(ImGui.getIO().getDisplaySize().x, ImGui.getIO().getDisplaySize().y);
         ImGui.begin("MainWindow", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.MenuBar);
         this.window.render();
+        if (this.window instanceof MainWindow) {
+            if (KeyboardHelper.isCtrlPressed()) {
+                if (ImGui.isKeyPressed(KeyboardHelper.KEY_Z)) {
+                    this.mainWindow.undo();
+                } else if (ImGui.isKeyPressed(KeyboardHelper.KEY_Y)) {
+                    this.mainWindow.redo();
+                } else if (ImGui.isKeyPressed(KeyboardHelper.KEY_S)) {
+                    this.mainWindow.saveCurrent();
+                }
+            }
+        }
         ImGui.end();
         if (this.popup != null) {
             this.popup.open();
