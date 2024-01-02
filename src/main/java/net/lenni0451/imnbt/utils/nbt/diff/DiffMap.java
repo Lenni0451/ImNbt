@@ -87,8 +87,8 @@ public class DiffMap {
     @Override
     public String toString() {
         return "DiffMap{" +
-                "left=" + left +
-                ", right=" + right +
+                "left=" + this.left +
+                ", right=" + this.right +
                 '}';
     }
 

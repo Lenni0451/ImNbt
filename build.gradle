@@ -2,6 +2,7 @@ plugins {
     id "java-library"
     id "maven-publish"
     id "signing"
+    id "checkstyle"
     id "net.raphimc.class-token-replacer" version "1.0.0"
 }
 
@@ -9,6 +10,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
 
 allprojects {
+    apply plugin: "checkstyle"
+
     archivesBaseName = project.maven_name
     group = project.maven_group
     version = project.maven_version
@@ -16,6 +19,12 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    checkstyle {
+        toolVersion = "9.3"
+        configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+    }
+    build.dependsOn(check)
 }
 
 sourceSets {

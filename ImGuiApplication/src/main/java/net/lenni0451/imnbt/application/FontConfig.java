@@ -20,7 +20,7 @@ public class FontConfig implements FontHandler {
         } catch (Throwable t) {
             t.printStackTrace();
             this.preferences = null;
-            this.selectedFont = fonts.length - 1;
+            this.selectedFont = this.fonts.length - 1;
         }
     }
 
