@@ -41,6 +41,10 @@ java {
     withJavadocJar()
 }
 
+javadoc {
+    options.addStringOption("Xdoclint:none", "-quiet")
+}
+
 artifacts {
     archives javadocJar, sourcesJar
 }
