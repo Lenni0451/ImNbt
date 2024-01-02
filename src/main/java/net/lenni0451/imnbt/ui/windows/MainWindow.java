@@ -210,7 +210,7 @@ public class MainWindow extends Window {
                 }
                 ImGui.separator();
                 if (ImGui.menuItem("Exit")) {
-                    System.exit(0);
+                    this.drawer.exit();
                 }
 
                 ImGui.endMenu();

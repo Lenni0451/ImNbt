@@ -116,6 +116,11 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
     }
 
     @Override
+    public void exit() {
+        System.exit(0);
+    }
+
+    @Override
     protected void configure(Configuration config) {
         config.setTitle("ImNbt");
     }

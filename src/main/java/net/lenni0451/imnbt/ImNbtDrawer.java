@@ -109,4 +109,9 @@ public interface ImNbtDrawer {
     @Nullable
     NamedTag getClipboard();
 
+    /**
+     * Gets called when the File -> Exit menu item is clicked.
+     */
+    void exit();
+
 }
