@@ -100,6 +100,7 @@ public class MainWindow extends Window {
         if (!hasTag) return;
         List<Object> history = this.tags.get(this.openTab).history;
         List<Object> undoHistory = this.tags.get(this.openTab).undoHistory;
+        if (history.isEmpty()) return;
 
         Tag tag = this.tags.get(this.openTab);
         Object last = history.remove(history.size() - 1);
@@ -136,6 +137,7 @@ public class MainWindow extends Window {
         if (!hasTag) return;
         List<Object> history = this.tags.get(this.openTab).history;
         List<Object> undoHistory = this.tags.get(this.openTab).undoHistory;
+        if (undoHistory.isEmpty()) return;
 
         Tag tag = this.tags.get(this.openTab);
         Object last = undoHistory.remove(undoHistory.size() - 1);
