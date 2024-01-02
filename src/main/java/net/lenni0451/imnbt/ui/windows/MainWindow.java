@@ -370,7 +370,7 @@ public class MainWindow extends Window {
                     if (tabName.isEmpty()) tabName = tag.fileName;
                     if (tabName == null) tabName = "<empty>";
                     if (tag.modified) tabFlags |= ImGuiTabItemFlags.UnsavedDocument;
-                    if (ImGui.beginTabItem(tabName, open, tabFlags)) {
+                    if (ImGui.beginTabItem(tabName + "###" + tag.uuid, open, tabFlags)) {
                         this.openTab = i;
                         if (tag.tag == null) {
                             ImGui.text("No Nbt Tag present");
@@ -597,6 +597,7 @@ public class MainWindow extends Window {
 
 
     private static class Tag {
+        private final String uuid = UUID.randomUUID().toString();
         private TagSettings settings;
         @Nullable
         private INbtTag tag;
