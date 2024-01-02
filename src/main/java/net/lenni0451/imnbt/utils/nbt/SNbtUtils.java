@@ -21,6 +21,7 @@ public class SNbtUtils {
         Map<String, SNbtSerializer<?>> versions = new LinkedHashMap<>();
         try {
             for (Field field : SNbtSerializer.class.getDeclaredFields()) {
+                if (field.getName().equals("LATEST")) continue;
                 if (Modifier.isStatic(field.getModifiers()) && SNbtSerializer.class.isAssignableFrom(field.getType())) {
                     versions.put(field.getName(), (SNbtSerializer<?>) field.get(null));
                 }
