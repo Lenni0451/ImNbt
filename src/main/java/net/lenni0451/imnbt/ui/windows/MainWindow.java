@@ -552,6 +552,8 @@ public class MainWindow extends Window {
                 } else {
                     tag.settings.formatType.getNbtIO().write(dataOutput, tag.settings.rootName, tag.tag);
                 }
+                tag.fileName = file.substring(file.lastIndexOf(File.separatorChar) + 1);
+                tag.filePath = file;
                 tag.modified = false;
                 this.drawer.openPopup(new MessagePopup("Success", SUCCESS_SAVE, close(this.drawer)));
             }
