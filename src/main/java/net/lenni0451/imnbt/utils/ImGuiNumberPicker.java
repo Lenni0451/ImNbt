@@ -22,42 +22,119 @@ public class ImGuiNumberPicker {
         this.type = type;
     }
 
-    public Number render(final Number value) {
+    public Number render(Number value) {
+        final int width = (int) ImGui.calcItemWidth();
+        final int height = (int) ImGui.getTextLineHeight();
+
         this.input.set(FORMAT.format(value));
-        if (ImGui.inputText("Value", this.input, ImGuiInputTextFlags.CharsDecimal | ImGuiInputTextFlags.CharsNoBlank)) {
-            if (byte.class.equals(this.type)) {
-                try {
-                    return Byte.parseByte(this.input.get());
-                } catch (NumberFormatException ignored) {
-                }
-            } else if (short.class.equals(this.type)) {
-                try {
-                    return Short.parseShort(this.input.get());
-                } catch (NumberFormatException ignored) {
-                }
-            } else if (int.class.equals(this.type)) {
-                try {
-                    return Integer.parseInt(this.input.get());
-                } catch (NumberFormatException ignored) {
-                }
-            } else if (long.class.equals(this.type)) {
-                try {
-                    return Long.parseLong(this.input.get());
-                } catch (NumberFormatException ignored) {
-                }
-            } else if (float.class.equals(this.type)) {
-                try {
-                    return Float.parseFloat(this.input.get());
-                } catch (NumberFormatException ignored) {
-                }
-            } else if (double.class.equals(this.type)) {
-                try {
-                    return Double.parseDouble(this.input.get());
-                } catch (NumberFormatException ignored) {
-                }
+        ImGui.setNextItemWidth(width - height * 2 - 16);
+        if (ImGui.inputText("##Value", this.input, ImGuiInputTextFlags.CharsDecimal | ImGuiInputTextFlags.CharsNoBlank)) {
+            value = this.parse(value, this.input.get());
+        }
+        ImGui.sameLine();
+        if (ImGui.button("-", height, 0)) {
+            value = this.decrement(value);
+        }
+        ImGui.sameLine();
+        if (ImGui.button("+", height, 0)) {
+            value = this.increment(value);
+        }
+        ImGui.sameLine();
+        ImGui.text("Value");
+        return value;
+    }
+
+    private Number parse(final Number def, final String value) {
+        if (byte.class.equals(this.type)) {
+            try {
+                return Byte.parseByte(value);
+            } catch (NumberFormatException ignored) {
+            }
+        } else if (short.class.equals(this.type)) {
+            try {
+                return Short.parseShort(value);
+            } catch (NumberFormatException ignored) {
+            }
+        } else if (int.class.equals(this.type)) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException ignored) {
+            }
+        } else if (long.class.equals(this.type)) {
+            try {
+                return Long.parseLong(value);
+            } catch (NumberFormatException ignored) {
+            }
+        } else if (float.class.equals(this.type)) {
+            try {
+                return Float.parseFloat(value);
+            } catch (NumberFormatException ignored) {
+            }
+        } else if (double.class.equals(this.type)) {
+            try {
+                return Double.parseDouble(value);
+            } catch (NumberFormatException ignored) {
             }
         }
-        return value;
+        return def;
+    }
+
+    private Number increment(final Number number) {
+        if (byte.class.equals(this.type)) {
+            byte b = number.byteValue();
+            if (b == Byte.MAX_VALUE) return b;
+            return b + 1;
+        } else if (short.class.equals(this.type)) {
+            short s = number.shortValue();
+            if (s == Short.MAX_VALUE) return s;
+            return s + 1;
+        } else if (int.class.equals(this.type)) {
+            int i = number.intValue();
+            if (i == Integer.MAX_VALUE) return i;
+            return i + 1;
+        } else if (long.class.equals(this.type)) {
+            long l = number.longValue();
+            if (l == Long.MAX_VALUE) return l;
+            return l + 1;
+        } else if (float.class.equals(this.type)) {
+            float f = number.floatValue();
+            if (f == Float.MAX_VALUE) return f;
+            return f + 1;
+        } else if (double.class.equals(this.type)) {
+            double d = number.doubleValue();
+            if (d == Double.MAX_VALUE) return d;
+            return d + 1;
+        }
+        return number;
+    }
+
+    private Number decrement(final Number number) {
+        if (byte.class.equals(this.type)) {
+            byte b = number.byteValue();
+            if (b == Byte.MIN_VALUE) return b;
+            return b - 1;
+        } else if (short.class.equals(this.type)) {
+            short s = number.shortValue();
+            if (s == Short.MIN_VALUE) return s;
+            return s - 1;
+        } else if (int.class.equals(this.type)) {
+            int i = number.intValue();
+            if (i == Integer.MIN_VALUE) return i;
+            return i - 1;
+        } else if (long.class.equals(this.type)) {
+            long l = number.longValue();
+            if (l == Long.MIN_VALUE) return l;
+            return l - 1;
+        } else if (float.class.equals(this.type)) {
+            float f = number.floatValue();
+            if (f == Float.MIN_VALUE) return f;
+            return f - 1;
+        } else if (double.class.equals(this.type)) {
+            double d = number.doubleValue();
+            if (d == Double.MIN_VALUE) return d;
+            return d - 1;
+        }
+        return number;
     }
 
 }
