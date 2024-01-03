@@ -1,11 +1,11 @@
 package net.lenni0451.imnbt.ui.nbt;
 
-import imgui.ImGui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.ImGuiNumberPicker;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -23,6 +23,7 @@ import java.util.function.Function;
 public class ByteTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
+    private final ImGuiNumberPicker numberPicker = new ImGuiNumberPicker(byte.class);
 
     @Override
     public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
@@ -49,8 +50,7 @@ public class ByteTagRenderer implements TagRenderer {
     @Override
     public void renderValueEditor(INbtTag tag) {
         ByteTag byteTag = (ByteTag) tag;
-        int[] value = new int[]{byteTag.getValue()};
-        if (ImGui.sliderInt("Value", value, Byte.MIN_VALUE, Byte.MAX_VALUE)) byteTag.setValue((byte) value[0]);
+        byteTag.setValue(this.numberPicker.render(byteTag.getValue()).byteValue());
     }
 
 }

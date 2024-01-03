@@ -1,12 +1,11 @@
 package net.lenni0451.imnbt.ui.nbt;
 
-import imgui.ImGui;
-import imgui.type.ImFloat;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.ImGuiNumberPicker;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -25,6 +24,7 @@ import java.util.function.Function;
 public class FloatTagRenderer implements TagRenderer {
 
     private final DecimalFormat format = new DecimalFormat();
+    private final ImGuiNumberPicker numberPicker = new ImGuiNumberPicker(float.class);
 
     public FloatTagRenderer() {
         this.format.setMaximumFractionDigits(Float.MAX_EXPONENT);
@@ -56,8 +56,7 @@ public class FloatTagRenderer implements TagRenderer {
     @Override
     public void renderValueEditor(INbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
-        ImFloat value = new ImFloat(floatTag.getValue());
-        if (ImGui.inputFloat("Value", value)) floatTag.setValue(value.get());
+        floatTag.setValue(this.numberPicker.render(floatTag.getValue()).floatValue());
     }
 
 }
