@@ -17,9 +17,14 @@ public class ImGuiNumberPicker {
 
     private final ImString input = new ImString(128);
     private final Class<? extends Number> type;
+    private final Number minValue;
+    private final Number maxValue;
+    private boolean contextMenuActive;
 
     public ImGuiNumberPicker(final Class<? extends Number> type) {
         this.type = type;
+        this.minValue = this.getMinValue();
+        this.maxValue = this.getMaxValue();
     }
 
     public Number render(Number value) {
@@ -30,6 +35,22 @@ public class ImGuiNumberPicker {
         ImGui.setNextItemWidth(width - height * 2 - 16);
         if (ImGui.inputText("##Value", this.input, ImGuiInputTextFlags.CharsDecimal | ImGuiInputTextFlags.CharsNoBlank)) {
             value = this.parse(value, this.input.get());
+        }
+        if (ImGui.isItemActive() || ImGui.isItemHovered()) this.contextMenuActive = true;
+        if (this.contextMenuActive && ImGui.beginPopupContextWindow()) {
+            if (ImGui.selectable("Reset")) {
+                value = 0;
+            }
+            if (ImGui.selectable("Min Value")) {
+                value = this.minValue;
+            }
+            if (ImGui.selectable("Max Value")) {
+                value = this.maxValue;
+            }
+
+            ImGui.endPopup();
+        } else {
+            this.contextMenuActive = false;
         }
         ImGui.sameLine();
         if (ImGui.button("-", height, 0)) {
@@ -135,6 +156,40 @@ public class ImGuiNumberPicker {
             return d - 1;
         }
         return number;
+    }
+
+    private Number getMinValue() {
+        if (byte.class.equals(this.type)) {
+            return Byte.MIN_VALUE;
+        } else if (short.class.equals(this.type)) {
+            return Short.MIN_VALUE;
+        } else if (int.class.equals(this.type)) {
+            return Integer.MIN_VALUE;
+        } else if (long.class.equals(this.type)) {
+            return Long.MIN_VALUE;
+        } else if (float.class.equals(this.type)) {
+            return Float.MIN_VALUE;
+        } else if (double.class.equals(this.type)) {
+            return Double.MIN_VALUE;
+        }
+        return null;
+    }
+
+    private Number getMaxValue() {
+        if (byte.class.equals(this.type)) {
+            return Byte.MAX_VALUE;
+        } else if (short.class.equals(this.type)) {
+            return Short.MAX_VALUE;
+        } else if (int.class.equals(this.type)) {
+            return Integer.MAX_VALUE;
+        } else if (long.class.equals(this.type)) {
+            return Long.MAX_VALUE;
+        } else if (float.class.equals(this.type)) {
+            return Float.MAX_VALUE;
+        } else if (double.class.equals(this.type)) {
+            return Double.MAX_VALUE;
+        }
+        return null;
     }
 
 }
