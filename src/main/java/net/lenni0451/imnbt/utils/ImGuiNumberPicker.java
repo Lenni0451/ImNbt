@@ -29,10 +29,10 @@ public class ImGuiNumberPicker {
 
     public Number render(Number value) {
         final int width = (int) ImGui.calcItemWidth();
-        final int height = (int) ImGui.getTextLineHeight();
+        final int buttonSize = (int) ImGui.getTextLineHeight() + 6;
 
         this.input.set(FORMAT.format(value));
-        ImGui.setNextItemWidth(width - height * 2 - 16);
+        ImGui.setNextItemWidth(width - buttonSize * 2 - 16);
         if (ImGui.inputText("##Value", this.input, ImGuiInputTextFlags.CharsDecimal | ImGuiInputTextFlags.CharsNoBlank)) {
             value = this.parse(value, this.input.get());
         }
@@ -53,11 +53,11 @@ public class ImGuiNumberPicker {
             this.contextMenuActive = false;
         }
         ImGui.sameLine();
-        if (ImGui.button("-", height, 0)) {
+        if (ImGui.button("-", buttonSize, buttonSize)) {
             value = this.decrement(value);
         }
         ImGui.sameLine();
-        if (ImGui.button("+", height, 0)) {
+        if (ImGui.button("+", buttonSize, buttonSize)) {
             value = this.increment(value);
         }
         ImGui.sameLine();
