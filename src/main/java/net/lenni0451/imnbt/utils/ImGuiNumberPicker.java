@@ -19,7 +19,6 @@ public class ImGuiNumberPicker {
     private final Class<? extends Number> type;
     private final Number minValue;
     private final Number maxValue;
-    private boolean contextMenuActive;
 
     public ImGuiNumberPicker(final Class<? extends Number> type) {
         this.type = type;
@@ -36,8 +35,7 @@ public class ImGuiNumberPicker {
         if (ImGui.inputText("##Value", this.input, ImGuiInputTextFlags.CharsDecimal | ImGuiInputTextFlags.CharsNoBlank)) {
             value = this.parse(value, this.input.get());
         }
-        if (ImGui.isItemActive() || ImGui.isItemHovered()) this.contextMenuActive = true;
-        if (this.contextMenuActive && ImGui.beginPopupContextWindow()) {
+        if (ImGui.beginPopupContextItem()) {
             if (ImGui.selectable("Reset")) {
                 value = 0;
             }
@@ -49,8 +47,6 @@ public class ImGuiNumberPicker {
             }
 
             ImGui.endPopup();
-        } else {
-            this.contextMenuActive = false;
         }
         ImGui.sameLine();
         ImGui.setCursorPosX(ImGui.getCursorPosX() - 4);
