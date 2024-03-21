@@ -27,7 +27,11 @@ public class NbtPath {
      * @return The new path
      */
     public static String get(final String path, final String node) {
-        return path + PATH_SEPARATOR + node.replace(ESCAPE, ESCAPE + ESCAPE).replace(PATH_SEPARATOR, ESCAPE + PATH_SEPARATOR);
+        return path + PATH_SEPARATOR + node
+                .replace(ESCAPE, ESCAPE + ESCAPE)
+                .replace(PATH_SEPARATOR, ESCAPE + PATH_SEPARATOR)
+                .replace(INDEX_START, ESCAPE + INDEX_START)
+                .replace(INDEX_END, ESCAPE + INDEX_END);
     }
 
     /**
