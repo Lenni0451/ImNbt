@@ -5,6 +5,7 @@ import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.DiffWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
+import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import javax.annotation.Nonnull;
@@ -35,6 +36,30 @@ public interface ImNbtDrawer {
      * @param popup The popup to open
      */
     void openPopup(@Nonnull final Popup<?> popup);
+
+    /**
+     * Show a notification to the user.<br>
+     * It is to be expected that the current popup will stay open when this method is called.
+     *
+     * @param level   The level of the notification
+     * @param title   The title of the notification
+     * @param message The message of the notification
+     */
+    default void showNotification(final NotificationLevel level, final String title, final String message) {
+        this.showNotification(level, title, message, () -> {});
+    }
+
+    /**
+     * Show a notification to the user.<br>
+     * The callback should be called when the user has received (and optionally closed) the notification.<br>
+     * It is to be expected that the current popup will stay open when this method is called.
+     *
+     * @param level    The level of the notification
+     * @param title    The title of the notification
+     * @param message  The message of the notification
+     * @param callback The callback to call when the notification is received
+     */
+    void showNotification(final NotificationLevel level, final String title, final String message, final Runnable callback);
 
     /**
      * Close the current popup window.

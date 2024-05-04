@@ -3,14 +3,12 @@ package net.lenni0451.imnbt.ui.windows;
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
 import net.lenni0451.imnbt.ImNbtDrawer;
-import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.utils.Licenses;
+import net.lenni0451.imnbt.utils.NotificationLevel;
 
 import java.awt.*;
 import java.net.URI;
-
-import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
 /**
  * The window to show information about the program.
@@ -84,7 +82,7 @@ public class AboutWindow extends Window {
             Desktop.getDesktop().browse(new URI(url));
         } catch (Throwable t) {
             t.printStackTrace();
-            this.drawer.openPopup(new MessagePopup("Error", "Failed to open the URL", close(this.drawer)));
+            this.drawer.showNotification(NotificationLevel.ERROR, "Error", "Failed to open the URL");
         }
         this.hide();
     }

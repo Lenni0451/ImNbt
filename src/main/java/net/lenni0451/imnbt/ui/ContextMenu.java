@@ -3,8 +3,12 @@ package net.lenni0451.imnbt.ui;
 import imgui.ImGui;
 import imgui.ImVec2;
 import net.lenni0451.imnbt.ImNbtDrawer;
-import net.lenni0451.imnbt.ui.popups.*;
+import net.lenni0451.imnbt.ui.popups.EditIndexedTagPopup;
+import net.lenni0451.imnbt.ui.popups.EditTagPopup;
+import net.lenni0451.imnbt.ui.popups.IntegerInputPopup;
+import net.lenni0451.imnbt.ui.popups.YesNoPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
+import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -289,7 +293,7 @@ public class ContextMenu {
                 if (this.drawer.hasClipboard() && ImGui.menuItem("Paste Tag")) {
                     NamedTag tag = this.drawer.getClipboard();
                     if (tag == null) {
-                        this.drawer.openPopup(new MessagePopup("Paste Error", "An unknown error occurred whilst\npasting the clipboard content!", close(this.drawer)));
+                        this.drawer.showNotification(NotificationLevel.ERROR, "Paste Error", "An unknown error occurred whilst\npasting the clipboard content!");
                     } else {
                         this.modificationListener.run();
                         this.pasteAction.accept(tag.getName(), tag.getTag());

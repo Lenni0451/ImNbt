@@ -4,8 +4,8 @@ import imgui.ImGui;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import net.lenni0451.imnbt.ImNbtDrawer;
-import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.Popup;
+import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZERS;
@@ -40,7 +40,7 @@ public class SNbtParserPopup extends Popup<SNbtParserPopup> {
                 this.parsedTag = SERIALIZERS.get("V" + SERIALIZER_NAMES[this.selectedVersion.get()].replace('.', '_')).deserialize(this.input.get());
                 this.getCallback().onClose(this, true);
             } catch (Throwable t) {
-                drawer.openPopup(new MessagePopup("Error", t.getMessage(), (p, success) -> drawer.openPopup(this)));
+                drawer.showNotification(NotificationLevel.ERROR, "Error", t.getMessage());
             }
         }
         ImGui.sameLine();

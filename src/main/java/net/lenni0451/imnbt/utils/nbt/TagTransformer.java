@@ -1,7 +1,7 @@
 package net.lenni0451.imnbt.utils.nbt;
 
 import net.lenni0451.imnbt.ImNbtDrawer;
-import net.lenni0451.imnbt.ui.popups.MessagePopup;
+import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.*;
@@ -9,8 +9,6 @@ import net.lenni0451.mcstructs.nbt.tags.*;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
-import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
 public class TagTransformer {
 
@@ -160,7 +158,7 @@ public class TagTransformer {
                     ListTag<INbtTag> list = new ListTag<>();
                     for (Map.Entry<String, INbtTag> entry : tag) {
                         if (!list.canAdd(entry.getValue())) {
-                            drawer.openPopup(new MessagePopup("Error", "Lists can only contain one tag type.", close(drawer)));
+                            drawer.showNotification(NotificationLevel.ERROR, "Error", "Lists can only contain one tag type.", drawer::closePopup);
                             return;
                         }
                         list.add(entry.getValue());

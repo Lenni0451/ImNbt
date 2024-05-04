@@ -4,10 +4,10 @@ import imgui.ImGui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.ContextMenu;
 import net.lenni0451.imnbt.ui.SearchProvider;
-import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.ArrayUtils;
 import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtNumber;
 import net.lenni0451.mcstructs.nbt.INbtTag;
@@ -23,7 +23,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
 
 /**
@@ -55,7 +54,7 @@ public class ByteArrayTagRenderer implements TagRenderer {
                                 for (byte b : bat.getValue()) byteArrayTag.add(b);
                                 searchProvider.refreshSearch();
                             } else {
-                                drawer.openPopup(new MessagePopup("Invalid Tag", "You can only paste numbers into a byte array.", close(drawer)));
+                                drawer.showNotification(NotificationLevel.ERROR, "Invalid Tag", "You can only paste numbers into a byte array.");
                             }
                         })
                         .transform(TagTransformer.transform(drawer, name, byteArrayTag, transformListener), TagTransformer.BYTE_ARRAY_TRANSFORMS)

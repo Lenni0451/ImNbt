@@ -16,16 +16,12 @@ import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.IntegerInputPopup;
-import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.popups.file.OpenFilePopup;
 import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
-import net.lenni0451.imnbt.utils.CollectionUtils;
-import net.lenni0451.imnbt.utils.Color;
-import net.lenni0451.imnbt.utils.NumberUtils;
-import net.lenni0451.imnbt.utils.StringUtils;
+import net.lenni0451.imnbt.utils.*;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
 import net.lenni0451.imnbt.utils.nbt.TagVisitor;
 import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
@@ -123,11 +119,10 @@ public class MainWindow extends Window {
             tag.filePath = oldTagHistory.filePath;
             this.searchProvider.buildSearchPaths(tag.tag);
         } else {
-            this.drawer.openPopup(new MessagePopup("Error", "Unknown history type: " + last.getClass().getName(), (p, success) -> {
-                this.drawer.closePopup();
+            this.drawer.showNotification(NotificationLevel.ERROR, "Error", "Unknown history type: " + last.getClass().getName() + "\nThe history has been cleared to prevent further errors.", () -> {
                 history.clear();
                 undoHistory.clear();
-            }));
+            });
         }
         tag.modified = true;
     }
@@ -160,11 +155,10 @@ public class MainWindow extends Window {
             tag.filePath = newTagHistory.filePath;
             this.searchProvider.buildSearchPaths(tag.tag);
         } else {
-            this.drawer.openPopup(new MessagePopup("Error", "Unknown history type: " + last.getClass().getName(), (p, success) -> {
-                this.drawer.closePopup();
+            this.drawer.showNotification(NotificationLevel.ERROR, "Error", "Unknown history type: " + last.getClass().getName() + "\nThe history has been cleared to prevent further errors.", () -> {
                 history.clear();
                 undoHistory.clear();
-            }));
+            });
         }
         tag.modified = true;
     }
@@ -325,11 +319,11 @@ public class MainWindow extends Window {
             if (ImGui.beginMenu("Diff")) {
                 if (ImGui.menuItem("Select Left", "", this.leftDiff != null, this.hasTag())) {
                     if (this.hasTag()) this.leftDiff = this.tags.get(this.openTab).tag;
-                    else this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
+                    else this.drawer.showNotification(NotificationLevel.ERROR, "Error", ERROR_REQUIRE_TAG);
                 }
                 if (ImGui.menuItem("Select Right", "", this.rightDiff != null, this.hasTag())) {
                     if (this.hasTag()) this.rightDiff = this.tags.get(this.openTab).tag;
-                    else this.drawer.openPopup(new MessagePopup("Error", ERROR_REQUIRE_TAG, close(this.drawer)));
+                    else this.drawer.showNotification(NotificationLevel.ERROR, "Error", ERROR_REQUIRE_TAG);
                 }
                 if (ImGui.menuItem("Diff", null, false, this.leftDiff != null && this.rightDiff != null)) {
                     this.drawer.getDiffWindow().diff(this.leftDiff, this.rightDiff);
@@ -439,7 +433,7 @@ public class MainWindow extends Window {
             data = fis.readAllBytes();
         } catch (Throwable t) {
             t.printStackTrace();
-            this.drawer.openPopup(new MessagePopup("Error", ERROR_OPEN, close(this.drawer)));
+            this.drawer.showNotification(NotificationLevel.ERROR, "Error", ERROR_OPEN);
             return;
         }
         this.open(data, file.getName(), file.getAbsolutePath());
@@ -513,13 +507,13 @@ public class MainWindow extends Window {
                         this.tags.add(readTag);
                     }
                     if (bais.available() > 0) {
-                        this.drawer.openPopup(new MessagePopup("Warning", String.format(WARNING_UNREAD_BYTES, DECIMAL_FORMAT.format(bais.available())), close(this.drawer)));
+                        this.drawer.showNotification(NotificationLevel.WARNING, "Warning", String.format(WARNING_UNREAD_BYTES, DECIMAL_FORMAT.format(bais.available())), this.drawer::closePopup);
                     } else {
                         this.drawer.closePopup();
                     }
                 } catch (Throwable t) {
                     t.printStackTrace();
-                    this.drawer.openPopup(new MessagePopup("Error", ERROR_OPEN, close(this.drawer)));
+                    this.drawer.showNotification(NotificationLevel.ERROR, "Error", ERROR_OPEN, this.drawer::closePopup);
                 }
             } else {
                 this.drawer.closePopup();
@@ -559,11 +553,11 @@ public class MainWindow extends Window {
                 tag.fileName = file.substring(file.lastIndexOf(File.separatorChar) + 1);
                 tag.filePath = file;
                 tag.modified = false;
-                this.drawer.openPopup(new MessagePopup("Success", SUCCESS_SAVE, close(this.drawer)));
+                this.drawer.showNotification(NotificationLevel.INFO, "Success", SUCCESS_SAVE, this.drawer::closePopup);
             }
         } catch (Throwable t) {
             t.printStackTrace();
-            this.drawer.openPopup(new MessagePopup("Error", ERROR_SAVE, close(this.drawer)));
+            this.drawer.showNotification(NotificationLevel.ERROR, "Error", ERROR_SAVE, this.drawer::closePopup);
         }
     }
 

@@ -10,11 +10,13 @@ import net.lenni0451.imnbt.application.clipboard.NbtClipboardContent;
 import net.lenni0451.imnbt.application.clipboard.NbtDataFlavor;
 import net.lenni0451.imnbt.application.utils.FileDialogs;
 import net.lenni0451.imnbt.application.utils.ImageUtils;
+import net.lenni0451.imnbt.ui.popups.MessagePopup;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
 import net.lenni0451.imnbt.ui.windows.DiffWindow;
 import net.lenni0451.imnbt.ui.windows.MainWindow;
+import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
@@ -56,6 +58,15 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
     @Override
     public void openPopup(final @Nonnull Popup<?> popup) {
         this.popup = popup;
+    }
+
+    @Override
+    public void showNotification(NotificationLevel level, String title, String message, Runnable callback) {
+        Popup<?> oldPopup = this.popup;
+        this.openPopup(new MessagePopup(title, message, (popup, success) -> {
+            this.openPopup(oldPopup);
+            callback.run();
+        }));
     }
 
     @Override
