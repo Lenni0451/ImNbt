@@ -4,17 +4,19 @@ import com.google.common.io.LittleEndianDataInputStream;
 import com.google.common.io.LittleEndianDataOutputStream;
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.ThrowingFunction;
+import net.lenni0451.imnbt.utils.stream.LittleEndianDataInput;
+import net.lenni0451.imnbt.utils.stream.LittleEndianDataOutput;
 
 import java.io.*;
 
 /**
  * The endian type of the Nbt tag.
  */
-@SuppressWarnings("UnstableApiUsage")
 public enum EndianType {
 
     BIG_ENDIAN(DataInputStream::new, DataOutputStream::new),
-    LITTLE_ENDIAN(LittleEndianDataInputStream::new, LittleEndianDataOutputStream::new);
+    LITTLE_ENDIAN(LittleEndianDataInput::new, LittleEndianDataOutput::new),
+    GUAVA_LITTLE_ENDIAN(LittleEndianDataInputStream::new, LittleEndianDataOutputStream::new);
 
 
     public static final String[] NAMES = new String[values().length];

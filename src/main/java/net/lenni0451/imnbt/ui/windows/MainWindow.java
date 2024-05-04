@@ -10,7 +10,6 @@ import imgui.type.ImString;
 import net.lenni0451.imnbt.FontHandler;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
-import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
@@ -21,7 +20,10 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
-import net.lenni0451.imnbt.utils.*;
+import net.lenni0451.imnbt.utils.CollectionUtils;
+import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.NumberUtils;
+import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
 import net.lenni0451.imnbt.utils.nbt.TagVisitor;
 import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
@@ -452,15 +454,10 @@ public class MainWindow extends Window {
             if (success) {
                 try {
                     ByteArrayInputStream bais = new ByteArrayInputStream(data);
-                    DataInput dataInput;
+                    DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(bais));
                     if (p.getTagSettings().bedrockLevelDat) {
-                        InputStream compressed = p.getTagSettings().compressionType.wrap(bais);
-                        if (EndianType.BIG_ENDIAN.equals(p.getTagSettings().endianType)) dataInput = new DataInputStream(compressed);
-                        else dataInput = new LittleEndianDataInputStream(compressed);
                         dataInput.readInt(); //Version
                         dataInput.readInt(); //Data length
-                    } else {
-                        dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(bais));
                     }
                     NamedTag namedTag;
                     if (p.getTagSettings().namelessRoot) {
