@@ -10,6 +10,8 @@ import imgui.type.ImString;
 import net.lenni0451.imnbt.FontHandler;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
+import net.lenni0451.imnbt.types.formats.ICustomFormat;
+import net.lenni0451.imnbt.types.formats.NoneFormat;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
@@ -455,10 +457,8 @@ public class MainWindow extends Window {
                 try {
                     ByteArrayInputStream bais = new ByteArrayInputStream(data);
                     DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(bais));
-                    if (p.getTagSettings().bedrockLevelDat) {
-                        dataInput.readInt(); //Version
-                        dataInput.readInt(); //Data length
-                    }
+                    ICustomFormat customFormat = p.getTagSettings().customFormatType.createFormat();
+                    dataInput = customFormat.read(dataInput);
                     NamedTag namedTag;
                     if (p.getTagSettings().namelessRoot) {
                         INbtTag namelessTag = p.getTagSettings().formatType.getNbtIO().readUnnamed(dataInput, UnlimitedReadTracker.INSTANCE);
@@ -487,6 +487,7 @@ public class MainWindow extends Window {
                     }
                     if (tag != null && tag.tag == null) {
                         tag.settings = p.getTagSettings();
+                        tag.customFormat = customFormat;
                         if (namedTag == null) {
                             tag.tag = null;
                         } else {
@@ -496,12 +497,14 @@ public class MainWindow extends Window {
                         tag.fileName = fileName;
                         tag.filePath = filePath;
                         tag.modified = false;
+                        tag.history.clear();
+                        tag.undoHistory.clear();
                     } else {
                         Tag readTag;
                         if (namedTag == null) {
-                            readTag = new Tag(p.getTagSettings(), null);
+                            readTag = new Tag(p.getTagSettings(), customFormat, null);
                         } else {
-                            readTag = new Tag(p.getTagSettings(), namedTag.getTag());
+                            readTag = new Tag(p.getTagSettings(), customFormat, namedTag.getTag());
                             readTag.settings.rootName = namedTag.getName();
                         }
                         readTag.fileName = fileName;
@@ -540,15 +543,19 @@ public class MainWindow extends Window {
 
     private void writeFile(final Tag tag, final String file) {
         try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutput baosOut = tag.settings.endianType.wrap(baos);
+            if (tag.settings.namelessRoot) {
+                tag.settings.formatType.getNbtIO().writeUnnamed(baosOut, tag.tag);
+            } else {
+                tag.settings.formatType.getNbtIO().write(baosOut, tag.settings.rootName, tag.tag);
+            }
+
             FileOutputStream fos = new FileOutputStream(file);
             OutputStream os = tag.settings.compressionType.wrap(fos);
             try (os) {
                 DataOutput dataOutput = tag.settings.endianType.wrap(os);
-                if (tag.settings.namelessRoot) {
-                    tag.settings.formatType.getNbtIO().writeUnnamed(dataOutput, tag.tag);
-                } else {
-                    tag.settings.formatType.getNbtIO().write(dataOutput, tag.settings.rootName, tag.tag);
-                }
+                tag.customFormat.write(dataOutput, baos.toByteArray());
                 tag.fileName = file.substring(file.lastIndexOf(File.separatorChar) + 1);
                 tag.filePath = file;
                 tag.modified = false;
@@ -596,6 +603,7 @@ public class MainWindow extends Window {
     private static class Tag {
         private final String uuid = UUID.randomUUID().toString();
         private TagSettings settings;
+        private ICustomFormat customFormat;
         @Nullable
         private INbtTag tag;
         private String fileName;
@@ -605,11 +613,12 @@ public class MainWindow extends Window {
         private final List<Object> undoHistory;
 
         private Tag(final INbtTag tag) {
-            this(new TagSettings(), tag);
+            this(new TagSettings(), new NoneFormat(), tag);
         }
 
-        private Tag(final TagSettings settings, @Nullable final INbtTag tag) {
+        private Tag(final TagSettings settings, final ICustomFormat customFormat, @Nullable final INbtTag tag) {
             this.settings = settings;
+            this.customFormat = customFormat;
             this.tag = tag;
             this.modified = true;
             this.history = new ArrayList<>();

@@ -1,6 +1,7 @@
 package net.lenni0451.imnbt;
 
 import net.lenni0451.imnbt.types.CompressionType;
+import net.lenni0451.imnbt.types.CustomFormatType;
 import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 
@@ -27,6 +28,10 @@ public class TagSettings {
      */
     public CompressionType compressionType = CompressionType.NO_COMPRESSION;
     /**
+     * The current format type of the tag.
+     */
+    public CustomFormatType customFormatType = CustomFormatType.NONE;
+    /**
      * Minecraft 1.20.2 introduced a new tag type without a name.<br>
      * This is only used in networking.
      */
@@ -36,10 +41,5 @@ public class TagSettings {
      * This is only used when reading a tag.
      */
     public boolean readExtraData = false;
-    /**
-     * The .dat file format used by Minecraft Bedrock Edition.<br>
-     * Little endian, no compression, 8 byte header (version + length)
-     */
-    public boolean bedrockLevelDat = false;
 
 }

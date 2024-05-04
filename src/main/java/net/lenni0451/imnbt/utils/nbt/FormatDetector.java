@@ -1,6 +1,7 @@
 package net.lenni0451.imnbt.utils.nbt;
 
 import net.lenni0451.imnbt.types.CompressionType;
+import net.lenni0451.imnbt.types.CustomFormatType;
 import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 
@@ -21,17 +22,15 @@ public class FormatDetector {
     private CompressionType compressionType = CompressionType.NO_COMPRESSION;
     private EndianType endianType = EndianType.BIG_ENDIAN;
     private FormatType formatType = FormatType.BEDROCK;
-    private boolean bedrockLevelDat = false;
+    private CustomFormatType customFormatType = CustomFormatType.NONE;
 
     public FormatDetector(final byte[] data) {
         this.data = data;
 
         this.detectCompression();
-        this.detectBedrockLevelDat();
-        if (!this.bedrockLevelDat) {
-//        this.detectEndian();
-            this.detectFormat();
-        }
+        this.detectFormat();
+        //this.detectEndian();
+        this.detectCustomFormat();
     }
 
     public CompressionType getCompressionType() {
@@ -46,8 +45,8 @@ public class FormatDetector {
         return this.formatType;
     }
 
-    public boolean isBedrockLevelDat() {
-        return this.bedrockLevelDat;
+    public CustomFormatType getCustomFormatType() {
+        return this.customFormatType;
     }
 
     /**
@@ -88,18 +87,20 @@ public class FormatDetector {
     }
 
     /**
-     * Detect the bedrock level.dat format by checking the length header of the file.
+     * Detect custom formats.
      */
-    private void detectBedrockLevelDat() {
-        try {
-            if (this.data.length < 8) return;
-            long length = (long) (this.data[4] & 255) | (long) (this.data[5] & 255) << 8 | (long) (this.data[6] & 255) << 16 | (long) (this.data[7] & 255) << 24;
-            if (length != this.data.length - 8) return;
-
-            this.endianType = EndianType.LITTLE_ENDIAN;
-            this.formatType = FormatType.JAVA;
-            this.bedrockLevelDat = true;
-        } catch (Throwable ignored) {
+    private void detectCustomFormat() {
+        for (CustomFormatType customFormat : CustomFormatType.values()) {
+            if (customFormat.createFormat().detect(this.data)) {
+                this.customFormatType = customFormat;
+                for (Enum<?> setting : customFormat.getDefaultSettings()) {
+                    if (setting instanceof CompressionType) this.compressionType = (CompressionType) setting;
+                    else if (setting instanceof EndianType) this.endianType = (EndianType) setting;
+                    else if (setting instanceof FormatType) this.formatType = (FormatType) setting;
+                    else System.out.println("Unknown setting: " + setting);
+                }
+                break;
+            }
         }
     }
 

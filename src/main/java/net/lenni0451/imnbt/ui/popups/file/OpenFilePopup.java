@@ -6,6 +6,7 @@ import imgui.type.ImInt;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
 import net.lenni0451.imnbt.types.CompressionType;
+import net.lenni0451.imnbt.types.CustomFormatType;
 import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.ui.types.Popup;
@@ -20,9 +21,9 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
     private final ImInt selectedFormat;
     private final ImInt selectedEndian;
     private final ImInt selectedCompression;
+    private final ImInt customFormatType;
     private final ImBoolean namelessRoot;
     private final ImBoolean readExtraData;
-    private final ImBoolean bedrockLevelDat;
 
     public OpenFilePopup(final byte[] data, final PopupCallback<OpenFilePopup> callback) {
         super("Open Nbt Tag", callback);
@@ -32,14 +33,14 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         this.tagSettings.compressionType = detector.getCompressionType();
         this.tagSettings.endianType = detector.getEndianType();
         this.tagSettings.formatType = detector.getFormatType();
-        this.tagSettings.bedrockLevelDat = detector.isBedrockLevelDat();
+        this.tagSettings.customFormatType = detector.getCustomFormatType();
 
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
         this.selectedEndian = new ImInt(this.tagSettings.endianType.ordinal());
         this.selectedCompression = new ImInt(this.tagSettings.compressionType.ordinal());
+        this.customFormatType = new ImInt(this.tagSettings.customFormatType.ordinal());
         this.namelessRoot = new ImBoolean(this.tagSettings.namelessRoot);
         this.readExtraData = new ImBoolean(this.tagSettings.readExtraData);
-        this.bedrockLevelDat = new ImBoolean(this.tagSettings.bedrockLevelDat);
     }
 
     public TagSettings getTagSettings() {
@@ -57,14 +58,14 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         if (ImGui.combo("##Compression", this.selectedCompression, CompressionType.NAMES)) {
             this.tagSettings.compressionType = CompressionType.values()[this.selectedCompression.get()];
         }
+        if (ImGui.combo("##CustomFormat", this.customFormatType, CustomFormatType.NAMES)) {
+            this.tagSettings.customFormatType = CustomFormatType.values()[this.customFormatType.get()];
+        }
         if (ImGui.checkbox("Nameless root tag", this.namelessRoot)) {
             this.tagSettings.namelessRoot = this.namelessRoot.get();
         }
         if (ImGui.checkbox("Read Extra Data", this.readExtraData)) {
             this.tagSettings.readExtraData = this.readExtraData.get();
-        }
-        if (ImGui.checkbox("Bedrock Level .dat", this.bedrockLevelDat)) {
-            this.tagSettings.bedrockLevelDat = this.bedrockLevelDat.get();
         }
 
         ImGui.separator();
