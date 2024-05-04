@@ -35,10 +35,10 @@ public class SNbtParserPopup extends Popup<SNbtParserPopup> {
         ImGui.inputText("Input", this.input);
 
         if (ImGui.button("Parse")) {
-            this.close();
             try {
                 this.parsedTag = SERIALIZERS.get("V" + SERIALIZER_NAMES[this.selectedVersion.get()].replace('.', '_')).deserialize(this.input.get());
                 this.getCallback().onClose(this, true);
+                this.close();
             } catch (Throwable t) {
                 drawer.showNotification(NotificationLevel.ERROR, "Error", t.getMessage());
             }
