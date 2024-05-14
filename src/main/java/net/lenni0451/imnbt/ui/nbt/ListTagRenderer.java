@@ -8,6 +8,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.NotificationLevel;
+import net.lenni0451.imnbt.utils.nbt.TagSorter;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
@@ -64,6 +65,7 @@ public class ListTagRenderer implements TagRenderer {
                             }
                         })
                         .transform(TagTransformer.transform(drawer, name, listTag, transformListener), TagTransformer.LIST_TRANSFORMS)
+                        .sort(() -> TagSorter.sort(listTag))
                         .delete(deleteListener)
                         .sNbtParser(() -> tag)
                         .render();

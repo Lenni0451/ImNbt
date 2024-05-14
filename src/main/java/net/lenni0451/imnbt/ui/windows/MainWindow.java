@@ -21,7 +21,11 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
-import net.lenni0451.imnbt.utils.*;
+import net.lenni0451.imnbt.utils.Color;
+import net.lenni0451.imnbt.utils.NotificationLevel;
+import net.lenni0451.imnbt.utils.NumberUtils;
+import net.lenni0451.imnbt.utils.StringUtils;
+import net.lenni0451.imnbt.utils.nbt.TagSorter;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
 import net.lenni0451.imnbt.utils.nbt.TagVisitor;
 import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
@@ -232,24 +236,25 @@ public class MainWindow extends Window {
                         Tag rootTag = this.tags.get(this.openTab);
                         TagVisitor.visit(rootTag.tag, tag -> {
                             if (tag instanceof FloatTag floatTag) {
+                                rootTag.history.add(rootTag.tag.copy());
+                                rootTag.undoHistory.clear();
                                 floatTag.setValue(NumberUtils.round(floatTag.getValue(), decimalPlaces));
                                 rootTag.modified = true;
                             } else if (tag instanceof DoubleTag doubleTag) {
+                                rootTag.history.add(rootTag.tag.copy());
+                                rootTag.undoHistory.clear();
                                 doubleTag.setValue(NumberUtils.round(doubleTag.getValue(), decimalPlaces));
                                 rootTag.modified = true;
                             }
                         });
                     }, close(this.drawer)));
                 }
-                if (ImGui.menuItem("Sort Compound Tags", null, false, this.hasTag())) {
+                if (ImGui.menuItem("Sort List/Compound Tags", null, false, this.hasTag())) {
                     Tag rootTag = this.tags.get(this.openTab);
-                    TagVisitor.visit(rootTag.tag, tag -> {
-                        if (tag instanceof CompoundTag compound) {
-                            Map<String, INbtTag> entries = compound.getValue();
-                            compound.setValue(CollectionUtils.sort(entries, Map.Entry.comparingByKey(String::compareToIgnoreCase)));
-                            rootTag.modified = true;
-                        }
-                    });
+                    rootTag.history.add(rootTag.tag.copy());
+                    rootTag.undoHistory.clear();
+                    rootTag.modified = true;
+                    TagVisitor.visit(rootTag.tag, TagSorter::sort);
                 }
 
                 ImGui.endMenu();
