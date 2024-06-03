@@ -16,7 +16,7 @@ dependencies {
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
     include project(":")
-    include "com.google.guava:guava:33.2.0-jre"
+    include "com.google.guava:guava:33.2.1-jre"
     include "net.lenni0451.mcstructs:nbt:2.4.2"
     include "net.lenni0451.mcstructs:snbt:2.4.2"
     include("net.lenni0451.mcstructs-bedrock:nbt:1.2.0") {
