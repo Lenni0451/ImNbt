@@ -54,7 +54,6 @@ public class MainWindow extends Window {
     private static final String SUCCESS_SAVE = "Successfully saved the Nbt Tag.";
     private static final String ERROR_OPEN = "An unknown error occurred while opening the Nbt Tag.";
     private static final String ERROR_SAVE = "An unknown error occurred while saving the Nbt Tag.";
-    private static final String REQUIRE_BOTH_DIFF_TAGS = "You need to select two Nbt Tags to compare them.";
     private static final String WARNING_UNREAD_BYTES = "After reading the Nbt Tag there are still %s unread bytes left.\nTry enabling 'Read extra data' if there are more tags in the file.";
 
     private final FontHandler fontHandler;
