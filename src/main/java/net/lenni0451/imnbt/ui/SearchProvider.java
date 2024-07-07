@@ -43,6 +43,13 @@ public class SearchProvider {
     }
 
     /**
+     * @return The current search string
+     */
+    public String getSearch() {
+        return this.search;
+    }
+
+    /**
      * Set the current search string.<br>
      * This does not refresh the search, use {@link #refreshSearch()} for that.
      *

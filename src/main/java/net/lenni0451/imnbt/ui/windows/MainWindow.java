@@ -4,7 +4,7 @@ import imgui.ImFont;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiKey;
 import imgui.flag.ImGuiTabItemFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
@@ -282,18 +282,19 @@ public class MainWindow extends Window {
                     this.highlightSearch = false;
                     ImGui.setKeyboardFocusHere();
                 }
-                if (ImGui.inputText("Search", this.searchText, ImGuiInputTextFlags.EnterReturnsTrue)) {
-                    this.searchProvider.setSearch(this.searchText.get());
+                ImGui.inputText("Search", this.searchText);
+                if (ImGui.isKeyPressed(ImGui.getKeyIndex(ImGuiKey.Enter))) {
                     this.highlightSearch = true;
                 }
-                if (ImGui.isItemDeactivatedAfterEdit()) {
+                if (ImGui.isItemDeactivated() && !this.searchProvider.getSearch().equals(this.searchText.get())) {
+                    this.searchProvider.setSearch(this.searchText.get());
                     this.searchModified = true;
                 }
                 if (ImGui.button("Previous")) {
                     this.searchProvider.setDoScroll(SearchProvider.SearchDirection.PREVIOUS);
                 }
                 ImGui.sameLine();
-                if (ImGui.button("Next") || this.highlightSearch/*Enter was pressed*/) {
+                if (ImGui.button("Next") || ImGui.isKeyPressed(ImGui.getKeyIndex(ImGuiKey.Enter))) {
                     this.searchProvider.setDoScroll(SearchProvider.SearchDirection.NEXT);
                 }
                 ImGui.sameLine();
