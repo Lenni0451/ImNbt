@@ -199,11 +199,9 @@ public class MainWindow extends Window {
                 if (ImGui.menuItem("Save As", null, false, this.hasTag())) {
                     this.saveFile();
                 }
-                if (ImGui.menuItem("Close")) {
-                    if (!this.tags.isEmpty()) {
-                        this.tags.remove(this.openTab);
-                        this.openTab--;
-                    }
+                if (ImGui.menuItem("Close", null, false, !this.tags.isEmpty())) {
+                    this.tags.remove(this.openTab);
+                    this.openTab--;
                 }
                 if (ImGui.beginMenu("New Root Tag")) {
                     this.newRootTag();
