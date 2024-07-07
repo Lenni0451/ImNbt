@@ -4,6 +4,7 @@ import imgui.ImFont;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiTabItemFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
@@ -193,7 +194,6 @@ public class MainWindow extends Window {
 
     @Override
     public void render() {
-        boolean searchDeactivated = false;
         if (ImGui.beginMenuBar()) {
             if (ImGui.beginMenu("File")) {
                 if (ImGui.menuItem("Open")) {
@@ -276,22 +276,24 @@ public class MainWindow extends Window {
 
                 ImGui.endMenu();
             }
-            if (this.highlightSearch) ImGui.openPopup("Search");
+            if (this.highlightSearch && !ImGui.isPopupOpen("Search")) ImGui.openPopup("Search");
             if (ImGui.beginMenu("Search")) {
                 if (this.highlightSearch) {
                     this.highlightSearch = false;
                     ImGui.setKeyboardFocusHere();
                 }
-                if (ImGui.inputText("Search", this.searchText)) {
+                if (ImGui.inputText("Search", this.searchText, ImGuiInputTextFlags.EnterReturnsTrue)) {
                     this.searchProvider.setSearch(this.searchText.get());
+                    this.highlightSearch = true;
+                }
+                if (ImGui.isItemDeactivatedAfterEdit()) {
                     this.searchModified = true;
                 }
-                searchDeactivated = ImGui.isItemDeactivated();
                 if (ImGui.button("Previous")) {
                     this.searchProvider.setDoScroll(SearchProvider.SearchDirection.PREVIOUS);
                 }
                 ImGui.sameLine();
-                if (ImGui.button("Next")) {
+                if (ImGui.button("Next") || this.highlightSearch/*Enter was pressed*/) {
                     this.searchProvider.setDoScroll(SearchProvider.SearchDirection.NEXT);
                 }
                 ImGui.sameLine();
@@ -363,7 +365,7 @@ public class MainWindow extends Window {
 
             ImGui.endMenuBar();
         }
-        if (this.searchModified && searchDeactivated) {
+        if (this.searchModified) {
             this.searchModified = false;
 
             Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
