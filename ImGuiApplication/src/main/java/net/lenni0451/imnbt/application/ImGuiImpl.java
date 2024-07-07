@@ -195,7 +195,9 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
         this.window.render();
         if (this.window instanceof MainWindow) {
             if (KeyboardHelper.isCtrlPressed()) {
-                if (ImGui.isKeyPressed(KeyboardHelper.KEY_Z)) {
+                if (ImGui.isKeyPressed(KeyboardHelper.KEY_F)) {
+                    this.mainWindow.highlightSearch();
+                } else if (ImGui.isKeyPressed(KeyboardHelper.KEY_Z)) {
                     this.mainWindow.undo();
                 } else if (ImGui.isKeyPressed(KeyboardHelper.KEY_Y)) {
                     this.mainWindow.redo();

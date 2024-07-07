@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeyboardHelper {
 
+    public static final int KEY_F;
     public static final int KEY_S;
     public static final int KEY_Y;
     public static final int KEY_Z;
@@ -12,6 +13,7 @@ public class KeyboardHelper {
     public static final int KEY_CTRL_RIGHT = GLFW.GLFW_KEY_RIGHT_CONTROL;
 
     static {
+        KEY_F = guessKey("F", GLFW.GLFW_KEY_F);
         KEY_S = guessKey("S", GLFW.GLFW_KEY_S);
         KEY_Y = guessKey("Y", GLFW.GLFW_KEY_Y, GLFW.GLFW_KEY_Z);
         KEY_Z = guessKey("Z", GLFW.GLFW_KEY_Y, GLFW.GLFW_KEY_Z);

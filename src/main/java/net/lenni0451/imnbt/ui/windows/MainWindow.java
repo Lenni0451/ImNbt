@@ -62,6 +62,7 @@ public class MainWindow extends Window {
     private final SearchProvider searchProvider = new SearchProvider(this.drawer);
     private final ImString searchText = new ImString(1024);
     private boolean searchModified = false;
+    private boolean highlightSearch = false;
     private int openTab;
     private INbtTag leftDiff;
     private INbtTag rightDiff;
@@ -93,6 +94,13 @@ public class MainWindow extends Window {
     public INbtTag[] getTabs() {
         if (this.tags.isEmpty()) return new INbtTag[0];
         return this.tags.stream().map(tag -> tag.tag).toArray(INbtTag[]::new);
+    }
+
+    /**
+     * Highlight the search box.
+     */
+    public void highlightSearch() {
+        this.highlightSearch = true;
     }
 
     /**
@@ -269,7 +277,12 @@ public class MainWindow extends Window {
 
                 ImGui.endMenu();
             }
+            if (this.highlightSearch) ImGui.openPopup("Search");
             if (ImGui.beginMenu("Search")) {
+                if (this.highlightSearch) {
+                    this.highlightSearch = false;
+                    ImGui.setKeyboardFocusHere();
+                }
                 if (ImGui.inputText("Search", this.searchText)) {
                     this.searchProvider.setSearch(this.searchText.get());
                     this.searchModified = true;
