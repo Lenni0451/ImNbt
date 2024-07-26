@@ -41,7 +41,7 @@ dependencies {
     api "com.google.guava:guava:33.2.1-jre"
     api "net.lenni0451.mcstructs:nbt:2.5.1"
     api "net.lenni0451.mcstructs:snbt:2.5.1"
-    api "net.lenni0451.mcstructs-bedrock:nbt:1.2.0"
+    api "net.lenni0451.mcstructs-bedrock:nbt:1.2.1"
 }
 
 java {
