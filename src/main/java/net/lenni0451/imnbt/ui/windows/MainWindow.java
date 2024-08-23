@@ -283,7 +283,7 @@ public class MainWindow extends Window {
                     ImGui.setKeyboardFocusHere();
                 }
                 ImGui.inputText("Search", this.searchText);
-                if (ImGui.isKeyPressed(ImGui.getKeyIndex(ImGuiKey.Enter))) {
+                if (ImGui.isKeyPressed(ImGuiKey.Enter)) {
                     this.highlightSearch = true;
                 }
                 if (ImGui.isItemDeactivated() && !this.searchProvider.getSearch().equals(this.searchText.get())) {
@@ -294,7 +294,7 @@ public class MainWindow extends Window {
                     this.searchProvider.setDoScroll(SearchProvider.SearchDirection.PREVIOUS);
                 }
                 ImGui.sameLine();
-                if (ImGui.button("Next") || ImGui.isKeyPressed(ImGui.getKeyIndex(ImGuiKey.Enter))) {
+                if (ImGui.button("Next") || ImGui.isKeyPressed(ImGuiKey.Enter)) {
                     this.searchProvider.setDoScroll(SearchProvider.SearchDirection.NEXT);
                 }
                 ImGui.sameLine();
