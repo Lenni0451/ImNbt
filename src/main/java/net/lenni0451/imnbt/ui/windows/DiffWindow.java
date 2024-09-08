@@ -48,7 +48,7 @@ public class DiffWindow extends Window {
 
                 Color color = value.getColor();
                 if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
-                ImGui.text(StringUtils.format(value));
+                ImGui.textUnformatted(StringUtils.format(value));
                 if (color != null) ImGui.popStyleColor();
             }
 

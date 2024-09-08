@@ -79,7 +79,7 @@ public class ListTagRenderer implements TagRenderer {
                     this.renderEntry(drawer, listTag, listTag.get(i), i, removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
-                ImGui.text("Page");
+                ImGui.textUnformatted("Page");
                 ImGui.sameLine();
                 ImGui.setNextItemWidth(-1);
                 int[] page = this.pageCache.computeIfAbsent(path, p -> new int[]{1});

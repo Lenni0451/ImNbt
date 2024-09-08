@@ -19,7 +19,7 @@ public class MessagePopup extends Popup<MessagePopup> {
 
     @Override
     protected void renderContent(ImNbtDrawer drawer) {
-        ImGui.text(this.message);
+        ImGui.textUnformatted(this.message);
         ImGui.separator();
         if (ImGui.button("Ok")) {
             this.close();

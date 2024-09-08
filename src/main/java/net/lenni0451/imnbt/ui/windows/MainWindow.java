@@ -305,7 +305,7 @@ public class MainWindow extends Window {
                         s += "/";
                     }
                     s += this.searchProvider.getPathCount();
-                    ImGui.text(s);
+                    ImGui.textUnformatted(s);
                 }
 
                 ImGui.endMenu();
@@ -351,7 +351,7 @@ public class MainWindow extends Window {
                     for (DiffType value : DiffType.values()) {
                         Color color = value.getColor();
                         if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
-                        ImGui.text(StringUtils.format(value));
+                        ImGui.textUnformatted(StringUtils.format(value));
                         if (color != null) ImGui.popStyleColor();
                     }
 
@@ -374,7 +374,7 @@ public class MainWindow extends Window {
         }
 
         if (this.tags.isEmpty()) {
-            ImGui.text("No Nbt Tags loaded");
+            ImGui.textUnformatted("No Nbt Tags loaded");
         } else {
             if (ImGui.beginTabBar("##Tags")) {
                 for (int i = 0; i < this.tags.size(); i++) {
@@ -389,7 +389,7 @@ public class MainWindow extends Window {
                     if (ImGui.beginTabItem(tabName + "###" + tag.uuid, open, tabFlags)) {
                         this.openTab = i;
                         if (tag.tag == null) {
-                            ImGui.text("No Nbt Tag present");
+                            ImGui.textUnformatted("No Nbt Tag present");
                         } else {
                             ImGui.beginChild("##NbtTree");
                             NbtTreeRenderer.render(drawer, newName -> {

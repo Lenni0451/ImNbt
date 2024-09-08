@@ -19,7 +19,7 @@ public class YesNoPopup extends Popup<YesNoPopup> {
 
     @Override
     protected void renderContent(ImNbtDrawer drawer) {
-        ImGui.text(this.message);
+        ImGui.textUnformatted(this.message);
         ImGui.separator();
         if (ImGui.button("Yes")) {
             this.close();

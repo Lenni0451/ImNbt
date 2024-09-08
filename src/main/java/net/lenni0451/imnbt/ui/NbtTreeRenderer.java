@@ -66,7 +66,7 @@ public class NbtTreeRenderer {
      */
     public static void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final BiConsumer<String, INbtTag> transformListener, final Runnable deleteListener, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, final INbtTag tag) {
         TagRenderer renderer = TAG_RENDERER.get(tag.getNbtType());
-        if (renderer == null) ImGui.text("Missing renderer for tag type: " + tag.getNbtType().name());
+        if (renderer == null) ImGui.textUnformatted("Missing renderer for tag type: " + tag.getNbtType().name());
         else renderer.render(drawer, nameEditConsumer, transformListener, deleteListener, modificationListener, colorProvider, searchProvider, openContextMenu, path, name, tag);
     }
 

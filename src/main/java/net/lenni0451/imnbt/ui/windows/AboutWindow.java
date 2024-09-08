@@ -35,44 +35,44 @@ public class AboutWindow extends Window {
             ImGui.endMenuBar();
         }
 
-        ImGui.text("ImNbt by Lenni0451");
-        ImGui.text("Version: ${version}");
+        ImGui.textUnformatted("ImNbt by Lenni0451");
+        ImGui.textUnformatted("Version: ${version}");
         ImGui.separator();
-        ImGui.text("Open Source Licenses");
+        ImGui.textUnformatted("Open Source Licenses");
         if (ImGui.treeNodeEx("Guava", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.GUAVA);
+            ImGui.textUnformatted(Licenses.GUAVA);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("ImGui", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.IMGUI);
+            ImGui.textUnformatted(Licenses.IMGUI);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("ImGui-Java", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.IMGUI_JAVA);
+            ImGui.textUnformatted(Licenses.IMGUI_JAVA);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("ImNbt", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.IMNBT);
+            ImGui.textUnformatted(Licenses.IMNBT);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("LWJGL", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.LWJGL);
+            ImGui.textUnformatted(Licenses.LWJGL);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("MCStructs", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.MCSTRUCTS);
+            ImGui.textUnformatted(Licenses.MCSTRUCTS);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("MCStructs-Bedrock", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.MCSTRUCTS_BEDROCK);
+            ImGui.textUnformatted(Licenses.MCSTRUCTS_BEDROCK);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("OpenSans Regular", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.OPENSANS);
+            ImGui.textUnformatted(Licenses.OPENSANS);
             ImGui.treePop();
         }
         if (ImGui.treeNodeEx("PNGDecoder", ImGuiTreeNodeFlags.SpanAvailWidth)) {
-            ImGui.text(Licenses.PNGDECODER);
+            ImGui.textUnformatted(Licenses.PNGDECODER);
             ImGui.treePop();
         }
     }

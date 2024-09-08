@@ -59,7 +59,7 @@ public class ImGuiNumberPicker {
             value = this.increment(value);
         }
         ImGui.sameLine();
-        ImGui.text("Value");
+        ImGui.textUnformatted("Value");
         return value;
     }
 

@@ -29,7 +29,7 @@ public class IntegerInputPopup extends Popup<IntegerInputPopup> {
 
     @Override
     protected void renderContent(ImNbtDrawer drawer) {
-        ImGui.text(this.message);
+        ImGui.textUnformatted(this.message);
         ImGui.sliderInt("##Value", this.value, this.minValue, this.maxValue);
         if (ImGui.button("Ok")) {
             this.close();

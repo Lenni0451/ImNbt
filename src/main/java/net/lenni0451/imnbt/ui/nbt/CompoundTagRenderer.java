@@ -64,7 +64,7 @@ public class CompoundTagRenderer implements TagRenderer {
                     this.renderEntry(drawer, compoundTag, entry.getKey(), entry.getValue(), removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
-                ImGui.text("Page");
+                ImGui.textUnformatted("Page");
                 ImGui.sameLine();
                 ImGui.setNextItemWidth(-1);
                 int[] page = this.pageCache.computeIfAbsent(path, p -> new int[]{1});
