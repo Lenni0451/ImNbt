@@ -37,7 +37,7 @@ sourceSets {
 
 dependencies {
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    api "io.github.spair:imgui-java-binding:1.87.2"
+    api "io.github.spair:imgui-java-binding:1.87.3"
     api "com.google.guava:guava:33.3.0-jre"
     api "net.lenni0451.mcstructs:nbt:2.5.1"
     api "net.lenni0451.mcstructs:snbt:2.5.1"
