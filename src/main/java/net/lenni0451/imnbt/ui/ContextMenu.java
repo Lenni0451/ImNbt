@@ -296,7 +296,7 @@ public class ContextMenu {
                         this.drawer.showNotification(NotificationLevel.ERROR, "Paste Error", "An unknown error occurred whilst\npasting the clipboard content!");
                     } else {
                         this.modificationListener.run();
-                        this.pasteAction.accept(tag.getName(), tag.getTag());
+                        this.pasteAction.accept(tag.getName(), tag.getTag().copy());
                     }
                 }
             }
