@@ -7,6 +7,7 @@ import net.lenni0451.imnbt.ui.popups.EditIndexedTagPopup;
 import net.lenni0451.imnbt.ui.popups.EditTagPopup;
 import net.lenni0451.imnbt.ui.popups.IntegerInputPopup;
 import net.lenni0451.imnbt.ui.popups.YesNoPopup;
+import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.StringUtils;
@@ -298,6 +299,22 @@ public class ContextMenu {
                         this.modificationListener.run();
                         this.pasteAction.accept(tag.getName(), tag.getTag().copy());
                     }
+                }
+                String clipboardString = ImGui.getClipboardText();
+                if (clipboardString != null && !clipboardString.isBlank() && ImGui.menuItem("Paste SNbt")) {
+                    this.drawer.openPopup(new SNbtParserPopup(clipboardString, (p, success) -> {
+                        if (success) {
+                            this.drawer.openPopup(new EditTagPopup("Edit deserialized SNbt", "Paste", "", p.getParsedTag(), (p2, success2) -> {
+                                if (success2) {
+                                    this.modificationListener.run();
+                                    this.pasteAction.accept(p2.getName(), p2.getTag());
+                                }
+                                this.drawer.closePopup();
+                            }));
+                        } else {
+                            this.drawer.closePopup();
+                        }
+                    }));
                 }
             }
             if (this.transformAction != null && this.transformTypes.length > 0) {

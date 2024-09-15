@@ -20,9 +20,10 @@ public class SNbtParserPopup extends Popup<SNbtParserPopup> {
     private final ImInt selectedVersion = new ImInt(SERIALIZER_NAMES.length - 1);
     private INbtTag parsedTag;
 
-    public SNbtParserPopup(final PopupCallback<SNbtParserPopup> callback) {
+    public SNbtParserPopup(final String snbt, final PopupCallback<SNbtParserPopup> callback) {
         super("SNbt Parser", callback);
         this.input.inputData.isResizable = true;
+        this.input.set(snbt);
     }
 
     public INbtTag getParsedTag() {

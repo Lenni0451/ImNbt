@@ -313,7 +313,7 @@ public class MainWindow extends Window {
             if (ImGui.beginMenu("SNbt")) {
                 if (ImGui.menuItem("SNbt Parser")) {
                     Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
-                    this.drawer.openPopup(new SNbtParserPopup((p, success) -> {
+                    this.drawer.openPopup(new SNbtParserPopup("", (p, success) -> {
                         if (success) {
                             if (tag != null && tag.tag == null) {
                                 tag.settings.rootName = "";
