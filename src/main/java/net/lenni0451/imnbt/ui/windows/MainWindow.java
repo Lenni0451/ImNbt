@@ -26,22 +26,23 @@ import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.StringUtils;
+import net.lenni0451.imnbt.utils.nbt.NbtReader;
+import net.lenni0451.imnbt.utils.nbt.ReadTrackers;
 import net.lenni0451.imnbt.utils.nbt.TagSorter;
-import net.lenni0451.imnbt.utils.nbt.TagUtils;
 import net.lenni0451.imnbt.utils.nbt.TagVisitor;
-import net.lenni0451.imnbt.utils.nbt.UnlimitedReadTracker;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
-import net.lenni0451.mcstructs.nbt.io.NamedTag;
-import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 import net.lenni0451.mcstructs.nbt.tags.DoubleTag;
 import net.lenni0451.mcstructs.nbt.tags.FloatTag;
 
 import javax.annotation.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static net.lenni0451.imnbt.ui.types.Popup.PopupCallback.close;
 
@@ -467,65 +468,32 @@ public class MainWindow extends Window {
         this.drawer.openPopup(new OpenFilePopup(data, (p, success) -> {
             if (success) {
                 try {
-                    ByteArrayInputStream bais = new ByteArrayInputStream(data);
-                    DataInput dataInput = p.getTagSettings().endianType.wrap(p.getTagSettings().compressionType.wrap(bais));
-                    ICustomFormat customFormat = p.getTagSettings().customFormatType.createFormat();
-                    dataInput = customFormat.read(dataInput);
-                    NamedTag namedTag;
-                    if (p.getTagSettings().namelessRoot) {
-                        INbtTag namelessTag = p.getTagSettings().formatType.getNbtIO().readUnnamed(dataInput, UnlimitedReadTracker.INSTANCE);
-                        if (namelessTag == null) namedTag = null;
-                        else namedTag = new NamedTag("", namelessTag.getNbtType(), namelessTag);
-                    } else {
-                        namedTag = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
-                    }
-                    if (bais.available() > 0 && p.getTagSettings().readExtraData) {
-                        CompoundTag extraCompound = new CompoundTag(new LinkedHashMap<>());
-                        NamedTag extraRoot = new NamedTag("extra data", NbtType.COMPOUND, extraCompound);
-                        if (namedTag != null) extraCompound.add(namedTag.getName(), namedTag.getTag());
-                        namedTag = extraRoot;
-
-                        while (bais.available() > 0) {
-                            if (p.getTagSettings().namelessRoot) {
-                                INbtTag extra = p.getTagSettings().formatType.getNbtIO().readUnnamed(dataInput, UnlimitedReadTracker.INSTANCE);
-                                if (extra == null) continue;
-                                extraCompound.add(TagUtils.findUniqueName(extraCompound, ""), extra);
-                            } else {
-                                NamedTag extra = p.getTagSettings().formatType.getNbtIO().readNamed(dataInput, UnlimitedReadTracker.INSTANCE);
-                                if (extra == null) continue;
-                                extraCompound.add(TagUtils.findUniqueName(extraCompound, extra.getName()), extra.getTag());
-                            }
-                        }
-                    }
+                    NbtReader.ReadResult readResult = NbtReader.read(data, ReadTrackers.UNLIMITED, p.getTagSettings());
                     if (tag != null && tag.tag == null) {
                         tag.settings = p.getTagSettings();
-                        tag.customFormat = customFormat;
-                        if (namedTag == null) {
-                            tag.tag = null;
-                        } else {
+                        tag.customFormat = readResult.customFormat();
+                        readResult.namedTag().ifPresentOrElse(namedTag -> {
                             tag.settings.rootName = namedTag.getName();
                             tag.tag = namedTag.getTag();
-                        }
+                        }, () -> tag.tag = null);
                         tag.fileName = fileName;
                         tag.filePath = filePath;
                         tag.modified = false;
                         tag.history.clear();
                         tag.undoHistory.clear();
                     } else {
-                        Tag readTag;
-                        if (namedTag == null) {
-                            readTag = new Tag(p.getTagSettings(), customFormat, null);
-                        } else {
-                            readTag = new Tag(p.getTagSettings(), customFormat, namedTag.getTag());
-                            readTag.settings.rootName = namedTag.getName();
-                        }
+                        Tag readTag = readResult.namedTag().map(namedTag -> {
+                            Tag newTag = new Tag(p.getTagSettings(), readResult.customFormat(), namedTag.getTag());
+                            newTag.settings.rootName = namedTag.getName();
+                            return newTag;
+                        }).orElseGet(() -> new Tag(p.getTagSettings(), readResult.customFormat(), null));
                         readTag.fileName = fileName;
                         readTag.filePath = filePath;
                         readTag.modified = false;
                         this.tags.add(readTag);
                     }
-                    if (bais.available() > 0) {
-                        this.drawer.showNotification(NotificationLevel.WARNING, "Warning", String.format(WARNING_UNREAD_BYTES, DECIMAL_FORMAT.format(bais.available())), this.drawer::closePopup);
+                    if (readResult.unreadBytes() > 0) {
+                        this.drawer.showNotification(NotificationLevel.WARNING, "Warning", String.format(WARNING_UNREAD_BYTES, DECIMAL_FORMAT.format(readResult.unreadBytes())), this.drawer::closePopup);
                     } else {
                         this.drawer.closePopup();
                     }

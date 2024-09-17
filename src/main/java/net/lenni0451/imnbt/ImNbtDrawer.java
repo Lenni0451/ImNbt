@@ -1,5 +1,7 @@
 package net.lenni0451.imnbt;
 
+import net.lenni0451.imnbt.config.ImNbtConfig;
+import net.lenni0451.imnbt.config.SessionConfig;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.Window;
 import net.lenni0451.imnbt.ui.windows.AboutWindow;
@@ -12,6 +14,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface ImNbtDrawer {
+
+    /**
+     * @return The configuration for ImNbt
+     */
+    default ImNbtConfig getConfig() {
+        return new SessionConfig();
+    }
 
     /**
      * Get the amount of tags to display per page.<br>

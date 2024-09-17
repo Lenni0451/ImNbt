@@ -1,4 +1,4 @@
-package net.lenni0451.imnbt.utils.nbt;
+package net.lenni0451.imnbt.utils.nbt.detector;
 
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.CustomFormatType;
@@ -13,10 +13,9 @@ import java.io.DataInputStream;
  * A crude format detector for Nbt files.<br>
  * Only works sometimes but it's better than nothing.
  */
-public class FormatDetector {
+public class BasicDetector {
 
     private static final byte[] GZIP_HEADER = new byte[]{0x1F, (byte) 0x8B};
-
 
     private byte[] data;
     private CompressionType compressionType = CompressionType.NO_COMPRESSION;
@@ -24,7 +23,7 @@ public class FormatDetector {
     private FormatType formatType = FormatType.BEDROCK;
     private CustomFormatType customFormatType = CustomFormatType.NONE;
 
-    public FormatDetector(final byte[] data) {
+    public BasicDetector(final byte[] data) {
         this.data = data;
 
         this.detectCompression();
