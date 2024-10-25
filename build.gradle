@@ -40,7 +40,7 @@ dependencies {
     api "io.github.spair:imgui-java-binding:1.87.5"
     api "com.google.guava:guava:33.3.1-jre"
     api "net.lenni0451.mcstructs:nbt:2.5.3"
-    api "net.lenni0451.mcstructs:snbt:2.5.3"
+    api "net.lenni0451.mcstructs:snbt:2.5.4"
     api "net.lenni0451.mcstructs-bedrock:nbt:1.2.1"
 }
 
