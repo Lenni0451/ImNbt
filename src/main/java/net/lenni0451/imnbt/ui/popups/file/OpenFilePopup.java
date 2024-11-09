@@ -1,13 +1,10 @@
 package net.lenni0451.imnbt.ui.popups.file;
 
 import imgui.ImGui;
-import imgui.flag.ImGuiStyleVar;
-import imgui.internal.flag.ImGuiItemFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
-import net.lenni0451.imnbt.config.ImNbtConfig;
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.CustomFormatType;
 import net.lenni0451.imnbt.types.EndianType;
@@ -16,14 +13,11 @@ import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.utils.nbt.detector.BasicDetector;
 import net.lenni0451.imnbt.utils.nbt.detector.BruteForceDetector;
 
-import java.util.Optional;
-
 /**
  * A popup to choose the settings when opening a tag.
  */
 public class OpenFilePopup extends Popup<OpenFilePopup> {
 
-    private final byte[] data;
     private final TagSettings tagSettings;
     private final ImInt selectedFormat;
     private final ImInt selectedEndian;
@@ -32,12 +26,11 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
     private final ImBoolean namelessRoot;
     private final ImBoolean readExtraData;
     private int unreadBytes;
-    private Thread detectorThread;
+    private Thread advancedDetectorThread;
 
     public OpenFilePopup(final byte[] data, final PopupCallback<OpenFilePopup> callback) {
         super("Open Nbt Tag", callback);
 
-        this.data = data;
         this.tagSettings = new TagSettings();
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
         this.selectedEndian = new ImInt(this.tagSettings.endianType.ordinal());
@@ -45,6 +38,8 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         this.customFormatType = new ImInt(this.tagSettings.customFormatType.ordinal());
         this.namelessRoot = new ImBoolean(this.tagSettings.namelessRoot);
         this.readExtraData = new ImBoolean(this.tagSettings.readExtraData);
+        this.runBasicDetector(data);
+        this.runAdvancedDetector(data);
     }
 
     public TagSettings getTagSettings() {
@@ -53,14 +48,6 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
 
     @Override
     protected void renderContent(ImNbtDrawer drawer) {
-        this.startDetector(drawer);
-
-        boolean detectorRunning = this.detectorThread.isAlive();
-        if (detectorRunning) {
-            imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
-            ImGui.pushStyleVar(ImGuiStyleVar.Alpha, ImGui.getStyle().getAlpha() * 0.5F);
-        }
-
         if (ImGui.combo("##Format", this.selectedFormat, FormatType.NAMES)) {
             this.tagSettings.formatType = FormatType.values()[this.selectedFormat.get()];
         }
@@ -85,52 +72,42 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
             this.getCallback().onClose(this, true);
             this.close();
         }
-        if (detectorRunning) {
-            ImGui.popStyleVar();
-            imgui.internal.ImGui.popItemFlag();
-        }
         ImGui.sameLine();
         if (ImGui.button("Cancel")) {
-            this.detectorThread.interrupt();
             this.getCallback().onClose(this, false);
             this.close();
         }
-        if (detectorRunning) {
+        if (this.advancedDetectorThread.isAlive()) {
             ImGui.sameLine();
-            ImGui.text("Detecting format...");
+            ImGui.text("Detecting...");
         }
     }
 
-    private void startDetector(final ImNbtDrawer drawer) {
-        if (this.detectorThread != null) return;
+    private void runBasicDetector(final byte[] data) {
+        BasicDetector basicDetector = new BasicDetector(data);
+        this.tagSettings.compressionType = basicDetector.getCompressionType();
+        this.tagSettings.endianType = basicDetector.getEndianType();
+        this.tagSettings.formatType = basicDetector.getFormatType();
+        this.tagSettings.customFormatType = basicDetector.getCustomFormatType();
+        this.copySettingsToUI();
+    }
 
-        this.detectorThread = new Thread(() -> {
-            Optional<BruteForceDetector.Result> result;
-            if (drawer.getConfig().getBoolean(ImNbtConfig.ADVANCED_FORMAT_DETECTION, false)) {
-                BruteForceDetector bruteForceDetector = new BruteForceDetector(this.data);
-                result = bruteForceDetector.run();
-            } else {
-                result = Optional.empty();
-            }
-            result.ifPresentOrElse(r -> {
-                this.tagSettings.compressionType = r.compressionType();
-                this.tagSettings.endianType = r.endianType();
-                this.tagSettings.formatType = r.formatType();
-                this.tagSettings.customFormatType = r.customFormatType();
-                this.tagSettings.namelessRoot = r.namelessRoot();
-                this.unreadBytes = r.readResult().unreadBytes();
-            }, () -> {
-                BasicDetector basicDetector = new BasicDetector(this.data);
-                this.tagSettings.compressionType = basicDetector.getCompressionType();
-                this.tagSettings.endianType = basicDetector.getEndianType();
-                this.tagSettings.formatType = basicDetector.getFormatType();
-                this.tagSettings.customFormatType = basicDetector.getCustomFormatType();
+    private void runAdvancedDetector(final byte[] data) { //TODO: Config check: drawer.getConfig().getBoolean(ImNbtConfig.ADVANCED_FORMAT_DETECTION, false)
+        this.advancedDetectorThread = new Thread(() -> {
+            BruteForceDetector bruteForceDetector = new BruteForceDetector(data);
+            bruteForceDetector.run().ifPresent(result -> {
+                this.tagSettings.compressionType = result.compressionType();
+                this.tagSettings.endianType = result.endianType();
+                this.tagSettings.formatType = result.formatType();
+                this.tagSettings.customFormatType = result.customFormatType();
+                this.tagSettings.namelessRoot = result.namelessRoot();
+                this.unreadBytes = result.readResult().unreadBytes();
+                this.copySettingsToUI();
             });
-            this.copySettingsToUI();
-        }, "Format Detector");
-        this.detectorThread.setUncaughtExceptionHandler((t, e) -> {}); //Just pretend the current format is the best one
-        this.detectorThread.setDaemon(true);
-        this.detectorThread.start();
+        }, "Advanced Format Detector");
+        this.advancedDetectorThread.setUncaughtExceptionHandler((t, e) -> {}); //Just pretend the current format is the best one
+        this.advancedDetectorThread.setDaemon(true);
+        this.advancedDetectorThread.start();
     }
 
     private void copySettingsToUI() {
