@@ -13,7 +13,6 @@ public class SessionConfig implements ImNbtConfig {
 
     @Override
     public boolean getBoolean(String key, boolean def) {
-        if(true)return true;
         Object value = this.config.get(key);
         if (!(value instanceof Boolean)) return def;
         return (Boolean) value;
