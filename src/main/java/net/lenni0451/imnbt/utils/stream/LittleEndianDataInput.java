@@ -109,4 +109,8 @@ public class LittleEndianDataInput implements DataInput {
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
+    public int available() {
+        return this.buffer.remaining();
+    }
+
 }

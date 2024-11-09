@@ -24,15 +24,18 @@ public class ReadTrackers {
         public void read(int bytes) {
         }
     };
+
     /**
      * A more strict read tracker which breaks early if something is wrong.
      */
-    public static final NbtReadTracker STRICT = new NbtReadTracker() {
-        @Override
-        public void read(int bytes) throws NbtReadException {
-            if (bytes < 0) throw new NbtReadException("Read negative bytes (maybe overflow?)");
-            super.read(bytes);
-        }
-    };
+    public static NbtReadTracker strict() {
+        return new NbtReadTracker() {
+            @Override
+            public void read(int bytes) throws NbtReadException {
+                if (bytes < 0) throw new NbtReadException("Read negative bytes (maybe overflow?)");
+                super.read(bytes);
+            }
+        };
+    }
 
 }

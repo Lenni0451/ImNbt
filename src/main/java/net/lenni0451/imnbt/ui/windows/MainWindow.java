@@ -468,7 +468,7 @@ public class MainWindow extends Window {
         this.drawer.openPopup(new OpenFilePopup(data, (p, success) -> {
             if (success) {
                 try {
-                    NbtReader.ReadResult readResult = NbtReader.read(data, ReadTrackers.UNLIMITED, p.getTagSettings());
+                    NbtReader.ReadResult readResult = NbtReader.read(data, () -> ReadTrackers.UNLIMITED, p.getTagSettings());
                     if (tag != null && tag.tag == null) {
                         tag.settings = p.getTagSettings();
                         tag.customFormat = readResult.customFormat();

@@ -6,6 +6,9 @@ import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.utils.nbt.NbtReader;
 import net.lenni0451.imnbt.utils.nbt.ReadTrackers;
+import net.lenni0451.imnbt.utils.nbt.TagUtils;
+import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -38,21 +41,57 @@ public class BruteForceDetector {
                 }
             }
         }
-        this.results.sort(Comparator.comparingInt(o -> o.unreadBytes));
-        if (this.results.isEmpty()) return Optional.empty();
-        return Optional.of(this.results.get(0));
+        return this.filterResults();
     }
 
     private void tryParse(final CompressionType compressionType, final EndianType endianType, final FormatType formatType, final CustomFormatType customFormatType, final boolean namelessRoot) {
         try {
-            NbtReader.ReadResult result = NbtReader.read(this.data, ReadTrackers.STRICT, compressionType, endianType, formatType, customFormatType, namelessRoot, false);
-            this.results.add(new Result(compressionType, endianType, formatType, customFormatType, namelessRoot, result.unreadBytes()));
+            NbtReader.ReadResult result = NbtReader.read(this.data, () -> ReadTrackers.UNLIMITED, compressionType, endianType, formatType, customFormatType, namelessRoot, false);
+            this.results.add(new Result(compressionType, endianType, formatType, customFormatType, namelessRoot, result));
         } catch (Throwable ignored) {
         }
     }
 
+    private Optional<Result> filterResults() {
+        if (this.results.isEmpty()) return Optional.empty();
+        this.results.sort(Comparator.comparingInt(o -> o.readResult.unreadBytes()));
+        int smallestUnreadBytes = this.results.get(0).readResult.unreadBytes();
+        this.results.removeIf(result -> result.readResult.unreadBytes() > smallestUnreadBytes);
 
-    public record Result(CompressionType compressionType, EndianType endianType, FormatType formatType, CustomFormatType customFormatType, boolean namelessRoot, int unreadBytes) {
+        this.results.sort(Comparator.<Result>comparingInt(o -> TagUtils.size(o.readResult.namedTag().map(NamedTag::getTag).orElse(null))).reversed());
+        int largestSize = TagUtils.size(this.results.get(0).readResult.namedTag().map(NamedTag::getTag).orElse(null));
+        this.results.removeIf(result -> TagUtils.size(result.readResult.namedTag().map(NamedTag::getTag).orElse(null)) < largestSize);
+
+        return this.results.stream().findFirst();
+    }
+
+    /**
+     * Rate the strings in the Nbt tag by their length and the amount of special characters.<br>
+     * A lower rating means the tag is more likely to be correct (sane lengths and less special characters).
+     *
+     * @param tag The tag to rate
+     * @return The rating of the tag
+     */
+    private int rateStrings(final INbtTag tag) {
+        //TODO
+        return 0;
+    }
+
+    /**
+     * Rate the numbers in the Nbt tag by their distance between each other.<br>
+     * A lower rating means the tag is more likely to be correct (smaller distances between the numbers).
+     *
+     * @param tag The tag to rate
+     * @return The rating of the tag
+     */
+    private int rateNumbers(final INbtTag tag) {
+        //TODO
+        return 0;
+    }
+
+
+    public record Result(CompressionType compressionType, EndianType endianType, FormatType formatType, CustomFormatType customFormatType, boolean namelessRoot,
+            NbtReader.ReadResult readResult) {
     }
 
 }

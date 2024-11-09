@@ -118,7 +118,7 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
                 this.tagSettings.formatType = r.formatType();
                 this.tagSettings.customFormatType = r.customFormatType();
                 this.tagSettings.namelessRoot = r.namelessRoot();
-                this.unreadBytes = r.unreadBytes();
+                this.unreadBytes = r.readResult().unreadBytes();
             }, () -> {
                 BasicDetector basicDetector = new BasicDetector(this.data);
                 this.tagSettings.compressionType = basicDetector.getCompressionType();
