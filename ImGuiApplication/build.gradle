@@ -16,14 +16,14 @@ dependencies {
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
     include project(":")
-    include "com.google.guava:guava:33.3.0-jre"
-    include "net.lenni0451.mcstructs:nbt:2.5.2"
-    include "net.lenni0451.mcstructs:snbt:2.5.2"
+    include "com.google.guava:guava:33.3.1-jre"
+    include "net.lenni0451.mcstructs:nbt:2.5.4"
+    include "net.lenni0451.mcstructs:snbt:2.5.4"
     include("net.lenni0451.mcstructs-bedrock:nbt:1.2.1") {
         exclude group: "net.lenni0451.mcstructs", module: "nbt"
     }
 
-    include "io.github.spair:imgui-java-app:1.87.4"
+    include "io.github.spair:imgui-java-app:1.87.6"
     include "org.lwjgl:lwjgl-tinyfd:3.3.4"
     ["natives-linux", "natives-windows", "natives-macos"].each {
         include "org.lwjgl:lwjgl-tinyfd:3.3.4:$it"
