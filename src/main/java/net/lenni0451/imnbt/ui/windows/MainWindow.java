@@ -394,6 +394,10 @@ public class MainWindow extends Window {
                     int tabFlags = ImGuiTabItemFlags.None;
                     if (tabName.isEmpty()) tabName = tag.fileName;
                     if (tabName == null) tabName = "<empty>";
+                    if (this.hasTag()) {
+                        if (this.rightDiff == tag.tag) tabName = "(R) " + tabName;
+                        if (this.leftDiff == tag.tag) tabName = "(L) " + tabName;
+                    }
                     if (tag.modified) tabFlags |= ImGuiTabItemFlags.UnsavedDocument;
                     if (ImGui.beginTabItem(tabName + "###" + tag.uuid, open, tabFlags)) {
                         this.openTab = i;
