@@ -3,7 +3,6 @@ package net.lenni0451.imnbt.ui.windows;
 import imgui.ImFont;
 import imgui.ImGui;
 import imgui.ImVec2;
-import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiKey;
 import imgui.flag.ImGuiTabItemFlags;
 import imgui.type.ImBoolean;
@@ -23,7 +22,6 @@ import net.lenni0451.imnbt.ui.popups.file.SaveFilePopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.ui.types.Window;
-import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.StringUtils;
@@ -31,7 +29,6 @@ import net.lenni0451.imnbt.utils.nbt.NbtReader;
 import net.lenni0451.imnbt.utils.nbt.ReadTrackers;
 import net.lenni0451.imnbt.utils.nbt.TagSorter;
 import net.lenni0451.imnbt.utils.nbt.TagVisitor;
-import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.DoubleTag;
@@ -336,16 +333,6 @@ public class MainWindow extends Window {
                 if (ImGui.menuItem("Diff", null, false, this.leftDiff != null && this.rightDiff != null)) {
                     this.drawer.getDiffWindow().diff(this.leftDiff, this.rightDiff);
                     this.drawer.getDiffWindow().show();
-                }
-                if (ImGui.beginMenu("Legend")) {
-                    for (DiffType value : DiffType.values()) {
-                        Color color = value.getColor();
-                        if (color != null) ImGui.pushStyleColor(ImGuiCol.Text, color.getABGR());
-                        ImGui.textUnformatted(StringUtils.format(value));
-                        if (color != null) ImGui.popStyleColor();
-                    }
-
-                    ImGui.endMenu();
                 }
 
                 ImGui.endMenu();
