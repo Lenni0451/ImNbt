@@ -473,7 +473,7 @@ public class MainWindow extends Window {
 
     public void open(final byte[] data, final String fileName, final String filePath) {
         Tag tag = this.tags.isEmpty() ? null : this.tags.get(this.openTab);
-        this.drawer.openPopup(new OpenFilePopup(data, (p, success) -> {
+        this.drawer.openPopup(new OpenFilePopup(fileName, data, (p, success) -> {
             if (success) {
                 try {
                     NbtReader.ReadResult readResult = NbtReader.read(data, () -> ReadTrackers.UNLIMITED, p.getTagSettings());

@@ -30,8 +30,8 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
     private Thread advancedDetectorThread;
     private boolean startedAdvancedDetection;
 
-    public OpenFilePopup(final byte[] data, final PopupCallback<OpenFilePopup> callback) {
-        super("Open Nbt Tag", callback);
+    public OpenFilePopup(final String name, final byte[] data, final PopupCallback<OpenFilePopup> callback) {
+        super("Open Nbt Tag - " + name, callback);
 
         this.tagSettings = new TagSettings();
         this.selectedFormat = new ImInt(this.tagSettings.formatType.ordinal());
