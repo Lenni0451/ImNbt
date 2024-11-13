@@ -7,7 +7,6 @@ import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.utils.nbt.NbtReader;
 import net.lenni0451.imnbt.utils.nbt.ReadTrackers;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
-import net.lenni0451.mcstructs.nbt.INbtTag;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
 import java.util.ArrayList;
@@ -63,30 +62,6 @@ public class BruteForceDetector {
         this.results.removeIf(result -> TagUtils.size(result.readResult.namedTag().map(NamedTag::getTag).orElse(null)) < largestSize);
 
         return this.results.stream().findFirst();
-    }
-
-    /**
-     * Rate the strings in the Nbt tag by their length and the amount of special characters.<br>
-     * A lower rating means the tag is more likely to be correct (sane lengths and less special characters).
-     *
-     * @param tag The tag to rate
-     * @return The rating of the tag
-     */
-    private int rateStrings(final INbtTag tag) {
-        //TODO
-        return 0;
-    }
-
-    /**
-     * Rate the numbers in the Nbt tag by their distance between each other.<br>
-     * A lower rating means the tag is more likely to be correct (smaller distances between the numbers).
-     *
-     * @param tag The tag to rate
-     * @return The rating of the tag
-     */
-    private int rateNumbers(final INbtTag tag) {
-        //TODO
-        return 0;
     }
 
 
