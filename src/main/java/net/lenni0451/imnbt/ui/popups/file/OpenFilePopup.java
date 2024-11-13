@@ -5,6 +5,7 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
+import net.lenni0451.imnbt.config.ImNbtConfig;
 import net.lenni0451.imnbt.types.CompressionType;
 import net.lenni0451.imnbt.types.CustomFormatType;
 import net.lenni0451.imnbt.types.EndianType;
@@ -27,6 +28,7 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
     private final ImBoolean readExtraData;
     private int unreadBytes;
     private Thread advancedDetectorThread;
+    private boolean startedAdvancedDetection;
 
     public OpenFilePopup(final byte[] data, final PopupCallback<OpenFilePopup> callback) {
         super("Open Nbt Tag", callback);
@@ -39,7 +41,7 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         this.namelessRoot = new ImBoolean(this.tagSettings.namelessRoot);
         this.readExtraData = new ImBoolean(this.tagSettings.readExtraData);
         this.runBasicDetector(data);
-        this.runAdvancedDetector(data);
+        this.initAdvancedDetector(data);
     }
 
     public TagSettings getTagSettings() {
@@ -48,6 +50,13 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
 
     @Override
     protected void renderContent(ImNbtDrawer drawer) {
+        if (!this.startedAdvancedDetection && drawer.getConfig().getBoolean(ImNbtConfig.ADVANCED_FORMAT_DETECTION, false)) {
+            //The advanced detection is only started if the user has enabled it in the config because it can take a long time
+            //It has to be started here for config access in the drawer
+            this.startedAdvancedDetection = true;
+            this.advancedDetectorThread.start();
+        }
+
         if (ImGui.combo("##Format", this.selectedFormat, FormatType.NAMES)) {
             this.tagSettings.formatType = FormatType.values()[this.selectedFormat.get()];
         }
@@ -92,7 +101,7 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         this.copySettingsToUI();
     }
 
-    private void runAdvancedDetector(final byte[] data) { //TODO: Config check: drawer.getConfig().getBoolean(ImNbtConfig.ADVANCED_FORMAT_DETECTION, false)
+    private void initAdvancedDetector(final byte[] data) {
         this.advancedDetectorThread = new Thread(() -> {
             BruteForceDetector bruteForceDetector = new BruteForceDetector(data);
             bruteForceDetector.run().ifPresent(result -> {
@@ -107,7 +116,6 @@ public class OpenFilePopup extends Popup<OpenFilePopup> {
         }, "Advanced Format Detector");
         this.advancedDetectorThread.setUncaughtExceptionHandler((t, e) -> {}); //Just pretend the current format is the best one
         this.advancedDetectorThread.setDaemon(true);
-        this.advancedDetectorThread.start();
     }
 
     private void copySettingsToUI() {
