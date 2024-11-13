@@ -40,7 +40,10 @@ public class SaveFilePopup extends Popup<SaveFilePopup> {
 
     @Override
     protected void renderContent(ImNbtDrawer drawer) {
-        if (!this.namelessRoot.get() && ImGui.inputText("Root name", this.rootName)) {
+        ImGui.text("Root name:");
+        ImGui.sameLine();
+        ImGui.setNextItemWidth(-1);
+        if (!this.namelessRoot.get() && ImGui.inputText("##RootName", this.rootName)) {
             this.tagSettings.rootName = this.rootName.get();
         }
         if (ImGui.combo("##Format", this.selectedFormat, FormatType.NAMES)) {
