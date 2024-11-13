@@ -12,4 +12,8 @@ public interface ImNbtConfig {
 
     void setBoolean(final String key, final boolean value);
 
+    default void toggle(final String key, final boolean def) {
+        this.setBoolean(key, !this.getBoolean(key, def));
+    }
+
 }

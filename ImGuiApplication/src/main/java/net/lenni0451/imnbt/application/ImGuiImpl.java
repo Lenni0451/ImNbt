@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 
 public class ImGuiImpl extends Application implements ImNbtDrawer {
 
+    private final Config config;
     private final MainWindow mainWindow;
     private final AboutWindow aboutWindow;
     private final DiffWindow diffWindow;
@@ -36,12 +37,18 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
     private Popup<?> popup;
     private Window window;
 
-    public ImGuiImpl(final FontConfig fontConfig) {
+    public ImGuiImpl(final Config config, final FontConfig fontConfig) {
+        this.config = config;
         this.mainWindow = new MainWindow(this, fontConfig);
         this.aboutWindow = new AboutWindow(this);
         this.diffWindow = new DiffWindow(this);
 
         this.window = this.mainWindow;
+    }
+
+    @Override
+    public Config getConfig() {
+        return this.config;
     }
 
     @Override

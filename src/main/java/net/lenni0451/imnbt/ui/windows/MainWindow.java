@@ -11,6 +11,7 @@ import imgui.type.ImString;
 import net.lenni0451.imnbt.FontHandler;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.TagSettings;
+import net.lenni0451.imnbt.config.ImNbtConfig;
 import net.lenni0451.imnbt.types.formats.ICustomFormat;
 import net.lenni0451.imnbt.types.formats.NoneFormat;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
@@ -265,18 +266,6 @@ public class MainWindow extends Window {
 
                 ImGui.endMenu();
             }
-            if (this.fontHandler != null && ImGui.beginMenu("Font Size")) {
-                ImFont[] fonts = this.fontHandler.getFonts();
-                int usedFont = this.fontHandler.getSelectedFont();
-                for (int i = 0; i < fonts.length; i++) {
-                    ImFont font = fonts[i];
-                    if (ImGui.menuItem("Size " + String.format("%.0f", font.getFontSize()), "", i == usedFont)) {
-                        this.fontHandler.setSelectedFont(i);
-                    }
-                }
-
-                ImGui.endMenu();
-            }
             if (this.highlightSearch && !ImGui.isPopupOpen("Search")) ImGui.openPopup("Search");
             if (ImGui.beginMenu("Search")) {
                 if (this.highlightSearch) {
@@ -357,6 +346,25 @@ public class MainWindow extends Window {
                     }
 
                     ImGui.endMenu();
+                }
+
+                ImGui.endMenu();
+            }
+            if (ImGui.beginMenu("Settings")) {
+                if (this.fontHandler != null && ImGui.beginMenu("Font Size")) {
+                    ImFont[] fonts = this.fontHandler.getFonts();
+                    int usedFont = this.fontHandler.getSelectedFont();
+                    for (int i = 0; i < fonts.length; i++) {
+                        ImFont font = fonts[i];
+                        if (ImGui.menuItem("Size " + String.format("%.0f", font.getFontSize()), "", i == usedFont)) {
+                            this.fontHandler.setSelectedFont(i);
+                        }
+                    }
+
+                    ImGui.endMenu();
+                }
+                if (ImGui.menuItem("Advanced Format Detector (slow)", this.drawer.getConfig().getBoolean(ImNbtConfig.ADVANCED_FORMAT_DETECTION, false))) {
+                    this.drawer.getConfig().toggle(ImNbtConfig.ADVANCED_FORMAT_DETECTION, false);
                 }
 
                 ImGui.endMenu();

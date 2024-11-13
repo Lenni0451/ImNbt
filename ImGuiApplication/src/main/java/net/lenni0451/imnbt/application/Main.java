@@ -16,8 +16,9 @@ public class Main {
     }
 
 
+    private final Config config = new Config();
     private final FontConfig fontConfig = new FontConfig();
-    private final ImGuiImpl imGuiImpl = new ImGuiImpl(this.fontConfig);
+    private final ImGuiImpl imGuiImpl = new ImGuiImpl(this.config, this.fontConfig);
 
     private void init() {
         Application.launch(this.imGuiImpl);
