@@ -23,7 +23,7 @@ dependencies {
         exclude group: "net.lenni0451.mcstructs", module: "nbt"
     }
 
-    include "io.github.spair:imgui-java-app:1.87.7"
+    include "io.github.spair:imgui-java-app:1.88.0"
     include "org.lwjgl:lwjgl-tinyfd:3.3.5"
     ["natives-linux", "natives-windows", "natives-macos"].each {
         include "org.lwjgl:lwjgl-tinyfd:3.3.5:$it"
