@@ -25,7 +25,7 @@ dependencies {
 
     include "io.github.spair:imgui-java-app:1.89.0"
     include "org.lwjgl:lwjgl-tinyfd:3.3.6"
-    ["natives-linux", "natives-windows", "natives-macos"].each {
+    ["natives-linux", "natives-linux-arm64", "natives-windows", "natives-windows-arm64", "natives-macos", "natives-macos-arm64"].each {
         include "org.lwjgl:lwjgl-tinyfd:3.3.6:$it"
     }
 }
