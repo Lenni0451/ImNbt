@@ -1,10 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: gradle
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: daily
-  - package-ecosystem: gradle
-    directory: "/ImGuiApplication"
+      interval: "weekly"
+  - directory: "/"
+    package-ecosystem: "gradle"
     schedule:
-      interval: daily
+      interval: "daily"
+  - directory: "/ImGuiApplication"
+    package-ecosystem: "gradle"
+    schedule:
+      interval: "daily"

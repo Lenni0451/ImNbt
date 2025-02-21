@@ -2,10 +2,11 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url "https://maven.lenni0451.net/releases"
-        }
     }
+}
+
+plugins {
+    id "org.gradle.toolchains.foojay-resolver-convention" version "0.9.0"
 }
 
 rootProject.name = "ImNbt"

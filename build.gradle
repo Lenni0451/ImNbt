@@ -6,22 +6,26 @@ plugins {
     id "net.raphimc.class-token-replacer" version "1.1.3"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
+base {
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
+}
 
 allprojects {
     apply plugin: "checkstyle"
 
-    archivesBaseName = project.maven_name
-    group = project.maven_group
-    version = project.maven_version
+    base {
+        archivesName = project.maven_name ?: rootProject.maven_name
+        group = project.maven_group ?: rootProject.maven_group
+        version = project.maven_version ?: rootProject.maven_version
+    }
 
     repositories {
         mavenCentral()
     }
 
     checkstyle {
-        toolVersion = "9.3"
+        toolVersion = "10.16.0" //Latest version for Java 8: 9.3
         configFile = rootProject.file("config/checkstyle/checkstyle.xml")
     }
     build.dependsOn(check)
@@ -37,6 +41,9 @@ sourceSets {
 
 dependencies {
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+    compileOnly "org.jetbrains:annotations:26.0.2"
+    compileOnly(annotationProcessor("org.projectlombok:lombok:1.18.36"))
+
     api "io.github.spair:imgui-java-binding:1.89.0"
     api "com.google.guava:guava:33.4.0-jre"
     api "net.lenni0451.mcstructs:nbt:2.5.5"
@@ -73,20 +80,20 @@ publishing {
     }
     publications {
         maven(MavenPublication) {
-            artifactId = project.maven_name
-            groupId = project.maven_group
-            version = project.maven_version
+            artifactId = project.maven_name ?: rootProject.maven_name
+            groupId = rootProject.maven_group
+            version = rootProject.maven_version
 
             from components.java
 
             pom {
                 name = rootProject.name
-                description = "A template for gradle projects"
-                url = "https://github.com/Lenni0451/ImNbt"
+                description = rootProject.maven_description
+                url = "https://github.com/" + rootProject.github_repo
                 licenses {
                     license {
                         name = "MIT License"
-                        url = "https://github.com/Lenni0451/ImNbt/blob/main/LICENSE"
+                        url = "https://github.com/" + rootProject.github_repo + "/blob/main/LICENSE"
                     }
                 }
                 developers {
@@ -95,9 +102,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git:git://github.com/Lenni0451/ImNbt.git"
-                    developerConnection = "scm:git:ssh://github.com/Lenni0451/ImNbt.git"
-                    url = "github.com/Lenni0451/ImNbt"
+                    connection = "scm:git:git://github.com/" + rootProject.github_repo + ".git"
+                    developerConnection = "scm:git:ssh://github.com/" + rootProject.github_repo + ".git"
+                    url = "github.com/" + rootProject.github_repo
                 }
             }
         }
@@ -105,10 +112,10 @@ publishing {
 }
 
 signing {
+    setRequired false
     sign configurations.archives
     sign publishing.publications.maven
 }
-
 project.tasks.withType(PublishToMavenRepository).forEach {
     it.dependsOn(project.tasks.withType(Sign))
 }

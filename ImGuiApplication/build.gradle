@@ -2,8 +2,10 @@ plugins {
     id "java"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
+base {
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+    compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
+}
 
 configurations {
     include
@@ -14,6 +16,8 @@ configurations {
 
 dependencies {
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+    compileOnly "org.jetbrains:annotations:26.0.2"
+    compileOnly(annotationProcessor("org.projectlombok:lombok:1.18.36"))
 
     include project(":")
     include "com.google.guava:guava:33.4.0-jre"
