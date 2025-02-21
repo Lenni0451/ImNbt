@@ -23,10 +23,15 @@ dependencies {
         exclude group: "net.lenni0451.mcstructs", module: "nbt"
     }
 
-    include "io.github.spair:imgui-java-app:1.89.0"
-    include "org.lwjgl:lwjgl-tinyfd:3.3.4"
-    ["natives-linux", "natives-linux-arm64", "natives-windows", "natives-windows-arm64", "natives-macos", "natives-macos-arm64"].each {
-        include "org.lwjgl:lwjgl-tinyfd:3.3.4:$it"
+    include("io.github.spair:imgui-java-app:1.89.0") {
+        exclude group: "org.lwjgl"
+    }
+    ["lwjgl", "lwjgl-glfw", "lwjgl-opengl", "lwjgl-tinyfd"].each {
+        def lib = it
+        include "org.lwjgl:$lib:3.3.6"
+        ["natives-linux", "natives-linux-arm64", "natives-windows", "natives-windows-arm64", "natives-macos", "natives-macos-arm64"].each {
+            include "org.lwjgl:$lib:3.3.6:$it"
+        }
     }
 }
 
