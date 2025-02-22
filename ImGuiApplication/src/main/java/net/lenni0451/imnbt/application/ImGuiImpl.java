@@ -3,6 +3,7 @@ package net.lenni0451.imnbt.application;
 import imgui.*;
 import imgui.app.Application;
 import imgui.app.Configuration;
+import imgui.callback.ImStrConsumer;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ImNbtDrawer;
@@ -19,12 +20,15 @@ import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
+import org.lwjgl.system.MemoryUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class ImGuiImpl extends Application implements ImNbtDrawer {
 
@@ -181,6 +185,26 @@ public class ImGuiImpl extends Application implements ImNbtDrawer {
                 this.window.dragAndDrop(file, data);
             } catch (Throwable t) {
                 t.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    protected void init(Configuration config) {
+        super.init(config);
+        ImGui.getIO().setSetClipboardTextFn(new ImStrConsumer() {
+            @Override
+            public void accept(String str) {
+                byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+                ByteBuffer byteBuffer = MemoryUtil.memAlloc(bytes.length + 1);
+                try {
+                    byteBuffer.put(bytes);
+                    byteBuffer.put((byte) 0);
+                    byteBuffer.flip();
+                    GLFW.glfwSetClipboardString(ImGuiImpl.this.getHandle(), byteBuffer);
+                } finally {
+                    MemoryUtil.memFree(byteBuffer);
+                }
             }
         });
     }
