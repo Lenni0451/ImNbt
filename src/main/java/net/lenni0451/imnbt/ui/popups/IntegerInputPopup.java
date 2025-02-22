@@ -17,14 +17,14 @@ public class IntegerInputPopup extends Popup<IntegerInputPopup> {
     private final IntConsumer intCallback;
     private final int[] value;
 
-    public IntegerInputPopup(final String title, final String message, final int minValue, final int maxValue, final IntConsumer intCallback, final PopupCallback<IntegerInputPopup> callback) {
+    public IntegerInputPopup(final String title, final String message, final int minValue, final int maxValue, final int defaultValue, final IntConsumer intCallback, final PopupCallback<IntegerInputPopup> callback) {
         super(title, callback);
 
         this.message = message;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.intCallback = intCallback;
-        this.value = new int[]{minValue};
+        this.value = new int[]{defaultValue};
     }
 
     @Override

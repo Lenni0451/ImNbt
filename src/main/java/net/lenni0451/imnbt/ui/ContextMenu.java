@@ -335,7 +335,7 @@ public class ContextMenu {
             }
             if (this.roundAction != null) {
                 if (ImGui.menuItem("Round")) {
-                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, i -> {
+                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, 2, i -> {
                         this.modificationListener.run();
                         this.roundAction.accept(i);
                     }, close(this.drawer)));

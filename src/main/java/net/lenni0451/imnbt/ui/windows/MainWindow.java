@@ -236,7 +236,7 @@ public class MainWindow extends Window {
             }
             if (ImGui.beginMenu("Batch")) {
                 if (ImGui.menuItem("Round Numbers", null, false, this.hasTag())) {
-                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, decimalPlaces -> {
+                    this.drawer.openPopup(new IntegerInputPopup("Round", "Enter the amount of decimals to round to", 0, 10, 2, decimalPlaces -> {
                         Tag rootTag = this.tags.get(this.openTab);
                         TagVisitor.visit(rootTag.tag, tag -> {
                             if (tag instanceof FloatTag floatTag) {
