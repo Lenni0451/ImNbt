@@ -2,7 +2,7 @@ package net.lenni0451.imnbt.utils.nbt.diff;
 
 import net.lenni0451.imnbt.utils.TriConsumer;
 import net.lenni0451.imnbt.utils.nbt.NbtPath;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.tags.*;
 
 import javax.annotation.Nonnull;
@@ -30,7 +30,7 @@ public class DiffMap {
      * @param path The path of the tag
      * @param type The type of the tag
      */
-    public void addLeft(final INbtTag tag, final String path, final DiffType type) {
+    public void addLeft(final NbtTag tag, final String path, final DiffType type) {
         this.left.put(path, type);
         this.fillParents(path, this::getLeft, this.left::put);
         this.fillChildren(tag, path, this::getLeft, this::addLeft);
@@ -43,7 +43,7 @@ public class DiffMap {
      * @param path The path of the tag
      * @param type The type of the tag
      */
-    public void addRight(final INbtTag tag, final String path, final DiffType type) {
+    public void addRight(final NbtTag tag, final String path, final DiffType type) {
         this.right.put(path, type);
         this.fillParents(path, this::getRight, this.right::put);
         this.fillChildren(tag, path, this::getRight, this::addRight);
@@ -57,7 +57,7 @@ public class DiffMap {
      * @param path  The path of the tags
      * @param type  The type of the tags
      */
-    public void addBoth(final INbtTag left, final INbtTag right, final String path, final DiffType type) {
+    public void addBoth(final NbtTag left, final NbtTag right, final String path, final DiffType type) {
         this.addLeft(left, path, type);
         this.addRight(right, path, type);
     }
@@ -122,7 +122,7 @@ public class DiffMap {
      * @param typeFunction The function to get the type of a node
      * @param typeConsumer The consumer to add the node to the map
      */
-    private void fillChildren(final INbtTag tag, final String path, final Function<String, DiffType> typeFunction, final TriConsumer<INbtTag, String, DiffType> typeConsumer) {
+    private void fillChildren(final NbtTag tag, final String path, final Function<String, DiffType> typeFunction, final TriConsumer<NbtTag, String, DiffType> typeConsumer) {
         if (tag == null) return;
         DiffType parentType = typeFunction.apply(path);
         if (!DiffType.REMOVED.equals(parentType) && !DiffType.ADDED.equals(parentType)) return;

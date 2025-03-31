@@ -6,7 +6,7 @@ import imgui.type.ImString;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.utils.NotificationLevel;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZERS;
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZER_NAMES;
@@ -18,9 +18,9 @@ public class SNbtSerializerPopup extends Popup<SNbtSerializerPopup> {
 
     private final ImString output = new ImString(32767);
     private final ImInt selectedVersion = new ImInt(SERIALIZER_NAMES.length - 1);
-    private final INbtTag tag;
+    private final NbtTag tag;
 
-    public SNbtSerializerPopup(final INbtTag tag, final PopupCallback<SNbtSerializerPopup> callback) {
+    public SNbtSerializerPopup(final NbtTag tag, final PopupCallback<SNbtSerializerPopup> callback) {
         super("SNbt Serializer", callback);
         this.output.inputData.isResizable = true;
 

@@ -3,7 +3,7 @@ package net.lenni0451.imnbt.ui;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.NbtPath;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.tags.*;
 
 import javax.annotation.Nullable;
@@ -19,7 +19,7 @@ public class SearchProvider {
     private final Set<String> searchPathsSet = new LinkedHashSet<>();
     private final Set<String> expandPaths = new LinkedHashSet<>();
     private String search = "";
-    private INbtTag lastTag = null;
+    private NbtTag lastTag = null;
     private int currentScrollIndex = -1;
     private String currentScrollPath = null;
     private boolean doScroll = false;
@@ -71,7 +71,7 @@ public class SearchProvider {
      *
      * @param tag The tag to search in
      */
-    public void buildSearchPaths(@Nullable final INbtTag tag) {
+    public void buildSearchPaths(@Nullable final NbtTag tag) {
         this.lastTag = tag;
 
         this.searchPaths.clear();
@@ -82,9 +82,9 @@ public class SearchProvider {
         this.doScroll = false;
         if (this.search.isEmpty() || tag == null) return;
 
-        Map<String, INbtTag> tags = new LinkedHashMap<>();
+        Map<String, NbtTag> tags = new LinkedHashMap<>();
         NbtPath.getTags(tags, tag, "");
-        for (Map.Entry<String, INbtTag> entry : tags.entrySet()) {
+        for (Map.Entry<String, NbtTag> entry : tags.entrySet()) {
             NbtPath.IPathNode[] paths = NbtPath.parse(entry.getKey());
             String name = paths[paths.length - 1].name();
             final Runnable addTag = () -> {

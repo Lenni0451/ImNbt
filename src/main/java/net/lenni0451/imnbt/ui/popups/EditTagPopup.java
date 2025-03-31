@@ -6,7 +6,7 @@ import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 
 /**
  * A popup that allows the user to edit a tag.
@@ -15,10 +15,10 @@ public class EditTagPopup extends Popup<EditTagPopup> {
 
     private final String okText;
     private final ImString name = new ImString(256);
-    private final INbtTag tag;
+    private final NbtTag tag;
     private final TagRenderer tagRenderer;
 
-    public EditTagPopup(final String title, final String okText, final String name, final INbtTag tag, final PopupCallback<EditTagPopup> callback) {
+    public EditTagPopup(final String title, final String okText, final String name, final NbtTag tag, final PopupCallback<EditTagPopup> callback) {
         super(title, callback);
 
         this.okText = okText;
@@ -31,7 +31,7 @@ public class EditTagPopup extends Popup<EditTagPopup> {
         return this.name.get();
     }
 
-    public INbtTag getTag() {
+    public NbtTag getTag() {
         return this.tag;
     }
 

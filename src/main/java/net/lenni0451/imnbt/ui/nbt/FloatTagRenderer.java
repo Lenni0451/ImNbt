@@ -8,7 +8,7 @@ import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.ImGuiNumberPicker;
 import net.lenni0451.imnbt.utils.NumberUtils;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.FloatTag;
 
@@ -31,7 +31,7 @@ public class FloatTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, NbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull NbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
         this.renderLeaf(name, ": " + this.format.format(floatTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.FLOAT);
@@ -54,7 +54,7 @@ public class FloatTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void renderValueEditor(INbtTag tag) {
+    public void renderValueEditor(NbtTag tag) {
         FloatTag floatTag = (FloatTag) tag;
         floatTag.setValue(this.numberPicker.render(floatTag.getValue()).floatValue());
     }

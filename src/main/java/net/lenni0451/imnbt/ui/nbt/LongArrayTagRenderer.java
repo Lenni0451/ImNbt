@@ -9,8 +9,8 @@ import net.lenni0451.imnbt.utils.ArrayUtils;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
-import net.lenni0451.mcstructs.nbt.INbtNumber;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtNumber;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.LongArrayTag;
 import net.lenni0451.mcstructs.nbt.tags.LongTag;
@@ -34,7 +34,7 @@ public class LongArrayTagRenderer implements TagRenderer {
     private final DecimalFormat format = new DecimalFormat();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, NbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull NbtTag tag) {
         LongArrayTag longArrayTag = (LongArrayTag) tag;
         this.renderBranch(name, "(" + longArrayTag.getLength() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.LONG_ARRAY);
@@ -47,7 +47,7 @@ public class LongArrayTagRenderer implements TagRenderer {
                             searchProvider.refreshSearch();
                         })
                         .copy(name, longArrayTag).paste((pastedName, pastedTag) -> {
-                            if (pastedTag instanceof INbtNumber num) {
+                            if (pastedTag instanceof NbtNumber num) {
                                 longArrayTag.add(num.longValue());
                                 searchProvider.refreshSearch();
                             } else if (pastedTag instanceof LongArrayTag iat) {
@@ -113,7 +113,7 @@ public class LongArrayTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void renderValueEditor(INbtTag tag) {
+    public void renderValueEditor(NbtTag tag) {
     }
 
 }

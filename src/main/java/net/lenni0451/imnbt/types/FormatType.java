@@ -2,14 +2,15 @@ package net.lenni0451.imnbt.types;
 
 import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.mcstructs.nbt.io.NbtIO;
+import net.lenni0451.mcstructs_bedrock.nbt.io.BedrockNbtIO;
 
 /**
  * The format type of the Nbt tag.
  */
 public enum FormatType {
 
-    JAVA(NbtIO.JAVA),
-    BEDROCK(net.lenni0451.mcstructs_bedrock.nbt.io.NbtIO.BEDROCK);
+    JAVA(NbtIO.LATEST),
+    BEDROCK(BedrockNbtIO.INSTANCE);
 
 
     public static final String[] NAMES = new String[values().length];

@@ -2,7 +2,7 @@ package net.lenni0451.imnbt.utils.nbt;
 
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.utils.NotificationLevel;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.*;
 
@@ -29,7 +29,7 @@ public class TagTransformer {
         throw new IllegalArgumentException("Unable to convert tag to " + type.name());
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ByteTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ByteTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case SHORT -> transformListener.accept(name, new ShortTag(tag.shortValue()));
@@ -42,7 +42,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ShortTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ShortTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case BYTE -> transformListener.accept(name, new ByteTag(tag.byteValue()));
@@ -55,7 +55,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final IntTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final IntTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case BYTE -> transformListener.accept(name, new ByteTag(tag.byteValue()));
@@ -68,7 +68,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final LongTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final LongTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case BYTE -> transformListener.accept(name, new ByteTag(tag.byteValue()));
@@ -81,7 +81,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final FloatTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final FloatTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case BYTE -> transformListener.accept(name, new ByteTag(tag.byteValue()));
@@ -94,7 +94,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final DoubleTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final DoubleTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case BYTE -> transformListener.accept(name, new ByteTag(tag.byteValue()));
@@ -107,7 +107,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ByteArrayTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ByteArrayTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case LIST -> {
@@ -130,7 +130,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final StringTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final StringTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 default -> invalidType(type);
@@ -138,7 +138,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ListTag<?> tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final ListTag<?> tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case COMPOUND -> {
@@ -151,12 +151,12 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final CompoundTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final CompoundTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case LIST -> {
-                    ListTag<INbtTag> list = new ListTag<>();
-                    for (Map.Entry<String, INbtTag> entry : tag) {
+                    ListTag<NbtTag> list = new ListTag<>();
+                    for (Map.Entry<String, NbtTag> entry : tag) {
                         if (!list.canAdd(entry.getValue())) {
                             drawer.showNotification(NotificationLevel.ERROR, "Error", "Lists can only contain one tag type.", drawer::closePopup);
                             return;
@@ -170,7 +170,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final IntArrayTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final IntArrayTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case BYTE_ARRAY -> {
@@ -188,7 +188,7 @@ public class TagTransformer {
         };
     }
 
-    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final LongArrayTag tag, final BiConsumer<String, INbtTag> transformListener) {
+    public static Consumer<NbtType> transform(final ImNbtDrawer drawer, final String name, final LongArrayTag tag, final BiConsumer<String, NbtTag> transformListener) {
         return type -> {
             switch (type) {
                 case BYTE_ARRAY -> {

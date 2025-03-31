@@ -11,7 +11,7 @@ import net.lenni0451.imnbt.ui.popups.snbt.SNbtParserPopup;
 import net.lenni0451.imnbt.ui.popups.snbt.SNbtSerializerPopup;
 import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.StringUtils;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 
@@ -36,19 +36,19 @@ public class ContextMenu {
     private final Runnable modificationListener;
     private final Set<NbtType> newTypes = new LinkedHashSet<>();
     private String copyName;
-    private INbtTag copyTag;
-    private BiConsumer<String, INbtTag> pasteAction;
+    private NbtTag copyTag;
+    private BiConsumer<String, NbtTag> pasteAction;
     private Runnable editAction;
     private Consumer<NbtType> transformAction;
     private IntConsumer roundAction;
     private Runnable sortAction;
     private NbtType[] transformTypes;
-    private BiConsumer<String, INbtTag> newTagAction;
-    private BiConsumer<Integer, INbtTag> intNewTagAction;
+    private BiConsumer<String, NbtTag> newTagAction;
+    private BiConsumer<Integer, NbtTag> intNewTagAction;
     private Predicate<String> overwriteCheck;
     private int newIndex;
     private Runnable deleteListener;
-    private Supplier<INbtTag> sNbtSerializerListener;
+    private Supplier<NbtTag> sNbtSerializerListener;
 
     private ContextMenu(final ImNbtDrawer drawer, final Runnable modificationListener) {
         this.drawer = drawer;
@@ -62,7 +62,7 @@ public class ContextMenu {
      * @param overwriteCheck Check if a tag with the name already exists
      * @return The builder instance
      */
-    public ContextMenu allTypes(final BiConsumer<String, INbtTag> newTagAction, final Predicate<String> overwriteCheck) {
+    public ContextMenu allTypes(final BiConsumer<String, NbtTag> newTagAction, final Predicate<String> overwriteCheck) {
         Collections.addAll(this.newTypes, NbtType.values());
         this.newTypes.remove(NbtType.END);
         this.newTagAction = newTagAction;
@@ -77,7 +77,7 @@ public class ContextMenu {
      * @param newTagAction The action to be executed when a new tag is created
      * @return The builder instance
      */
-    public ContextMenu singleType(final NbtType newType, final BiConsumer<String, INbtTag> newTagAction) {
+    public ContextMenu singleType(final NbtType newType, final BiConsumer<String, NbtTag> newTagAction) {
         this.newTypes.add(newType);
         this.newTagAction = newTagAction;
         return this;
@@ -90,7 +90,7 @@ public class ContextMenu {
      * @param newTagAction The action to be executed when a new tag is created
      * @return The builder instance
      */
-    public ContextMenu allTypes(final int newIndex, final BiConsumer<Integer, INbtTag> newTagAction) {
+    public ContextMenu allTypes(final int newIndex, final BiConsumer<Integer, NbtTag> newTagAction) {
         Collections.addAll(this.newTypes, NbtType.values());
         this.newTypes.remove(NbtType.END);
         this.intNewTagAction = newTagAction;
@@ -106,7 +106,7 @@ public class ContextMenu {
      * @param newTagAction The action to be executed when a new tag is created
      * @return The builder instance
      */
-    public ContextMenu singleType(final NbtType newType, final int newIndex, final BiConsumer<Integer, INbtTag> newTagAction) {
+    public ContextMenu singleType(final NbtType newType, final int newIndex, final BiConsumer<Integer, NbtTag> newTagAction) {
         this.newTypes.add(newType);
         this.intNewTagAction = newTagAction;
         this.newIndex = newIndex;
@@ -120,7 +120,7 @@ public class ContextMenu {
      * @param tag The tag to be copied
      * @return The builder instance
      */
-    public ContextMenu copy(final String name, final INbtTag tag) {
+    public ContextMenu copy(final String name, final NbtTag tag) {
         this.copyName = name;
         this.copyTag = tag;
         return this;
@@ -132,7 +132,7 @@ public class ContextMenu {
      * @param pasteAction The action to be executed when the tag is pasted
      * @return The builder instance
      */
-    public ContextMenu paste(final BiConsumer<String, INbtTag> pasteAction) {
+    public ContextMenu paste(final BiConsumer<String, NbtTag> pasteAction) {
         this.pasteAction = pasteAction;
         return this;
     }
@@ -182,7 +182,7 @@ public class ContextMenu {
      * @param <T>              The type of the tag
      * @return The builder instance
      */
-    public <T extends INbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
+    public <T extends NbtTag> ContextMenu edit(final String name, final T tag, final Consumer<String> nameEditConsumer, final Consumer<T> tagConsumer) {
         this.editAction = () -> this.drawer.openPopup(new EditTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", name, tag, (p, success) -> {
             if (success) {
                 this.modificationListener.run();
@@ -205,7 +205,7 @@ public class ContextMenu {
      * @param <T>               The type of the tag
      * @return The builder instance
      */
-    public <T extends INbtTag> ContextMenu edit(final T tag, final int index, final int maxIndex, final IntConsumer indexEditConsumer, final Consumer<T> tagConsumer) {
+    public <T extends NbtTag> ContextMenu edit(final T tag, final int index, final int maxIndex, final IntConsumer indexEditConsumer, final Consumer<T> tagConsumer) {
         this.editAction = () -> this.drawer.openPopup(new EditIndexedTagPopup("Edit " + StringUtils.format(tag.getNbtType()), "Save", index, maxIndex, tag, (p, success) -> {
             if (success) {
                 this.modificationListener.run();
@@ -234,7 +234,7 @@ public class ContextMenu {
      * @param sNbtSerializerListener The listener to be executed when the tag is serialized
      * @return The builder instance
      */
-    public ContextMenu sNbtParser(final Supplier<INbtTag> sNbtSerializerListener) {
+    public ContextMenu sNbtParser(final Supplier<NbtTag> sNbtSerializerListener) {
         this.sNbtSerializerListener = sNbtSerializerListener;
         return this;
     }

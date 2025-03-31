@@ -1,6 +1,6 @@
 package net.lenni0451.imnbt.utils.nbt.diff;
 
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.tags.*;
 
 import static net.lenni0451.imnbt.utils.nbt.NbtPath.get;
@@ -17,13 +17,13 @@ public class Differ {
      * @param right The right tag
      * @return The diff map
      */
-    public static DiffMap diff(final INbtTag left, final INbtTag right) {
+    public static DiffMap diff(final NbtTag left, final NbtTag right) {
         DiffMap map = new DiffMap();
         diff(map, "", left, right);
         return map;
     }
 
-    private static void diff(final DiffMap map, final String path, final INbtTag left, final INbtTag right) {
+    private static void diff(final DiffMap map, final String path, final NbtTag left, final NbtTag right) {
         if (left == null && right == null) {
             return;
         } else if (left == null) {
@@ -57,8 +57,8 @@ public class Differ {
                 ListTag<?> rightList = (ListTag<?>) right;
                 int count = Math.max(leftList.size(), rightList.size());
                 for (int i = 0; i < count; i++) {
-                    INbtTag l = i < leftList.size() ? leftList.get(i) : null;
-                    INbtTag r = i < rightList.size() ? rightList.get(i) : null;
+                    NbtTag l = i < leftList.size() ? leftList.get(i) : null;
+                    NbtTag r = i < rightList.size() ? rightList.get(i) : null;
 
                     if (l == null) map.addRight(r, get(path, i), DiffType.ADDED);
                     else if (r == null) map.addLeft(l, get(path, i), DiffType.REMOVED);

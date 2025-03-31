@@ -10,7 +10,7 @@ import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.nbt.TagSorter;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
 import net.lenni0451.imnbt.utils.nbt.TagUtils;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 
@@ -33,7 +33,7 @@ public class CompoundTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, NbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull NbtTag tag) {
         CompoundTag compoundTag = (CompoundTag) tag;
         this.renderBranch(name, "(" + compoundTag.size() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.COMPOUND);
@@ -60,7 +60,7 @@ public class CompoundTagRenderer implements TagRenderer {
             String[] removed = new String[1];
             int pages = (int) Math.ceil(compoundTag.size() / (float) drawer.getLinesPerPage());
             if (pages <= 1) {
-                for (Map.Entry<String, INbtTag> entry : compoundTag.getValue().entrySet()) {
+                for (Map.Entry<String, NbtTag> entry : compoundTag.getValue().entrySet()) {
                     this.renderEntry(drawer, compoundTag, entry.getKey(), entry.getValue(), removed, modificationListener, colorProvider, searchProvider, openContextMenu, path);
                 }
             } else {
@@ -87,10 +87,10 @@ public class CompoundTagRenderer implements TagRenderer {
         }, colorProvider, searchProvider);
     }
 
-    private void renderEntry(final ImNbtDrawer drawer, final CompoundTag compoundTag, final String key, final INbtTag value, final String[] removed, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
+    private void renderEntry(final ImNbtDrawer drawer, final CompoundTag compoundTag, final String key, final NbtTag value, final String[] removed, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         NbtTreeRenderer.render(drawer, newName -> {
             //This gets executed multiple frames after the user clicked save in the popup
-            INbtTag oldTag = compoundTag.remove(key);
+            NbtTag oldTag = compoundTag.remove(key);
             compoundTag.add(newName, oldTag);
             searchProvider.refreshSearch();
         }, (transformedName, transformedTag) -> {
@@ -100,7 +100,7 @@ public class CompoundTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void renderValueEditor(INbtTag tag) {
+    public void renderValueEditor(NbtTag tag) {
     }
 
 }

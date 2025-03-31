@@ -1,6 +1,6 @@
 package net.lenni0451.imnbt.utils.nbt;
 
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
@@ -154,7 +154,7 @@ public class NbtPath {
      * @param tag  The input tag (preferably a list or compound tag)
      * @param path The path of the input tag
      */
-    public static void getTags(final Map<String, INbtTag> tags, final INbtTag tag, final String path) {
+    public static void getTags(final Map<String, NbtTag> tags, final NbtTag tag, final String path) {
         tags.put(path, tag);
         switch (tag.getNbtType()) {
             case LIST -> {
@@ -163,7 +163,7 @@ public class NbtPath {
             }
             case COMPOUND -> {
                 CompoundTag compound = tag.asCompoundTag();
-                for (Map.Entry<String, INbtTag> entry : compound.getValue().entrySet()) getTags(tags, entry.getValue(), get(path, entry.getKey()));
+                for (Map.Entry<String, NbtTag> entry : compound.getValue().entrySet()) getTags(tags, entry.getValue(), get(path, entry.getKey()));
             }
         }
     }

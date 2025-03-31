@@ -21,7 +21,11 @@ public class ReadTrackers {
         }
 
         @Override
-        public void read(int bytes) {
+        public void read(long bytes) {
+        }
+
+        @Override
+        public void read(long bytes, long multiplier) {
         }
     };
 
@@ -31,7 +35,7 @@ public class ReadTrackers {
     public static NbtReadTracker strict() {
         return new NbtReadTracker() {
             @Override
-            public void read(int bytes) throws NbtReadException {
+            public void read(long bytes) throws NbtReadException {
                 if (bytes < 0) throw new NbtReadException("Read negative bytes (maybe overflow?)");
                 super.read(bytes);
             }

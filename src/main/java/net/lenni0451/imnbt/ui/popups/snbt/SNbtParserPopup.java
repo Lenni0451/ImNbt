@@ -6,7 +6,7 @@ import imgui.type.ImString;
 import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.types.Popup;
 import net.lenni0451.imnbt.utils.NotificationLevel;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZERS;
 import static net.lenni0451.imnbt.utils.nbt.SNbtUtils.SERIALIZER_NAMES;
@@ -18,7 +18,7 @@ public class SNbtParserPopup extends Popup<SNbtParserPopup> {
 
     private final ImString input = new ImString(32767);
     private final ImInt selectedVersion = new ImInt(SERIALIZER_NAMES.length - 1);
-    private INbtTag parsedTag;
+    private NbtTag parsedTag;
 
     public SNbtParserPopup(final String snbt, final PopupCallback<SNbtParserPopup> callback) {
         super("SNbt Parser", callback);
@@ -26,7 +26,7 @@ public class SNbtParserPopup extends Popup<SNbtParserPopup> {
         this.input.set(snbt);
     }
 
-    public INbtTag getParsedTag() {
+    public NbtTag getParsedTag() {
         return this.parsedTag;
     }
 

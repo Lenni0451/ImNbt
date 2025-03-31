@@ -1,6 +1,6 @@
 package net.lenni0451.imnbt.utils.nbt;
 
-import net.lenni0451.mcstructs.snbt.SNbtSerializer;
+import net.lenni0451.mcstructs.snbt.SNbt;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -9,21 +9,21 @@ import java.util.Map;
 
 public class SNbtUtils {
 
-    public static final Map<String, SNbtSerializer<?>> SERIALIZERS = getVersions();
+    public static final Map<String, SNbt<?>> SERIALIZERS = getVersions();
     public static final String[] SERIALIZER_NAMES = getVersionNames();
 
     /**
-     * Get all available {@link SNbtSerializer} versions.
+     * Get all available {@link SNbt} versions.
      *
      * @return A map with the name to the serializer
      */
-    private static Map<String, SNbtSerializer<?>> getVersions() {
-        Map<String, SNbtSerializer<?>> versions = new LinkedHashMap<>();
+    private static Map<String, SNbt<?>> getVersions() {
+        Map<String, SNbt<?>> versions = new LinkedHashMap<>();
         try {
-            for (Field field : SNbtSerializer.class.getDeclaredFields()) {
+            for (Field field : SNbt.class.getDeclaredFields()) {
                 if (field.getName().equals("LATEST")) continue;
-                if (Modifier.isStatic(field.getModifiers()) && SNbtSerializer.class.isAssignableFrom(field.getType())) {
-                    versions.put(field.getName(), (SNbtSerializer<?>) field.get(null));
+                if (Modifier.isStatic(field.getModifiers()) && SNbt.class.isAssignableFrom(field.getType())) {
+                    versions.put(field.getName(), (SNbt<?>) field.get(null));
                 }
             }
         } catch (Throwable ignored) {
@@ -32,7 +32,7 @@ public class SNbtUtils {
     }
 
     /**
-     * Get all version names of the available {@link SNbtSerializer} versions.<br>
+     * Get all version names of the available {@link SNbt} versions.<br>
      * The names are formatted like this:<br>
      * "V1_14" -> "1.14"
      *

@@ -7,7 +7,7 @@ import net.lenni0451.imnbt.types.EndianType;
 import net.lenni0451.imnbt.types.FormatType;
 import net.lenni0451.imnbt.types.formats.ICustomFormat;
 import net.lenni0451.imnbt.utils.stream.LittleEndianDataInput;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.io.NamedTag;
 import net.lenni0451.mcstructs.nbt.io.NbtReadTracker;
@@ -35,7 +35,7 @@ public class NbtReader {
         dataInput = customFormat.read(dataInput);
         NamedTag namedTag;
         if (namelessRoot) {
-            INbtTag namelessTag = formatType.getNbtIO().readUnnamed(dataInput, readTracker.get());
+            NbtTag namelessTag = formatType.getNbtIO().readUnnamed(dataInput, readTracker.get());
             if (namelessTag == null) namedTag = null;
             else namedTag = new NamedTag("", namelessTag.getNbtType(), namelessTag);
         } else {
@@ -49,7 +49,7 @@ public class NbtReader {
 
             while (available.getAsInt() > 0) {
                 if (namelessRoot) {
-                    INbtTag extra = formatType.getNbtIO().readUnnamed(dataInput, readTracker.get());
+                    NbtTag extra = formatType.getNbtIO().readUnnamed(dataInput, readTracker.get());
                     if (extra == null) continue;
                     extraCompound.add(TagUtils.findUniqueName(extraCompound, ""), extra);
                 } else {

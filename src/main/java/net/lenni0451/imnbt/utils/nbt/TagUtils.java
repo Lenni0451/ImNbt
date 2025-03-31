@@ -1,6 +1,6 @@
 package net.lenni0451.imnbt.utils.nbt;
 
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.tags.CompoundTag;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
@@ -28,7 +28,7 @@ public class TagUtils {
      * @param tag The tag to count
      * @return The amount of tags
      */
-    public static int size(final INbtTag tag) {
+    public static int size(final NbtTag tag) {
         if (tag == null) return 0;
         return switch (tag.getNbtType()) {
             case END -> 0;
@@ -37,7 +37,7 @@ public class TagUtils {
             case LIST -> {
                 ListTag<?> listTag = tag.asListTag();
                 int size = 1;
-                for (INbtTag listElement : listTag) {
+                for (NbtTag listElement : listTag) {
                     size += size(listElement);
                 }
                 yield size;
@@ -45,7 +45,7 @@ public class TagUtils {
             case COMPOUND -> {
                 CompoundTag compoundTag = tag.asCompoundTag();
                 int size = 1;
-                for (INbtTag compoundElement : compoundTag.getValue().values()) {
+                for (NbtTag compoundElement : compoundTag.getValue().values()) {
                     size += size(compoundElement);
                 }
                 yield size;

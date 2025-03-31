@@ -8,7 +8,7 @@ import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.StringTag;
 
@@ -25,7 +25,7 @@ public class StringTagRenderer implements TagRenderer {
     private final ImString valueEditor = new ImString(32767);
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, NbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull NbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.renderLeaf(name, ": " + stringTag.getValue(), path, () -> {
             this.renderIcon(drawer, NbtType.STRING);
@@ -47,7 +47,7 @@ public class StringTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void renderValueEditor(INbtTag tag) {
+    public void renderValueEditor(NbtTag tag) {
         StringTag stringTag = (StringTag) tag;
         this.valueEditor.set(stringTag.getValue());
         if (ImGui.inputText("Value", this.valueEditor)) stringTag.setValue(this.valueEditor.get());

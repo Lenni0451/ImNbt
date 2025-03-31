@@ -11,7 +11,7 @@ import net.lenni0451.imnbt.utils.StringUtils;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffMap;
 import net.lenni0451.imnbt.utils.nbt.diff.DiffType;
 import net.lenni0451.imnbt.utils.nbt.diff.Differ;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 
 /**
  * The window to display the diff of two tags.
@@ -19,15 +19,15 @@ import net.lenni0451.mcstructs.nbt.INbtTag;
 public class DiffWindow extends Window {
 
     private final SearchProvider searchProvider = new SearchProvider(this.drawer); //Unused here as there is no search (yet?)
-    private INbtTag left;
-    private INbtTag right;
+    private NbtTag left;
+    private NbtTag right;
     private DiffMap diffMap;
 
     public DiffWindow(ImNbtDrawer drawer) {
         super(drawer);
     }
 
-    public void diff(final INbtTag left, final INbtTag right) {
+    public void diff(final NbtTag left, final NbtTag right) {
         this.left = left;
         this.right = right;
 

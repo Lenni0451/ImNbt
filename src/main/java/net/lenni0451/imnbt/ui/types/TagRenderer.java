@@ -8,7 +8,7 @@ import net.lenni0451.imnbt.ImNbtDrawer;
 import net.lenni0451.imnbt.ui.NbtTreeRenderer;
 import net.lenni0451.imnbt.ui.SearchProvider;
 import net.lenni0451.imnbt.utils.Color;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 
 import javax.annotation.Nonnull;
@@ -36,14 +36,14 @@ public interface TagRenderer {
      * @param name                 The name of the tag
      * @param tag                  The tag to render
      */
-    void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final BiConsumer<String, INbtTag> transformListener, final Runnable deleteListener, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final INbtTag tag);
+    void render(final ImNbtDrawer drawer, final Consumer<String> nameEditConsumer, final BiConsumer<String, NbtTag> transformListener, final Runnable deleteListener, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path, final String name, @Nonnull final NbtTag tag);
 
     /**
      * Render the value editor for the tag.
      *
      * @param tag The tag to render
      */
-    void renderValueEditor(final INbtTag tag);
+    void renderValueEditor(final NbtTag tag);
 
     /**
      * Render a branch in the tree.<br>

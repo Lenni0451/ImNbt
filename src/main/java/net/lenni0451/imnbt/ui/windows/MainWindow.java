@@ -29,7 +29,7 @@ import net.lenni0451.imnbt.utils.nbt.NbtReader;
 import net.lenni0451.imnbt.utils.nbt.ReadTrackers;
 import net.lenni0451.imnbt.utils.nbt.TagSorter;
 import net.lenni0451.imnbt.utils.nbt.TagVisitor;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.DoubleTag;
 import net.lenni0451.mcstructs.nbt.tags.FloatTag;
@@ -63,8 +63,8 @@ public class MainWindow extends Window {
     private boolean searchModified = false;
     private boolean highlightSearch = false;
     private int openTab;
-    private INbtTag leftDiff;
-    private INbtTag rightDiff;
+    private NbtTag leftDiff;
+    private NbtTag rightDiff;
 
     /**
      * Create a new main window.<br>
@@ -82,7 +82,7 @@ public class MainWindow extends Window {
      * @return The tag of the currently open tab
      */
     @Nullable
-    public INbtTag getOpenTab() {
+    public NbtTag getOpenTab() {
         if (this.tags.isEmpty()) return null;
         return this.tags.get(this.openTab).tag;
     }
@@ -90,9 +90,9 @@ public class MainWindow extends Window {
     /**
      * @return The tags of all tabs
      */
-    public INbtTag[] getTabs() {
-        if (this.tags.isEmpty()) return new INbtTag[0];
-        return this.tags.stream().map(tag -> tag.tag).toArray(INbtTag[]::new);
+    public NbtTag[] getTabs() {
+        if (this.tags.isEmpty()) return new NbtTag[0];
+        return this.tags.stream().map(tag -> tag.tag).toArray(NbtTag[]::new);
     }
 
     /**
@@ -115,7 +115,7 @@ public class MainWindow extends Window {
 
         Tag tag = this.tags.get(this.openTab);
         Object last = history.remove(history.size() - 1);
-        if (last instanceof INbtTag oldTag) {
+        if (last instanceof NbtTag oldTag) {
             undoHistory.add(tag.tag.copy());
             tag.tag = oldTag;
             this.searchProvider.buildSearchPaths(tag.tag);
@@ -123,7 +123,7 @@ public class MainWindow extends Window {
             undoHistory.add(tag.settings.rootName);
             tag.settings.rootName = oldRootName;
         } else if (last instanceof TagHistory oldTagHistory) {
-            undoHistory.add(new TagHistory(tag.settings.rootName, Optional.ofNullable(tag.tag).map(INbtTag::copy).orElse(null), tag.fileName, tag.filePath));
+            undoHistory.add(new TagHistory(tag.settings.rootName, Optional.ofNullable(tag.tag).map(NbtTag::copy).orElse(null), tag.fileName, tag.filePath));
             tag.settings.rootName = oldTagHistory.rootName;
             tag.tag = oldTagHistory.tag;
             tag.fileName = oldTagHistory.fileName;
@@ -151,7 +151,7 @@ public class MainWindow extends Window {
 
         Tag tag = this.tags.get(this.openTab);
         Object last = undoHistory.remove(undoHistory.size() - 1);
-        if (last instanceof INbtTag newTag) {
+        if (last instanceof NbtTag newTag) {
             history.add(tag.tag.copy());
             tag.tag = newTag;
             this.searchProvider.buildSearchPaths(tag.tag);
@@ -159,7 +159,7 @@ public class MainWindow extends Window {
             history.add(tag.settings.rootName);
             tag.settings.rootName = newRootName;
         } else if (last instanceof TagHistory newTagHistory) {
-            history.add(new TagHistory(tag.settings.rootName, Optional.ofNullable(tag.tag).map(INbtTag::copy).orElse(null), tag.fileName, tag.filePath));
+            history.add(new TagHistory(tag.settings.rootName, Optional.ofNullable(tag.tag).map(NbtTag::copy).orElse(null), tag.fileName, tag.filePath));
             tag.settings.rootName = newTagHistory.rootName;
             tag.tag = newTagHistory.tag;
             tag.fileName = newTagHistory.fileName;
@@ -584,18 +584,18 @@ public class MainWindow extends Window {
         private TagSettings settings;
         private ICustomFormat customFormat;
         @Nullable
-        private INbtTag tag;
+        private NbtTag tag;
         private String fileName;
         private String filePath;
         private boolean modified;
         private final List<Object> history;
         private final List<Object> undoHistory;
 
-        private Tag(final INbtTag tag) {
+        private Tag(final NbtTag tag) {
             this(new TagSettings(), new NoneFormat(), tag);
         }
 
-        private Tag(final TagSettings settings, final ICustomFormat customFormat, @Nullable final INbtTag tag) {
+        private Tag(final TagSettings settings, final ICustomFormat customFormat, @Nullable final NbtTag tag) {
             this.settings = settings;
             this.customFormat = customFormat;
             this.tag = tag;
@@ -605,7 +605,7 @@ public class MainWindow extends Window {
         }
     }
 
-    private record TagHistory(String rootName, INbtTag tag, String fileName, String filePath) {
+    private record TagHistory(String rootName, NbtTag tag, String fileName, String filePath) {
     }
 
 }

@@ -7,7 +7,7 @@ import net.lenni0451.imnbt.ui.types.TagRenderer;
 import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.ImGuiNumberPicker;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.LongTag;
 
@@ -26,7 +26,7 @@ public class LongTagRenderer implements TagRenderer {
     private final ImGuiNumberPicker numberPicker = new ImGuiNumberPicker(long.class);
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, NbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull NbtTag tag) {
         LongTag longTag = (LongTag) tag;
         this.renderLeaf(name, ": " + this.format.format(longTag.getValue()), path, () -> {
             this.renderIcon(drawer, NbtType.LONG);
@@ -48,7 +48,7 @@ public class LongTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void renderValueEditor(INbtTag tag) {
+    public void renderValueEditor(NbtTag tag) {
         LongTag longTag = (LongTag) tag;
         longTag.setValue(this.numberPicker.render(longTag.getValue()).longValue());
     }

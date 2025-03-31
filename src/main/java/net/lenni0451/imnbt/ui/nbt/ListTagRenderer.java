@@ -10,7 +10,7 @@ import net.lenni0451.imnbt.utils.Color;
 import net.lenni0451.imnbt.utils.NotificationLevel;
 import net.lenni0451.imnbt.utils.nbt.TagSorter;
 import net.lenni0451.imnbt.utils.nbt.TagTransformer;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.NbtType;
 import net.lenni0451.mcstructs.nbt.tags.ListTag;
 
@@ -31,8 +31,8 @@ public class ListTagRenderer implements TagRenderer {
     private final Map<String, int[]> pageCache = new HashMap<>();
 
     @Override
-    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, INbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull INbtTag tag) {
-        ListTag<INbtTag> listTag = (ListTag<INbtTag>) tag;
+    public void render(ImNbtDrawer drawer, Consumer<String> nameEditConsumer, BiConsumer<String, NbtTag> transformListener, Runnable deleteListener, Runnable modificationListener, Function<String, Color> colorProvider, SearchProvider searchProvider, boolean openContextMenu, String path, String name, @Nonnull NbtTag tag) {
+        ListTag<NbtTag> listTag = (ListTag<NbtTag>) tag;
         this.renderBranch(name, "(" + listTag.getValue().size() + ")", path, () -> {
             this.renderIcon(drawer, NbtType.LIST);
             if (openContextMenu) {
@@ -100,13 +100,13 @@ public class ListTagRenderer implements TagRenderer {
         }, colorProvider, searchProvider);
     }
 
-    private void renderEntry(final ImNbtDrawer drawer, final ListTag<INbtTag> listTag, final INbtTag entry, final int i, final int[] removed, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
+    private void renderEntry(final ImNbtDrawer drawer, final ListTag<NbtTag> listTag, final NbtTag entry, final int i, final int[] removed, final Runnable modificationListener, final Function<String, Color> colorProvider, final SearchProvider searchProvider, final boolean openContextMenu, final String path) {
         NbtTreeRenderer.render(drawer, newName -> {
             //This gets executed multiple frames after the user clicked save in the popup
             try {
                 int newIndex = Integer.parseInt(newName);
                 if (newIndex < 0 || newIndex >= listTag.size() || newIndex == i) return;
-                INbtTag oldTag = listTag.getValue().remove(i);
+                NbtTag oldTag = listTag.getValue().remove(i);
                 listTag.getValue().add(newIndex, oldTag);
                 searchProvider.refreshSearch();
             } catch (Throwable ignored) {
@@ -120,7 +120,7 @@ public class ListTagRenderer implements TagRenderer {
     }
 
     @Override
-    public void renderValueEditor(INbtTag tag) {
+    public void renderValueEditor(NbtTag tag) {
     }
 
 }
