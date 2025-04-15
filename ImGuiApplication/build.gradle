@@ -20,7 +20,7 @@ dependencies {
     compileOnly(annotationProcessor("org.projectlombok:lombok:1.18.38"))
 
     include project(":")
-    include "com.google.guava:guava:33.4.7-jre"
+    include "com.google.guava:guava:33.4.8-jre"
     include "net.lenni0451.mcstructs:nbt:3.0.0"
     include "net.lenni0451.mcstructs:snbt:3.0.0"
     include("net.lenni0451.mcstructs-bedrock:nbt:2.0.0") {
