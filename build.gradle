@@ -45,7 +45,7 @@ dependencies {
     compileOnly(annotationProcessor("org.projectlombok:lombok:1.18.38"))
 
     api "io.github.spair:imgui-java-binding:1.89.0"
-    api "com.google.guava:guava:33.4.7-jre"
+    api "com.google.guava:guava:33.4.8-jre"
     api "net.lenni0451.mcstructs:nbt:3.0.0"
     api "net.lenni0451.mcstructs:snbt:3.0.0"
     api "net.lenni0451.mcstructs-bedrock:nbt:2.0.0"
