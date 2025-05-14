@@ -1,6 +1,8 @@
 package net.lenni0451.imnbt.ui.types;
 
 import imgui.ImGui;
+import imgui.ImVec2;
+import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiWindowFlags;
 import net.lenni0451.imnbt.ImNbtDrawer;
 
@@ -11,6 +13,8 @@ import net.lenni0451.imnbt.ImNbtDrawer;
  * @param <P> The type of the popup
  */
 public abstract class Popup<P extends Popup<P>> {
+
+    private static final ImVec2 CENTER_PIVOT = new ImVec2(0.5F, 0.5F);
 
     private final String title;
     private final PopupCallback<P> callback;
@@ -63,6 +67,8 @@ public abstract class Popup<P extends Popup<P>> {
      * @param drawer The drawer instance
      */
     public void render(final ImNbtDrawer drawer) {
+        ImVec2 center = ImGui.getMainViewport().getCenter();
+        ImGui.setNextWindowPos(center, ImGuiCond.Always, CENTER_PIVOT);
         if (ImGui.beginPopupModal(this.title, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoSavedSettings)) {
             this.renderContent(drawer);
 
