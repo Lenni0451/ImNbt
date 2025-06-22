@@ -1,59 +1,19 @@
 plugins {
     id "java"
-}
-
-base {
-    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-    compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
-}
-
-configurations {
-    include
-
-    implementation.extendsFrom include
-    api.extendsFrom include
+    id "project.defaults"
+    id "base.application"
 }
 
 dependencies {
-    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    compileOnly "org.jetbrains:annotations:26.0.2"
-    compileOnly(annotationProcessor("org.projectlombok:lombok:1.18.38"))
-
     include project(":")
-    include "com.google.guava:guava:33.4.8-jre"
-    include "net.lenni0451.mcstructs:nbt:3.0.0"
-    include "net.lenni0451.mcstructs:snbt:3.0.0"
-    include("net.lenni0451.mcstructs-bedrock:nbt:2.0.0") {
-        exclude group: "net.lenni0451.mcstructs", module: "nbt"
-    }
-
-    include("io.github.spair:imgui-java-app:1.89.0") {
+    include(libs.imguiJava.app) {
         exclude group: "org.lwjgl"
     }
-    ["lwjgl", "lwjgl-glfw", "lwjgl-opengl", "lwjgl-tinyfd"].each {
-        def lib = it
-        include "org.lwjgl:$lib:3.3.6"
-        ["natives-linux", "natives-linux-arm64", "natives-windows", "natives-windows-arm64", "natives-macos", "natives-macos-arm64"].each {
-            include "org.lwjgl:$lib:3.3.6:$it"
-        }
-    }
-}
-
-jar {
-    dependsOn configurations.include
-    from {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        configurations.include.collect {
-            zipTree(it)
-        }
-    } {
-        exclude "META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA"
-    }
-
-    manifest {
-        attributes(
-                "Main-Class": "net.lenni0451.imnbt.application.Main",
-                "Multi-Release": "true"
-        )
+    include libs.bundles.lwjgl
+    ["natives-linux", "natives-linux-arm64", "natives-windows", "natives-windows-arm64", "natives-macos", "natives-macos-arm64"].each { c ->
+        include(variantOf(libs.lwjgl) { classifier(c) })
+        include(variantOf(libs.lwjgl.glfw) { classifier(c) })
+        include(variantOf(libs.lwjgl.opengl) { classifier(c) })
+        include(variantOf(libs.lwjgl.tinyfd) { classifier(c) })
     }
 }

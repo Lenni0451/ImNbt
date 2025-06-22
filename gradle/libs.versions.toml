@@ -1,0 +1,34 @@
+[versions]
+imgui-java = "1.89.0"
+mcstructs = "3.0.0"
+mcstructs-bedrock = "2.0.0"
+lwjgl = "3.3.6"
+
+[libraries]
+findbugs = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }
+jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
+lombok = { module = "org.projectlombok:lombok", version = "1.18.38" }
+guava = { module = "com.google.guava:guava", version = "33.4.8-jre" }
+
+junit-bom = { module = "org.junit:junit-bom", version = "5.12.2" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+imguiJava-binding = { module = "io.github.spair:imgui-java-binding", version.ref = "imgui-java" }
+imguiJava-app = { module = "io.github.spair:imgui-java-app", version.ref = "imgui-java" }
+
+mcstructs-nbt = { module = "net.lenni0451.mcstructs:nbt", version.ref = "mcstructs" }
+mcstructs-snbt = { module = "net.lenni0451.mcstructs:snbt", version.ref = "mcstructs" }
+mcstructsBedrock-nbt = { module = "net.lenni0451.mcstructs-bedrock:nbt", version.ref = "mcstructs-bedrock" }
+
+lwjgl = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
+lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw", version.ref = "lwjgl" }
+lwjgl-opengl = { module = "org.lwjgl:lwjgl-opengl", version.ref = "lwjgl" }
+lwjgl-tinyfd = { module = "org.lwjgl:lwjgl-tinyfd", version.ref = "lwjgl" }
+
+[bundles]
+mcstructs = ["mcstructs-nbt", "mcstructs-snbt", "mcstructsBedrock-nbt"]
+lwjgl = ["lwjgl", "lwjgl-glfw", "lwjgl-opengl", "lwjgl-tinyfd"]
+
+[plugins]
+classTokenReplacer = { id = "net.raphimc.class-token-replacer", version = "1.1.6" }

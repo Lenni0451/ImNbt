@@ -1,121 +1,14 @@
 plugins {
     id "java-library"
-    id "maven-publish"
-    id "signing"
-    id "checkstyle"
-    id "net.raphimc.class-token-replacer" version "1.1.6"
-}
-
-base {
-    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-    compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
-}
-
-allprojects {
-    apply plugin: "checkstyle"
-
-    base {
-        archivesName = project.maven_name ?: rootProject.maven_name
-        group = project.maven_group ?: rootProject.maven_group
-        version = project.maven_version ?: rootProject.maven_version
-    }
-
-    repositories {
-        mavenCentral()
-    }
-
-    checkstyle {
-        toolVersion = "10.16.0" //Latest version for Java 8: 9.3
-        configFile = rootProject.file("config/checkstyle/checkstyle.xml")
-    }
-    build.dependsOn(check)
-}
-
-sourceSets {
-    main {
-        classTokenReplacer {
-            property("\${version}", project.version)
-        }
-    }
+    id "project.defaults"
+    id "extra.fill_build_constants"
+    alias libs.plugins.classTokenReplacer
 }
 
 dependencies {
-    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    compileOnly "org.jetbrains:annotations:26.0.2"
-    compileOnly(annotationProcessor("org.projectlombok:lombok:1.18.38"))
-
-    api "io.github.spair:imgui-java-binding:1.89.0"
-    api "com.google.guava:guava:33.4.8-jre"
-    api "net.lenni0451.mcstructs:nbt:3.0.0"
-    api "net.lenni0451.mcstructs:snbt:3.0.0"
-    api "net.lenni0451.mcstructs-bedrock:nbt:2.0.0"
-}
-
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
-
-javadoc {
-    options.addStringOption("Xdoclint:none", "-quiet")
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "reposilite"
-            def releasesUrl = "https://maven.lenni0451.net/releases"
-            def snapshotsUrl = "https://maven.lenni0451.net/snapshots"
-            url = project.maven_version.endsWith("SNAPSHOT") ? snapshotsUrl : releasesUrl
-
-            credentials(PasswordCredentials)
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
+    api libs.imguiJava.binding
+    api libs.guava
+    api(libs.bundles.mcstructs) {
+        exclude group: "net.lenni0451.mcstructs", module: "nbt"
     }
-    publications {
-        maven(MavenPublication) {
-            artifactId = project.maven_name ?: rootProject.maven_name
-            groupId = rootProject.maven_group
-            version = rootProject.maven_version
-
-            from components.java
-
-            pom {
-                name = rootProject.name
-                description = rootProject.maven_description
-                url = "https://github.com/" + rootProject.github_repo
-                licenses {
-                    license {
-                        name = "MIT License"
-                        url = "https://github.com/" + rootProject.github_repo + "/blob/main/LICENSE"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "Lenni0451"
-                    }
-                }
-                scm {
-                    connection = "scm:git:git://github.com/" + rootProject.github_repo + ".git"
-                    developerConnection = "scm:git:ssh://github.com/" + rootProject.github_repo + ".git"
-                    url = "github.com/" + rootProject.github_repo
-                }
-            }
-        }
-    }
-}
-
-signing {
-    setRequired false
-    sign configurations.archives
-    sign publishing.publications.maven
-}
-project.tasks.withType(PublishToMavenRepository).forEach {
-    it.dependsOn(project.tasks.withType(Sign))
 }
