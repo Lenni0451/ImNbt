@@ -1,6 +1,8 @@
 plugins {
     id "java-library"
     id "project.defaults"
+    id "base.maven_publish"
+    id "publishing.aggregating_publisher"
     id "extra.fill_build_constants"
     alias libs.plugins.classTokenReplacer
 }
