@@ -31,4 +31,4 @@ mcstructs = ["mcstructs-nbt", "mcstructs-snbt", "mcstructsBedrock-nbt"]
 lwjgl = ["lwjgl", "lwjgl-glfw", "lwjgl-opengl", "lwjgl-tinyfd"]
 
 [plugins]
-classTokenReplacer = { id = "net.raphimc.class-token-replacer", version = "1.1.6" }
+classTokenReplacer = { id = "net.raphimc.class-token-replacer", version = "1.1.7" }
