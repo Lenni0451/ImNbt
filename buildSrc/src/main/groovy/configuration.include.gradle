@@ -2,6 +2,7 @@ configurations {
     include
 
     implementation.extendsFrom(include)
+    api.extendsFrom(include)
 }
 
 jar {
