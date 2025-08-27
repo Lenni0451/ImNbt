@@ -1,5 +1,5 @@
 [versions]
-imgui-java = "1.89.0"
+imgui-java = "1.90.0"
 mcstructs = "3.1.0"
 mcstructs-bedrock = "2.0.1"
 lwjgl = "3.3.6"
