@@ -8,7 +8,7 @@ lwjgl = "3.3.6"
 findbugs = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }
 jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2-1" }
 lombok = { module = "org.projectlombok:lombok", version = "1.18.42" }
-guava = { module = "com.google.guava:guava", version = "33.4.8-jre" }
+guava = { module = "com.google.guava:guava", version = "33.5.0-jre" }
 
 junit-bom = { module = "org.junit:junit-bom", version = "5.13.4" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
