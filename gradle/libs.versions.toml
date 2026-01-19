@@ -2,7 +2,7 @@
 imgui-java = "1.90.0"
 mcstructs = "3.2.1"
 mcstructs-bedrock = "2.0.1"
-lwjgl = "3.3.6"
+lwjgl = "3.4.0"
 
 [libraries]
 findbugs = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }
