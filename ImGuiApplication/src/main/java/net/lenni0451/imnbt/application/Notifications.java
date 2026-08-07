@@ -16,16 +16,16 @@ public class Notifications {
     private static final int SHOW_TIME = 5000;
     private static final int PADDING = 5;
     private static final int BAR_HEIGHT = 3;
-    private static final List<Notification> notifications = new ArrayList<>();
+    private static final List<Notification> NOTIFICATIONS = new ArrayList<>();
 
     public static void add(final NotificationLevel level, final String title, final String message) {
-        for (Notification notification : notifications) {
+        for (Notification notification : NOTIFICATIONS) {
             if (notification.title.equals(title) && notification.message.equals(message)) {
                 notification.showTime = System.currentTimeMillis();
                 return;
             }
         }
-        notifications.add(new Notification(level, title, message));
+        NOTIFICATIONS.add(new Notification(level, title, message));
     }
 
     public static void draw() {
@@ -33,7 +33,7 @@ public class Notifications {
         final ImDrawList drawList = ImGui.getForegroundDrawList();
 
         float drawY = 5;
-        Iterator<Notification> it = notifications.iterator();
+        Iterator<Notification> it = NOTIFICATIONS.iterator();
         while (it.hasNext()) {
             Notification notification = it.next();
             if (System.currentTimeMillis() - notification.showTime > SHOW_TIME) {

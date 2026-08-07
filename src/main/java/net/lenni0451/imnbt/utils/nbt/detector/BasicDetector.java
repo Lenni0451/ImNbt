@@ -28,7 +28,7 @@ public class BasicDetector {
 
         this.detectCompression();
         this.detectFormat();
-        //this.detectEndian();
+        // this.detectEndian();
         this.detectCustomFormat();
     }
 
@@ -62,15 +62,15 @@ public class BasicDetector {
     }
 
     //Not easily possible because most tags can actually read fine with both endian types
-//    private void detectEndian() {
-//        try {
-//            DataInput littleEndian = EndianType.LITTLE_ENDIAN.wrap(new ByteArrayInputStream(this.data));
-//            littleEndian.readByte();
-//            littleEndian.readUTF();
-//            this.endianType = EndianType.LITTLE_ENDIAN;
-//        } catch (Throwable ignored) {
-//        }
-//    }
+    // private void detectEndian() {
+    //     try {
+    //         DataInput littleEndian = EndianType.LITTLE_ENDIAN.wrap(new ByteArrayInputStream(this.data));
+    //         littleEndian.readByte();
+    //         littleEndian.readUTF();
+    //         this.endianType = EndianType.LITTLE_ENDIAN;
+    //     } catch (Throwable ignored) {
+    //     }
+    // }
 
     /**
      * Detect the format by trying to read the header of a java tag.

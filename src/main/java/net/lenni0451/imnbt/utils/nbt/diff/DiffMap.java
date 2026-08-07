@@ -86,10 +86,10 @@ public class DiffMap {
 
     @Override
     public String toString() {
-        return "DiffMap{" +
-                "left=" + this.left +
-                ", right=" + this.right +
-                '}';
+        return "DiffMap{"
+                + "left=" + this.left
+                + ", right=" + this.right
+                + '}';
     }
 
 
